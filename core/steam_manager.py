@@ -12,13 +12,14 @@ class SteamManager:
 
     def _run_steam_cmd(self, action: str, mod_ids: list):
         cmd_args = [str(m) for m in mod_ids]
-
         is_frozen = getattr(sys, 'frozen', False)
-
+        
         if is_frozen:
             exec_args = [sys.executable, action] + cmd_args
+            work_dir = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
         else:
             exec_args = [sys.executable, self.cmd_script, action] + cmd_args
+            work_dir = self.base_dir
 
         if sys.platform.startswith("linux"):
             try:
@@ -31,19 +32,23 @@ class SteamManager:
                     if pid2 > 0:
                         os._exit(0)
                     else:
-                        DEVNULL = os.open(os.devnull, os.O_RDWR)
-                        os.dup2(DEVNULL, sys.stdin.fileno())
-                        os.dup2(DEVNULL, sys.stdout.fileno())
-                        os.dup2(DEVNULL, sys.stderr.fileno())
-
-                        os.execv(sys.executable, exec_args) 
+                        os.chdir(work_dir)
+                        
+                        log_path = os.path.join(work_dir, "steam_worker.log")
+                        log_fd = os.open(log_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
+                        
+                        os.dup2(log_fd, sys.stdin.fileno())
+                        os.dup2(log_fd, sys.stdout.fileno())
+                        os.dup2(log_fd, sys.stderr.fileno())
+                        
+                        os.execv(sys.executable, exec_args)
             except Exception as e:
                 print(f"[SteamManager] Fork failed: {e}")
         else:
             try:
                 subprocess.Popen(
                     exec_args,
-                    cwd=self.base_dir,
+                    cwd=work_dir,
                     creationflags=0x00000008 | subprocess.CREATE_NO_WINDOW
                 )
             except Exception as e:
