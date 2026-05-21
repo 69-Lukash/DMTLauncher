@@ -1,0 +1,73 @@
+name: Build Launcher
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pyinstaller
+
+    - name: Build on Linux
+      if: runner.os == 'Linux'
+      run: |
+        pyinstaller --noconfirm --onedir --windowed --add-data "assets:assets" --add-data "steam_appid.txt:." --add-data "libsteam_api.so:." --add-data "SteamworksPy.so:." --name "DMTL-Linux" launcher.py
+        cd dist
+        tar -czvf DMTL-Linux.tar.gz DMTL-Linux/
+
+    - name: Build on Windows
+      if: runner.os == 'Windows'
+      run: |
+        pyinstaller --noconfirm --onedir --windowed --add-data "assets;assets" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL-Windows" launcher.py
+        Compress-Archive -Path dist\DMTL-Windows -DestinationPath dist\DMTL-Windows.zip
+
+    - name: Upload Linux Artifact
+      if: runner.os == 'Linux'
+      uses: actions/upload-artifact@v4
+      with:
+        name: DMTL-Linux
+        path: dist/DMTL-Linux.tar.gz
+
+    - name: Upload Windows Artifact
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: DMTL-Windows
+        path: dist\DMTL-Windows.zip
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            artifacts/DMTL-Linux/DMTL-Linux.tar.gz
+            artifacts/DMTL-Windows/DMTL-Windows.zip
