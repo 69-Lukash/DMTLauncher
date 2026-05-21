@@ -10,6 +10,8 @@ It features direct integration with the Steamworks API for seamless background m
 * 🐧 **Linux/Proton Ready:** Full support for running on Linux without weird workarounds.
 * 🎨 **UI:** Clean, minimalist dark theme with zero clutter.
 
+<img width="906" height="632" alt="image" src="https://github.com/user-attachments/assets/16536bfa-0c32-429f-9266-2b426cdf26e5" />
+
 ## Running from Source
 
 1. Clone the repository:
