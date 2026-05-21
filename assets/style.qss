@@ -1,0 +1,96 @@
+QMainWindow { background-color: #09050d; }
+QWidget { color: #d4c8e3; font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; }
+
+QTabWidget::pane {
+    border: 1px solid #1f1133;
+    background-color: #100818;
+    border-radius: 6px;
+    margin-top: -1px;
+}
+QTabBar::tab {
+    background-color: #0c0712;
+    border: 1px solid #1f1133;
+    padding: 8px 20px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    margin-right: 2px;
+    color: #8c76a8;
+}
+QTabBar::tab:selected {
+    background-color: #100818;
+    border-bottom-color: #100818;
+    color: #ffffff;
+    font-weight: bold;
+}
+QTabBar::tab:hover:!selected { background-color: #160b21; }
+
+QTableWidget {
+    background-color: #100818;
+    alternate-background-color: #140a1f;
+    border: 1px solid #1f1133;
+    border-radius: 4px;
+    gridline-color: #1a0e29;
+    outline: none;
+}
+QTableWidget::item {
+    padding: 4px 8px;
+}
+QTableWidget::item:selected {
+    background-color: rgba(94, 53, 177, 0.4);
+    color: white;
+}
+QHeaderView::section {
+    background-color: #0c0712;
+    color: #a08cba;
+    padding: 6px;
+    border: none;
+    border-right: 1px solid #1f1133;
+    border-bottom: 2px solid #2b1847;
+    font-weight: bold;
+}
+
+QPushButton {
+    background: #2a1643;
+    border: 1px solid #3d2066;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: white;
+    font-weight: bold;
+}
+QPushButton:hover { background: #381e59; border: 1px solid #4f2982; }
+QPushButton:pressed { background: #1f1030; border: 1px solid #3d2066; }
+
+QLineEdit, QComboBox {
+    background-color: #09050d;
+    border: 1px solid #2b1847;
+    border-radius: 4px;
+    padding: 6px;
+    color: white;
+}
+QLineEdit:focus, QComboBox:focus { border: 1px solid #4f2982; background-color: #100818; }
+
+QFrame#settings_panel {
+    background-color: #0c0712;
+    border-left: 1px solid #1f1133;
+}
+
+QMenu {
+    background-color: #100818;
+    border: 1px solid #2b1847;
+    border-radius: 4px;
+}
+QMenu::item {
+    padding: 6px 20px;
+    color: white;
+}
+QPushButton#btn_settings {
+    margin: 2px 4px;
+    padding: 4px 10px;
+}
+
+QLabel#linux_warning {
+    color: #a08cba;
+    font-size: 12px;
+    font-style: italic;
+    margin-top: 15px;
+}
