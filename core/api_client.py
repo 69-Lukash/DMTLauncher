@@ -1,5 +1,7 @@
 import urllib.request
 import json
+import ssl
+import certifi
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
 
 class ApiSignals(QObject):
@@ -13,17 +15,20 @@ class DZSAWorker(QRunnable):
     def run(self):
         url = "https://dayzsalauncher.com/api/v1/launcher/servers/dayz"
         try:
+            context = ssl.create_default_context(cafile=certifi.where())
             req = urllib.request.Request(url, headers={'User-Agent': 'DMTL-Launcher/1.0'})
-            with urllib.request.urlopen(req, timeout=15) as response:
+
+            with urllib.request.urlopen(req, timeout=15, context=context) as response:
                 data = json.loads(response.read().decode('utf-8'))
-            
+
             server_list = []
             if isinstance(data, list):
                 server_list = data
             elif isinstance(data, dict):
                 server_list = data.get("result", data.get("servers", data.get("data", [])))
-            
+
             self.signals.finished.emit(server_list)
         except Exception as e:
-            print(f"API Error: {e}")
+            with open("api_error.log", "w") as f:
+                f.write(f"API Error: {e}")
             self.signals.finished.emit([])
