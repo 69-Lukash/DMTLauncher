@@ -10,7 +10,7 @@ It features direct integration with the Steamworks API for seamless background m
 * 🐧 **Linux/Proton Ready:** Full support for running on Linux without weird workarounds.
 * 🎨 **UI:** Clean, minimalist dark theme with zero clutter.
 
-<img width="906" height="632" alt="image" src="https://github.com/user-attachments/assets/16536bfa-0c32-429f-9266-2b426cdf26e5" />
+![DMTL Screenshot](https://github.com/user-attachments/assets/16536bfa-0c32-429f-9266-2b426cdf26e5)
 
 ## ⚙️ How It Works (Under the Hood)
 
@@ -56,7 +56,7 @@ If you want to modify the launcher or run it directly from the Python scripts:
 1. Clone the repository:
 
     ```bash
-    git clone [https://github.com/69-Lukash/DMTLauncher.git](https://github.com/69-Lukash/DMTLauncher.git)
+    git clone https://github.com/69-Lukash/DMTLauncher.git
     cd DMTLauncher
     ```
 
@@ -85,6 +85,12 @@ make build
 ```
 
 The compiled launcher will be available in the `dist/DMTL/` directory.
+
+## 🐛 Bug Reports & Feedback
+
+DMTLauncher is currently in **active development**. If you encounter any crashes, weird behavior, or just have a suggestion to improve the app, please report it in the [Issues](https://github.com/69-Lukash/DMTLauncher/issues) section!
+
+Every bug report helps make the launcher faster and more stable for everyone.
 
 ## ⚠️ Important Notes
 
