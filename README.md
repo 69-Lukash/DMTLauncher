@@ -96,7 +96,7 @@ The compiled launcher will be available in the `dist/DMTL/` directory.
 Here are some features planned for future updates:
 
 * [ ] **Mods Management:** Add a search bar to quickly find specific local mods by name in the Mods tab.
-* [ ] **Server History:** Add an "IS PLAYED" (or "Last Played") column/indicator to easily find previously visited servers.
+* [ ] **Server History:** Add an "Is Played" (or "Last Played") column/indicator to easily find previously visited servers.
 * [ ] **Server Filters:** Add simple toggles for server list (e.g., Password-protected, Favorites only, Modded/Vanilla).
 * [ ] **Quality of Life (QoL):**
   * Export/Import Favorites list to easily share your top servers with friends.
