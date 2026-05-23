@@ -30,5 +30,5 @@ Type=Application
 Categories=Game;" > "$pkgdir/usr/share/applications/dmtl.desktop"
 
     install -d "$pkgdir/usr/share/pixmaps"
-    cp "$srcdir/DMTL-Linux/assets/icon.png" "$pkgdir/usr/share/pixmaps/dmtl.png"
+    cp "$srcdir/DMTL-Linux/_internal/assets/icon.png" "$pkgdir/usr/share/pixmaps/dmtl.png"
 }

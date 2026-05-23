@@ -22,8 +22,19 @@ DMTL is designed to be fast, reliable, and completely non-blocking:
 
 ## 📥 How to Run (Pre-compiled Binaries)
 
+
+
 You don't need to install Python or mess with dependencies to play. Just grab the latest release!
 
+**From AUR (Arch Linux):**
+
+If you are running Arch Linux or any Arch-based distribution (Manjaro, EndeavourOS, etc.), you can easily install the launcher directly from the AUR:
+
+    ```bash
+    yay -S dmtl-bin
+    ```
+This will automatically install the launcher, set up the desktop application shortcut with an icon, and handle system-wide execution.
+    
 **For Windows:**
 
 1. Go to the [Releases](../../releases) tab and download `DMTL-Windows.zip`.
