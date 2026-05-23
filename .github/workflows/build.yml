@@ -74,3 +74,32 @@ jobs:
           files: |
             artifacts/DMTL-Linux/DMTL-Linux.tar.gz
             artifacts/DMTL-Windows/DMTL-Windows.zip
+
+  aur-publish:
+    needs: release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Prepare PKGBUILD and update Checksum
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
+
+          wget https://github.com/69-Lukash/DMTL/releases/download/v$VERSION/DMTL-Linux.tar.gz
+          CHECKSUM=$(sha256sum DMTL-Linux.tar.gz | awk '{print $1}')
+
+          sed -i "s/^sha256sums=.*/sha256sums=('$CHECKSUM')/" PKGBUILD
+
+      - name: Publish to AUR
+        uses: KSXGitHub/github-actions-deploy-aur@v3.0.1
+        with:
+          pkgname: dmtl-bin
+          pkgbuild: ./PKGBUILD
+          commit_username: ${{ github.repository_owner }}
+          commit_email: lukash@aur.archlinux.org
+          ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }}
+          commit_message: "Auto-release version ${{ github.ref_name }}"
+          force_push: true
