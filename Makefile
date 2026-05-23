@@ -11,6 +11,7 @@ build: clean install
 	pyinstaller --noconfirm \
 		--onedir \
 		--windowed \
+		--icon "assets/icon.png" \
 		--add-data "assets:assets" \
 		--add-data "steam_appid.txt:." \
 		--add-data "libsteam_api.so:." \

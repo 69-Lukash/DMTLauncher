@@ -18,4 +18,17 @@ package() {
 
     install -d "$pkgdir/usr/bin"
     ln -s /opt/dmtl/DMTL-Linux "$pkgdir/usr/bin/dmtl"
+
+    install -d "$pkgdir/usr/share/applications"
+    echo "[Desktop Entry]
+Name=DMTL
+Comment=DayZ MefTeam Launcher
+Exec=dmtl
+Icon=dmtl
+Terminal=false
+Type=Application
+Categories=Game;" > "$pkgdir/usr/share/applications/dmtl.desktop"
+
+    install -d "$pkgdir/usr/share/pixmaps"
+    cp "$srcdir/DMTL-Linux/assets/icon.png" "$pkgdir/usr/share/pixmaps/dmtl.png"
 }

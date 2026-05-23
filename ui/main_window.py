@@ -6,7 +6,7 @@ from pathlib import Path
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QMenu, QPushButton, QMessageBox
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QThreadPool
-from PyQt6.QtGui import QColor 
+from PyQt6.QtGui import QColor, QIcon
 
 from core.api_client import DZSAWorker
 from core.table_loader import TableLoader
@@ -30,6 +30,7 @@ class DMTLMainWindow(QMainWindow):
             BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
             
         assets_dir = os.path.join(BASE_DIR, "assets")
+        self.setWindowIcon(QIcon(os.path.join(assets_dir, "icon.png")))
 
         if sys.platform == "win32":
             app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
