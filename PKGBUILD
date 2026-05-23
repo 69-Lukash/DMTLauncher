@@ -1,6 +1,6 @@
 # Maintainer: Lukash <lukash at aur dot archlinux dot org>
 pkgname=dmtl-bin
-pkgver=1.1.2
+pkgver=1.1.4 # Ставимо нову версію для наступного релізу
 pkgrel=1
 pkgdesc="Custom Linux launcher for DayZ"
 arch=('x86_64')
@@ -8,6 +8,7 @@ url="https://github.com/69-Lukash/DMTLauncher"
 license=('MIT')
 provides=('dmtl')
 conflicts=('dmtl')
+options=('!strip' '!debug')
 source=("https://github.com/69-Lukash/DMTLauncher/releases/download/v${pkgver}/DMTL-Linux.tar.gz")
 sha256sums=('SKIP')
 
