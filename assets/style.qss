@@ -1,4 +1,4 @@
-QMainWindow { background-color: #09050d; }
+QMainWindow, QDialog { background-color: #09050d; }
 QWidget { color: #d4c8e3; font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; }
 
 QTabWidget::pane {

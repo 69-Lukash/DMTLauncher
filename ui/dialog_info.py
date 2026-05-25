@@ -21,7 +21,7 @@ class ServerInfoDialog(QDialog):
     def populate_data(self):
         name = str(self.server_data.get("name", "Unknown Server"))
         ip = str(self.server_data.get("ip", self.server_data.get("endpoint", {}).get("ip", "")))
-        port = str(self.server_data.get("port", self.server_data.get("endpoint", {}).get("port", "")))
+        port = str(self.server_data.get("gamePort", self.server_data.get("port", self.server_data.get("endpoint", {}).get("port", ""))))
         self.address = f"{ip}:{port}"
         
         players = f"{self.server_data.get('players', 0)}/{self.server_data.get('maxplayers', self.server_data.get('maxPlayers', 0))}"
