@@ -1,5 +1,7 @@
 import subprocess
 import time
+import sys
+import os
 
 class GameRunner:
     @staticmethod
@@ -16,17 +18,28 @@ class GameRunner:
                     mod_paths.append(f"!Workshop/{local_mod['dir_name']}")
                     break
         
-        cmd = ["steam", "-applaunch", "221100", "-noLauncher", f"-name={nickname}"]
+        cmd_args = ["-applaunch", "221100", "-noLauncher", f"-name={nickname}"]
         
         if mod_paths:
             mods_str = ";".join(mod_paths)
-            cmd.append(f"-mod={mods_str}")
+            cmd_args.append(f"-mod={mods_str}")
             
         if action == "play" and server_data:
             ip = str(server_data.get("ip", server_data.get("endpoint", {}).get("ip", "")))
             port = str(server_data.get("port", server_data.get("endpoint", {}).get("port", "")))
             if ip and port:
-                cmd.extend([f"+connect={ip}", f"+port={port}"])
+                cmd_args.extend([f"+connect={ip}", f"+port={port}"])
+                
+        if sys.platform == "win32":
+            import winreg
+            try:
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam")
+                steam_exe = winreg.QueryValueEx(key, "SteamExe")[0]
+                cmd = [steam_exe] + cmd_args
+            except Exception:
+                cmd = ["C:\\Program Files (x86)\\Steam\\steam.exe"] + cmd_args
+        else:
+            cmd = ["steam"] + cmd_args
                 
         print(f"[Runner] Launching: {' '.join(cmd)}")
         
@@ -34,6 +47,8 @@ class GameRunner:
         time.sleep(1.0)
         
         try:
-            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=flags)
         except Exception as e:
-            print(f"[Runner] Failed to launch game: {e}")
+            with open("launcher_error.log", "w") as f:
+                f.write(f"Launch error: {e}")
