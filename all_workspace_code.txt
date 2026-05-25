@@ -1,0 +1,3093 @@
+===== FILE: ./all_workspace_code.txt =====
+===== FILE: ./all_workspace_code.txt ===== 
+
+===== FILE: ./assets/dialog_info.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>ServerInfoDialog</class> 
+ <widget class="QDialog" name="ServerInfoDialog"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>426</width> 
+    <height>563</height> 
+   </rect> 
+  </property> 
+  <property name="windowTitle"> 
+   <string>Server Info</string> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <layout class="QFormLayout" name="formLayout"> 
+     <item row="0" column="0"> 
+      <widget class="QLabel" name="label_name_title"> 
+       <property name="text"> 
+        <string>Name:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="0" column="1"> 
+      <widget class="QLabel" name="lbl_name"> 
+       <property name="sizePolicy"> 
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred"> 
+         <horstretch>0</horstretch> 
+         <verstretch>0</verstretch> 
+        </sizepolicy> 
+       </property> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+       <property name="wordWrap"> 
+        <bool>true</bool> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="1" column="0"> 
+      <widget class="QLabel" name="label_ip_title"> 
+       <property name="text"> 
+        <string>IP:Port:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="1" column="1"> 
+      <widget class="QLabel" name="lbl_ip"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="2" column="0"> 
+      <widget class="QLabel" name="label_ping_title"> 
+       <property name="text"> 
+        <string>Ping:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="2" column="1"> 
+      <widget class="QLabel" name="lbl_ping"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="3" column="0"> 
+      <widget class="QLabel" name="label_players_title"> 
+       <property name="text"> 
+        <string>Players:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="3" column="1"> 
+      <widget class="QLabel" name="lbl_players"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="4" column="0"> 
+      <widget class="QLabel" name="label_pwd_title"> 
+       <property name="text"> 
+        <string>Password:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="4" column="1"> 
+      <widget class="QLabel" name="lbl_password"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="5" column="0"> 
+      <widget class="QLabel" name="label_time_title"> 
+       <property name="text"> 
+        <string>In-Game Time:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="5" column="1"> 
+      <widget class="QLabel" name="lbl_time"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="6" column="0"> 
+      <widget class="QLabel" name="label_loc_title"> 
+       <property name="text"> 
+        <string>Location:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="6" column="1"> 
+      <widget class="QLabel" name="lbl_location"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="7" column="0"> 
+      <widget class="QLabel" name="label_mods_title"> 
+       <property name="text"> 
+        <string>Mods Count:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="7" column="1"> 
+      <widget class="QLabel" name="lbl_mods_count"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="label_modlist"> 
+     <property name="text"> 
+      <string>&lt;b&gt;Mod List:&lt;/b&gt;</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <widget class="QListWidget" name="list_mods"/> 
+   </item> 
+   <item> 
+    <widget class="QPushButton" name="btn_copy_ip"> 
+     <property name="cursor"> 
+      <cursorShape>PointingHandCursor</cursorShape> 
+     </property> 
+     <property name="text"> 
+      <string>📋 Copy IP:Port</string> 
+     </property> 
+    </widget> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+
+===== FILE: ./assets/main.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>MainWindow</class> 
+ <widget class="QMainWindow" name="MainWindow"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>900</width> 
+    <height>600</height> 
+   </rect> 
+  </property> 
+  <property name="windowTitle"> 
+   <string>DMTL - DayZ MefTeam Launcher</string> 
+  </property> 
+  <widget class="QWidget" name="centralwidget"> 
+   <layout class="QHBoxLayout" name="main_layout"> 
+    <property name="spacing"><number>0</number></property> 
+    <property name="leftMargin"><number>0</number></property> 
+    <property name="topMargin"><number>0</number></property> 
+    <property name="rightMargin"><number>0</number></property> 
+    <property name="bottomMargin"><number>0</number></property> 
+    <item> 
+     <widget class="QWidget" name="content_container" native="true"> 
+      <layout class="QVBoxLayout" name="content_layout"> 
+       <item> 
+        <widget class="QTabWidget" name="tabs"> 
+         <property name="currentIndex"><number>-1</number></property> 
+        </widget> 
+       </item> 
+      </layout> 
+     </widget> 
+    </item> 
+   </layout> 
+  </widget> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+
+===== FILE: ./assets/panel_settings.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>PanelSettings</class> 
+ <widget class="QWidget" name="PanelSettings"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>300</width> 
+    <height>500</height> 
+   </rect> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <widget class="QLabel" name="label_title"> 
+     <property name="font"> 
+      <font> 
+       <weight>75</weight> 
+       <bold>true</bold> 
+      </font> 
+     </property> 
+     <property name="text"> 
+      <string>Settings</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="label_nick"> 
+     <property name="text"> 
+      <string>Nickname:</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <widget class="QLineEdit" name="input_nick"/> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="label_path"> 
+     <property name="text"> 
+      <string>Game Path:</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <layout class="QHBoxLayout" name="horizontalLayout"> 
+     <item> 
+      <widget class="QLineEdit" name="input_path"/> 
+     </item> 
+     <item> 
+      <widget class="QPushButton" name="btn_browse"> 
+       <property name="text"> 
+        <string>Browse</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="linux_warning"> 
+     <property name="text"> 
+      <string>Make sure to force a Steam Play compatibility tool in DayZ properties.</string> 
+     </property> 
+     <property name="wordWrap"> 
+      <bool>true</bool> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <spacer name="verticalSpacer"> 
+     <property name="orientation"><enum>Qt::Vertical</enum></property> 
+     <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property> 
+    </spacer> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+===== FILE: ./assets/style.qss =====
+QMainWindow { background-color: #09050d; } 
+QWidget { color: #d4c8e3; font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; } 
+ 
+QTabWidget::pane { 
+    border: 1px solid #1f1133; 
+    background-color: #100818; 
+    border-radius: 6px; 
+    margin-top: -1px; 
+} 
+QTabBar::tab { 
+    background-color: #0c0712; 
+    border: 1px solid #1f1133; 
+    padding: 8px 20px; 
+    border-top-left-radius: 6px; 
+    border-top-right-radius: 6px; 
+    margin-right: 2px; 
+    color: #8c76a8; 
+} 
+QTabBar::tab:selected { 
+    background-color: #100818; 
+    border-bottom-color: #100818; 
+    color: #ffffff; 
+    font-weight: bold; 
+} 
+QTabBar::tab:hover:!selected { background-color: #160b21; } 
+ 
+QTableWidget { 
+    background-color: #100818; 
+    alternate-background-color: #140a1f; 
+    border: 1px solid #1f1133; 
+    border-radius: 4px; 
+    gridline-color: #1a0e29; 
+    outline: none; 
+} 
+QTableWidget::item { 
+    padding: 4px 8px; 
+} 
+QTableWidget::item:selected { 
+    background-color: rgba(94, 53, 177, 0.4); 
+    color: white; 
+} 
+QHeaderView::section { 
+    background-color: #0c0712; 
+    color: #a08cba; 
+    padding: 6px; 
+    border: none; 
+    border-right: 1px solid #1f1133; 
+    border-bottom: 2px solid #2b1847; 
+    font-weight: bold; 
+} 
+ 
+QPushButton { 
+    background: #2a1643; 
+    border: 1px solid #3d2066; 
+    border-radius: 4px; 
+    padding: 6px 12px; 
+    color: white; 
+    font-weight: bold; 
+} 
+QPushButton:hover { background: #381e59; border: 1px solid #4f2982; } 
+QPushButton:pressed { background: #1f1030; border: 1px solid #3d2066; } 
+ 
+QLineEdit, QComboBox { 
+    background-color: #09050d; 
+    border: 1px solid #2b1847; 
+    border-radius: 4px; 
+    padding: 6px; 
+    color: white; 
+} 
+QLineEdit:focus, QComboBox:focus { border: 1px solid #4f2982; background-color: #100818; } 
+ 
+QFrame#settings_panel { 
+    background-color: #0c0712; 
+    border-left: 1px solid #1f1133; 
+} 
+ 
+QMenu { 
+    background-color: #100818; 
+    border: 1px solid #2b1847; 
+    border-radius: 4px; 
+} 
+QMenu::item { 
+    padding: 6px 20px; 
+    color: white; 
+} 
+QPushButton#btn_settings { 
+    margin: 2px 4px; 
+    padding: 4px 10px; 
+} 
+ 
+QLabel#linux_warning { 
+    color: #a08cba; 
+    font-size: 12px; 
+    font-style: italic; 
+    margin-top: 15px; 
+} 
+===== FILE: ./assets/tab_mods.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>TabMods</class> 
+ <widget class="QWidget" name="TabMods"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>600</width> 
+    <height>400</height> 
+   </rect> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <layout class="QHBoxLayout" name="horizontalLayout"> 
+     <item> 
+      <spacer name="horizontalSpacer"> 
+       <property name="orientation"> 
+        <enum>Qt::Horizontal</enum> 
+       </property> 
+       <property name="sizeHint" stdset="0"> 
+        <size> 
+         <width>40</width> 
+         <height>20</height> 
+        </size> 
+       </property> 
+      </spacer> 
+     </item> 
+     <item> 
+      <widget class="QPushButton" name="btn_reload"> 
+       <property name="cursor"> 
+        <cursorShape>PointingHandCursor</cursorShape> 
+       </property> 
+       <property name="text"> 
+        <string>🔄 Reload Mods</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QTableWidget" name="table_mods"> 
+     <property name="editTriggers"> 
+      <set>QAbstractItemView::NoEditTriggers</set> 
+     </property> 
+     <column><property name="text"><string>Name</string></property></column> 
+     <column><property name="text"><string>Author</string></property></column> 
+     <column><property name="text"><string>Size</string></property></column> 
+     <column><property name="text"><string>Sync</string></property></column> 
+     <column><property name="text"><string>Delete</string></property></column> 
+    </widget> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+===== FILE: ./assets/tab_servers.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>TabServers</class> 
+ <widget class="QWidget" name="TabServers"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>600</width> 
+    <height>400</height> 
+   </rect> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <layout class="QHBoxLayout" name="horizontalLayout"> 
+     <item> 
+      <widget class="QLineEdit" name="search_bar"> 
+       <property name="placeholderText"> 
+        <string>Search server by name...</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item> 
+      <widget class="QLineEdit" name="search_map"> 
+       <property name="maximumSize"> 
+        <size> 
+         <width>150</width> 
+         <height>16777215</height> 
+        </size> 
+       </property> 
+       <property name="placeholderText"> 
+        <string>Map...</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QTableWidget" name="table_servers"> 
+     <property name="editTriggers"> 
+      <set>QAbstractItemView::NoEditTriggers</set> 
+     </property> 
+     <property name="selectionBehavior"> 
+      <enum>QAbstractItemView::SelectRows</enum> 
+     </property> 
+     <column><property name="text"><string>Fav</string></property></column> 
+     <column><property name="text"><string>Server Name</string></property></column> 
+     <column><property name="text"><string>IP:Port</string></property></column> 
+     <column><property name="text"><string>Ping</string></property></column> 
+     <column><property name="text"><string>Players</string></property></column> 
+     <column><property name="text"><string>Action</string></property></column> 
+    </widget> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+
+===== FILE: ./build/DMTL/warn-DMTL.txt =====
+ 
+This file lists modules PyInstaller was not able to find. This does not 
+necessarily mean these modules are required for running your program. Both 
+Python's standard library and 3rd-party Python packages often conditionally 
+import optional modules, some of which may be available only on certain 
+platforms. 
+ 
+Types of import: 
+* top-level: imported at the top-level - look at these first 
+* conditional: imported within an if-statement 
+* delayed: imported within a function 
+* optional: imported within a try-except-statement 
+ 
+IMPORTANT: Do NOT post this list to the issue-tracker. Use it as a basis for 
+            tracking down the missing module yourself. Thanks! 
+ 
+missing module named 'collections.abc' - imported by tracemalloc (top-level), typing (top-level), traceback (top-level), _colorize (top-level), selectors (top-level), logging (top-level), http.client (top-level), importlib.resources.readers (top-level), inspect (top-level), xml.etree.ElementTree (top-level), multiprocessing.managers (top-level) 
+missing module named _winapi - imported by ntpath (optional), subprocess (conditional), shutil (conditional), pathlib._os (optional), mimetypes (optional), multiprocessing.connection (optional), multiprocessing.spawn (delayed, conditional), multiprocessing.reduction (conditional), multiprocessing.shared_memory (conditional), multiprocessing.heap (conditional), sysconfig (delayed), multiprocessing.popen_spawn_win32 (top-level) 
+missing module named _scproxy - imported by urllib.request (conditional) 
+missing module named winreg - imported by importlib._bootstrap_external (conditional), mimetypes (optional), urllib.request (delayed, conditional, optional), core.runner (delayed, conditional) 
+missing module named nt - imported by _colorize (delayed, conditional, optional), os (delayed, conditional, optional), ntpath (optional), shutil (conditional), importlib._bootstrap_external (conditional), ctypes (delayed, conditional) 
+missing module named _frozen_importlib_external - imported by importlib._bootstrap (delayed), importlib (optional), importlib.abc (optional), zipimport (top-level) 
+excluded module named _frozen_importlib - imported by importlib (optional), importlib.abc (optional), zipimport (top-level) 
+missing module named msvcrt - imported by subprocess (optional), multiprocessing.spawn (delayed, conditional), multiprocessing.popen_spawn_win32 (top-level) 
+missing module named multiprocessing.BufferTooShort - imported by multiprocessing (top-level), multiprocessing.connection (top-level) 
+missing module named multiprocessing.AuthenticationError - imported by multiprocessing (top-level), multiprocessing.forkserver (top-level), multiprocessing.connection (top-level) 
+missing module named multiprocessing.get_context - imported by multiprocessing (top-level), multiprocessing.pool (top-level), multiprocessing.managers (top-level), multiprocessing.sharedctypes (top-level) 
+missing module named multiprocessing.TimeoutError - imported by multiprocessing (top-level), multiprocessing.pool (top-level) 
+missing module named multiprocessing.set_start_method - imported by multiprocessing (top-level), multiprocessing.spawn (top-level) 
+missing module named multiprocessing.get_start_method - imported by multiprocessing (top-level), multiprocessing.spawn (top-level) 
+missing module named pyimod02_importers - imported by /home/lukash/Projects/DMTL/venv/lib/python3.14/site-packages/PyInstaller/hooks/rthooks/pyi_rth_pkgutil.py (delayed) 
+
+===== FILE: ./core/api_client.py =====
+import urllib.request 
+import json 
+import ssl 
+import certifi 
+from PyQt6.QtCore import QRunnable, QObject, pyqtSignal 
+ 
+class ApiSignals(QObject): 
+    finished = pyqtSignal(list) 
+ 
+class DZSAWorker(QRunnable): 
+    def __init__(self): 
+        super().__init__() 
+        self.signals = ApiSignals() 
+ 
+    def run(self): 
+        url = "https://dayzsalauncher.com/api/v1/launcher/servers/dayz" 
+        try: 
+            context = ssl.create_default_context(cafile=certifi.where()) 
+            req = urllib.request.Request(url, headers={'User-Agent': 'DMTL-Launcher/1.0'}) 
+ 
+            with urllib.request.urlopen(req, timeout=15, context=context) as response: 
+                data = json.loads(response.read().decode('utf-8')) 
+ 
+            server_list = [] 
+            if isinstance(data, list): 
+                server_list = data 
+            elif isinstance(data, dict): 
+                server_list = data.get("result", data.get("servers", data.get("data", []))) 
+ 
+            self.signals.finished.emit(server_list) 
+        except Exception as e: 
+            with open("api_error.log", "w") as f: 
+                f.write(f"API Error: {e}") 
+            self.signals.finished.emit([]) 
+===== FILE: ./core/config_manager.py =====
+import json 
+import os 
+ 
+class ConfigManager: 
+    def __init__(self, config_path): 
+        self.config_path = config_path 
+        self.nickname = "Survivor" 
+        self.game_path = "" 
+        self.favorites = [] 
+        self.load() 
+ 
+    def load(self): 
+        if not os.path.exists(self.config_path): 
+            self.save() 
+            return 
+ 
+        try: 
+            with open(self.config_path, "r", encoding="utf-8") as f: 
+                config = json.load(f) 
+                self.nickname = config.get("nickname") or "Survivor" 
+                self.game_path = config.get("game_path", "") 
+                self.favorites = config.get("favorites", []) 
+        except (json.JSONDecodeError, IOError): 
+            print(f"Error reading {self.config_path}. Using defaults.") 
+            self.save() 
+ 
+    def save(self): 
+        config = { 
+            "nickname": self.nickname, 
+            "game_path": self.game_path, 
+            "favorites": self.favorites 
+        } 
+        try: 
+            with open(self.config_path, "w", encoding="utf-8") as f: 
+                json.dump(config, f, indent=4) 
+        except IOError as e: 
+            print(f"Error saving config: {e}") 
+ 
+    def add_favorite(self, address): 
+        if address not in self.favorites: 
+            self.favorites.append(address) 
+            self.save() 
+ 
+    def remove_favorite(self, address): 
+        if address in self.favorites: 
+            self.favorites.remove(address) 
+            self.save() 
+ 
+    def get_favorites(self): 
+        return self.favorites 
+ 
+    def is_favorite(self, address): 
+        return address in self.favorites 
+ 
+ 
+
+===== FILE: ./core/__init__.py =====
+
+===== FILE: ./core/mod_controller.py =====
+from core.steam_manager import SteamManager 
+ 
+class ModController: 
+    def __init__(self, table_mods): 
+        self.table_mods = table_mods 
+        self.mods_data = []  
+        self.steam_mgr = SteamManager() 
+ 
+    def set_mods_data(self, data): 
+        self.mods_data = data 
+ 
+    def handle_mod_action(self, row, col): 
+        mod_name_item = self.table_mods.item(row, 0) 
+        if not mod_name_item: 
+            return 
+             
+        display_name = mod_name_item.text() 
+         
+        mod = next((m for m in self.mods_data if m["display_name"] == display_name), None) 
+        if not mod or not mod.get("published_id"): 
+            print(f"[ModController] Error: Valid Steam ID not found for {display_name}.") 
+            return 
+             
+        try: 
+            mod_id = int(mod["published_id"]) 
+        except ValueError: 
+            print("[ModController] Error: Invalid Steam ID format.") 
+            return 
+             
+        if col == 3: # Sync 
+            self.sync_mod(mod_id) 
+        elif col == 4: # Delete 
+            self.delete_mod(mod_id, mod, row) 
+ 
+    def sync_mod(self, mod_id: int): 
+        self.steam_mgr.sync_mod(mod_id) 
+        print(f"[ModController] Sync command for {mod_id} sent to Steamworks.") 
+             
+    def delete_mod(self, mod_id: int, mod: dict, row: int): 
+        self.steam_mgr.unsubscribe_mod(mod_id) 
+        self.table_mods.removeRow(row) 
+        if mod in self.mods_data: 
+            self.mods_data.remove(mod)  
+        print(f"[ModController] Mod {mod_id} deleted via Steamworks.") 
+===== FILE: ./core/mod_parser.py =====
+import os 
+import re 
+from pathlib import Path 
+from PyQt6.QtCore import QRunnable, QObject, pyqtSignal 
+ 
+class ModParserSignals(QObject): 
+    finished = pyqtSignal(list) 
+ 
+class ModParserWorker(QRunnable): 
+    def __init__(self, game_path): 
+        super().__init__() 
+        self.game_path = game_path 
+        self.signals = ModParserSignals() 
+ 
+    def get_dir_size(self, path): 
+        total_size = 0 
+        try: 
+            for dirpath, _, filenames in os.walk(path, followlinks=True): 
+                for f in filenames: 
+                    fp = os.path.join(dirpath, f) 
+                    if os.path.exists(fp): 
+                        total_size += os.path.getsize(fp) 
+        except OSError: 
+            pass 
+        return total_size 
+ 
+    def format_size(self, size_bytes): 
+        if size_bytes < 1024 * 1024: 
+            return f"{size_bytes / 1024:.1f} KB" 
+        elif size_bytes < 1024 * 1024 * 1024: 
+            return f"{size_bytes / (1024 * 1024):.1f} MB" 
+        else: 
+            return f"{size_bytes / (1024 * 1024 * 1024):.1f} GB" 
+ 
+    def parse_meta(self, mod_path): 
+        meta_file = mod_path / "meta.cpp" 
+        mod_file = mod_path / "mod.cpp" 
+         
+        author = "Unknown" 
+        published_id = "" 
+         
+        if meta_file.exists(): 
+            try: 
+                content = meta_file.read_text(encoding="utf-8", errors="ignore") 
+                id_match = re.search(r'publishedid\s*=\s*(\d+)', content, re.IGNORECASE) 
+                if id_match: 
+                    published_id = id_match.group(1) 
+            except Exception: 
+                pass 
+                 
+        if mod_file.exists(): 
+            try: 
+                content = mod_file.read_text(encoding="utf-8", errors="ignore") 
+                author_match = re.search(r'author\s*=\s*"([^"]+)"', content, re.IGNORECASE) 
+                if author_match: 
+                    author = author_match.group(1) 
+            except Exception: 
+                pass 
+                 
+        return author, published_id 
+ 
+    def _sync_symlinks(self, workshop_dir: Path): 
+        steamapps_dir = Path(self.game_path).parents[1] 
+        content_dir = steamapps_dir / "workshop" / "content" / "221100" 
+         
+        if not content_dir.exists() or not content_dir.is_dir(): 
+            return 
+             
+        if not workshop_dir.exists(): 
+            workshop_dir.mkdir(parents=True, exist_ok=True) 
+             
+        for item in content_dir.iterdir(): 
+            if not item.is_dir() or not item.name.isdigit(): 
+                continue 
+                 
+            mod_name = item.name  
+            meta_file = item / "meta.cpp" 
+             
+            if meta_file.exists(): 
+                try: 
+                    content = meta_file.read_text(encoding="utf-8", errors="ignore") 
+                    name_match = re.search(r'name\s*=\s*"([^"]+)"', content, re.IGNORECASE) 
+                    if name_match: 
+                        mod_name = name_match.group(1) 
+                except Exception: 
+                    pass 
+             
+            safe_name = "".join(c for c in mod_name if c.isalnum() or c in ("_", "-")).strip() 
+            symlink_name = f"@{safe_name}" 
+            symlink_path = workshop_dir / symlink_name 
+             
+            if not symlink_path.exists(): 
+                try: 
+                    os.symlink(item, symlink_path) 
+                    print(f"[ModParser] Created symlink for {symlink_name}") 
+                except OSError as e: 
+                    print(f"[ModParser] Failed to create symlink {symlink_name}: {e}") 
+ 
+    def run(self): 
+        mods_list = [] 
+        if not self.game_path: 
+            self.signals.finished.emit([]) 
+            return 
+ 
+        workshop_path = Path(self.game_path) / "!Workshop" 
+         
+        if workshop_path.exists() and workshop_path.is_dir(): 
+            import shutil 
+            for item in workshop_path.iterdir(): 
+                try: 
+                    if item.is_symlink(): 
+                        item.unlink() 
+                    elif item.is_dir(): 
+                        shutil.rmtree(item) 
+                except OSError: 
+                    pass 
+         
+        self._sync_symlinks(workshop_path) 
+         
+        if workshop_path.exists() and workshop_path.is_dir(): 
+            for item in workshop_path.iterdir(): 
+                if item.is_dir() and item.name.startswith("@"): 
+                    size_bytes = self.get_dir_size(item) 
+                    author, published_id = self.parse_meta(item) 
+                     
+                    display_name = item.name[1:] 
+                     
+                    mods_list.append({ 
+                        "display_name": display_name, 
+                        "dir_name": item.name, 
+                        "author": author, 
+                        "size": self.format_size(size_bytes), 
+                        "path": str(item), 
+                        "published_id": published_id 
+                    }) 
+                     
+        self.signals.finished.emit(mods_list) 
+===== FILE: ./core/pinger.py =====
+import socket 
+import time 
+from PyQt6.QtCore import QRunnable, QObject, pyqtSignal 
+ 
+class PingerSignals(QObject): 
+    finished = pyqtSignal(str, str, str)  
+ 
+class PingWorker(QRunnable): 
+    def __init__(self, ip, port): 
+        super().__init__() 
+        self.address = (ip, port) 
+        self.signals = PingerSignals() 
+ 
+    def run(self): 
+        start = time.perf_counter() 
+        try: 
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+            sock.settimeout(1.0) 
+            sock.sendto(b'\xFF\xFF\xFF\xFFTSource Engine Query\x00', self.address) 
+            data, _ = sock.recvfrom(2048) 
+             
+            ping = int((time.perf_counter() - start) * 1000) 
+             
+            players_str = "" 
+            if data.startswith(b'\xff\xff\xff\xffI'): 
+                idx = 6 
+                def read_string(d, start_idx): 
+                    end_idx = d.find(b'\x00', start_idx) 
+                    if end_idx == -1: return "", start_idx 
+                    return d[start_idx:end_idx].decode('utf-8', 'ignore'), end_idx + 1 
+ 
+                name, idx = read_string(data, idx) 
+                map_name, idx = read_string(data, idx) 
+                folder, idx = read_string(data, idx) 
+                game, idx = read_string(data, idx) 
+                 
+                idx += 2 
+                 
+                players = data[idx] 
+                max_players = data[idx+1] 
+                players_str = f"{players}/{max_players}" 
+             
+            self.signals.finished.emit(f"{self.address[0]}:{self.address[1]}", str(ping), players_str) 
+        except Exception: 
+            self.signals.finished.emit(f"{self.address[0]}:{self.address[1]}", "999", "") 
+===== FILE: ./core/runner.py =====
+import subprocess 
+import time 
+import sys 
+import os 
+ 
+class GameRunner: 
+    @staticmethod 
+    def launch(config_manager, mod_controller, server_data, action="load"): 
+        nickname = config_manager.nickname or "Survivor" 
+         
+        server_mods = server_data.get("mods", []) 
+        mod_paths = [] 
+         
+        for sm in server_mods: 
+            mod_id = str(sm.get("fileId", sm.get("steamWorkshopId", ""))) 
+            for local_mod in mod_controller.mods_data: 
+                if local_mod.get("published_id") == mod_id: 
+                    mod_paths.append(f"!Workshop/{local_mod['dir_name']}") 
+                    break 
+         
+        cmd_args = ["-applaunch", "221100", "-noLauncher", f"-name={nickname}"] 
+         
+        if mod_paths: 
+            mods_str = ";".join(mod_paths) 
+            cmd_args.append(f"-mod={mods_str}") 
+             
+        if action == "play" and server_data: 
+            ip = str(server_data.get("ip", server_data.get("endpoint", {}).get("ip", ""))) 
+            port = str(server_data.get("port", server_data.get("endpoint", {}).get("port", ""))) 
+            if ip and port: 
+                cmd_args.extend([f"-connect={ip}", f"-port={port}"]) 
+                 
+        if sys.platform == "win32": 
+            import winreg 
+            try: 
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam") 
+                steam_exe = winreg.QueryValueEx(key, "SteamExe")[0] 
+                cmd = [steam_exe] + cmd_args 
+            except Exception: 
+                cmd = ["C:\\Program Files (x86)\\Steam\\steam.exe"] + cmd_args 
+        else: 
+            cmd = ["steam"] + cmd_args 
+                 
+        print(f"[Runner] Launching: {' '.join(cmd)}") 
+         
+        mod_controller.steam_mgr.disconnect() 
+        time.sleep(1.0) 
+         
+        try: 
+            flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0 
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, creationflags=flags) 
+        except Exception as e: 
+            with open("launcher_error.log", "w") as f: 
+                f.write(f"Launch error: {e}") 
+===== FILE: ./core/server_filter.py =====
+def apply_local_filters(all_servers, search_text, map_text, favorites): 
+    """ 
+    Filters and sorts the list of servers based on search queries and favorite status. 
+    """ 
+    if not all_servers: 
+        return [] 
+ 
+    query = search_text.strip().lower() 
+    map_q = map_text.strip().lower() 
+ 
+    filtered = [] 
+    for s in all_servers: 
+        name = str(s.get("name", "")).lower() 
+        map_val = str(s.get("map", s.get("mission", ""))).lower() 
+ 
+        if query and query not in name: 
+            continue 
+        if map_q and map_q not in map_val: 
+            continue 
+         
+        filtered.append(s) 
+ 
+    filtered.sort(key=lambda x: int(x.get("players", 0)), reverse=True) 
+     
+    def is_favorite(server_dict): 
+        ip = str(server_dict.get("ip", server_dict.get("endpoint", {}).get("ip", ""))) 
+        port = str(server_dict.get("port", server_dict.get("endpoint", {}).get("port", 0))) 
+        address = f"{ip}:{port}" 
+        return address in favorites 
+         
+    filtered.sort(key=is_favorite, reverse=True) 
+     
+    return filtered 
+
+===== FILE: ./core/steam_cmd.py =====
+import sys 
+import os 
+import time 
+ 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
+from steamworks import STEAMWORKS 
+ 
+def dummy_sub_callback(published_file_id, result): 
+    pass 
+ 
+def dummy_unsub_callback(published_file_id, result): 
+    pass 
+ 
+def main(): 
+    if len(sys.argv) < 3: 
+        sys.exit(1) 
+         
+    action = sys.argv[1] 
+    mod_ids = [int(x) for x in sys.argv[2:] if x.isdigit()] 
+     
+    steam = STEAMWORKS() 
+    if not steam.initialize(): 
+        sys.exit(1) 
+         
+    steam.Workshop.SetItemSubscribedCallback(dummy_sub_callback) 
+    steam.Workshop.SetItemUnsubscribedCallback(dummy_unsub_callback) 
+         
+    for mod_id in mod_ids: 
+        if action == "sync": 
+            steam.Workshop.SubscribeItem(mod_id) 
+        elif action == "delete": 
+            steam.Workshop.UnsubscribeItem(mod_id) 
+             
+    for _ in range(5): 
+        steam.run_callbacks() 
+        time.sleep(0.05) 
+ 
+    # Жорсткий кіл процесу (щоб Стім одразу побачив смерть) 
+    os._exit(0) 
+ 
+if __name__ == "__main__": 
+    main() 
+===== FILE: ./core/steam_manager.py =====
+import os 
+import sys 
+import subprocess 
+ 
+class SteamManager: 
+    def __init__(self): 
+        self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
+        self.cmd_script = os.path.join(self.base_dir, "core", "steam_cmd.py") 
+ 
+    def disconnect(self): 
+        pass 
+ 
+    def _run_steam_cmd(self, action: str, mod_ids: list): 
+        cmd_args = [str(m) for m in mod_ids] 
+        is_frozen = getattr(sys, 'frozen', False) 
+         
+        if is_frozen: 
+            exec_args = [sys.executable, action] + cmd_args 
+            work_dir = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable)) 
+        else: 
+            exec_args = [sys.executable, self.cmd_script, action] + cmd_args 
+            work_dir = self.base_dir 
+ 
+        if sys.platform.startswith("linux"): 
+            try: 
+                pid = os.fork() 
+                if pid > 0: 
+                    os.waitpid(pid, 0) 
+                else: 
+                    os.setsid() 
+                    pid2 = os.fork() 
+                    if pid2 > 0: 
+                        os._exit(0) 
+                    else: 
+                        os.chdir(work_dir) 
+                         
+                        log_path = os.path.join(work_dir, "steam_worker.log") 
+                        log_fd = os.open(log_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644) 
+                         
+                        os.dup2(log_fd, sys.stdin.fileno()) 
+                        os.dup2(log_fd, sys.stdout.fileno()) 
+                        os.dup2(log_fd, sys.stderr.fileno()) 
+                         
+                        os.execv(sys.executable, exec_args) 
+            except Exception as e: 
+                print(f"[SteamManager] Fork failed: {e}") 
+        else: 
+            try: 
+                subprocess.Popen( 
+                    exec_args, 
+                    cwd=work_dir, 
+                    creationflags=0x00000008 | subprocess.CREATE_NO_WINDOW 
+                ) 
+            except Exception as e: 
+                print(f"[SteamManager] Popen failed: {e}") 
+ 
+    def sync_mod(self, mod_id: int): 
+        print(f"[SteamManager] Forcing sync/download for mod {mod_id}...") 
+        self._run_steam_cmd("sync", [mod_id]) 
+ 
+    def sync_mods_batch(self, mod_ids: list): 
+        print(f"[SteamManager] Batch syncing {len(mod_ids)} mods...") 
+        self._run_steam_cmd("sync", mod_ids) 
+ 
+    def unsubscribe_mod(self, mod_id: int): 
+        print(f"[SteamManager] Unsubscribing from mod {mod_id}") 
+        self._run_steam_cmd("delete", [mod_id]) 
+===== FILE: ./core/table_loader.py =====
+from PyQt6.QtCore import QObject, QTimer 
+ 
+class TableLoader(QObject): 
+    def __init__(self, main_window): 
+        super().__init__() 
+        self.mw = main_window 
+        self.table = main_window.tab_servers.table_servers 
+        self.servers_queue = [] 
+        self.timer = QTimer() 
+        self.timer.timeout.connect(self._insert_batch) 
+        self.batch_size = 100 
+ 
+    def load_servers(self, servers_data): 
+        self.timer.stop() 
+        self.servers_queue = servers_data 
+        self.table.setRowCount(0) 
+        self.mw.pinged_servers.clear() 
+         
+        if not self.servers_queue: 
+            self.mw.table_builder.insert_server_row(False, "No servers found.", "", "", "", "") 
+            return 
+             
+        self.timer.start(5) 
+ 
+    def _insert_batch(self): 
+        if not self.servers_queue: 
+            self.timer.stop() 
+            self.mw.ping_visible_servers() 
+            return 
+ 
+        batch = self.servers_queue[:self.batch_size] 
+        self.servers_queue = self.servers_queue[self.batch_size:] 
+ 
+        self.table.setUpdatesEnabled(False) 
+         
+        for s in batch: 
+            name = str(s.get("name", "Unknown Server")) 
+            ip = str(s.get("ip", s.get("endpoint", {}).get("ip", ""))) 
+            port = str(s.get("port", s.get("endpoint", {}).get("port", 0))) 
+            players = f"{s.get('players', 0)}/{s.get('maxplayers', s.get('maxPlayers', 0))}" 
+             
+            map_name = str(s.get("map", s.get("mission", "Chernarus"))).title() 
+             
+            full_address = f"{ip}:{port}" 
+            is_fav = (getattr(self.mw, "favorites", []) is not None) and (full_address in self.mw.favorites) 
+             
+            self.mw.table_builder.insert_server_row(is_fav, name, map_name, full_address, "-", players) 
+             
+        self.table.setUpdatesEnabled(True) 
+         
+        if self.table.rowCount() == len(batch): 
+            self.mw.ping_visible_servers() 
+===== FILE: ./dist/DMTL/_internal/assets/dialog_info.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>ServerInfoDialog</class> 
+ <widget class="QDialog" name="ServerInfoDialog"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>426</width> 
+    <height>563</height> 
+   </rect> 
+  </property> 
+  <property name="windowTitle"> 
+   <string>Server Info</string> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <layout class="QFormLayout" name="formLayout"> 
+     <item row="0" column="0"> 
+      <widget class="QLabel" name="label_name_title"> 
+       <property name="text"> 
+        <string>Name:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="0" column="1"> 
+      <widget class="QLabel" name="lbl_name"> 
+       <property name="sizePolicy"> 
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred"> 
+         <horstretch>0</horstretch> 
+         <verstretch>0</verstretch> 
+        </sizepolicy> 
+       </property> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+       <property name="wordWrap"> 
+        <bool>true</bool> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="1" column="0"> 
+      <widget class="QLabel" name="label_ip_title"> 
+       <property name="text"> 
+        <string>IP:Port:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="1" column="1"> 
+      <widget class="QLabel" name="lbl_ip"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="2" column="0"> 
+      <widget class="QLabel" name="label_ping_title"> 
+       <property name="text"> 
+        <string>Ping:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="2" column="1"> 
+      <widget class="QLabel" name="lbl_ping"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="3" column="0"> 
+      <widget class="QLabel" name="label_players_title"> 
+       <property name="text"> 
+        <string>Players:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="3" column="1"> 
+      <widget class="QLabel" name="lbl_players"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="4" column="0"> 
+      <widget class="QLabel" name="label_pwd_title"> 
+       <property name="text"> 
+        <string>Password:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="4" column="1"> 
+      <widget class="QLabel" name="lbl_password"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="5" column="0"> 
+      <widget class="QLabel" name="label_time_title"> 
+       <property name="text"> 
+        <string>In-Game Time:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="5" column="1"> 
+      <widget class="QLabel" name="lbl_time"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="6" column="0"> 
+      <widget class="QLabel" name="label_loc_title"> 
+       <property name="text"> 
+        <string>Location:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="6" column="1"> 
+      <widget class="QLabel" name="lbl_location"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="7" column="0"> 
+      <widget class="QLabel" name="label_mods_title"> 
+       <property name="text"> 
+        <string>Mods Count:</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item row="7" column="1"> 
+      <widget class="QLabel" name="lbl_mods_count"> 
+       <property name="text"> 
+        <string>-</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="label_modlist"> 
+     <property name="text"> 
+      <string>&lt;b&gt;Mod List:&lt;/b&gt;</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <widget class="QListWidget" name="list_mods"/> 
+   </item> 
+   <item> 
+    <widget class="QPushButton" name="btn_copy_ip"> 
+     <property name="cursor"> 
+      <cursorShape>PointingHandCursor</cursorShape> 
+     </property> 
+     <property name="text"> 
+      <string>📋 Copy IP:Port</string> 
+     </property> 
+    </widget> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+
+===== FILE: ./dist/DMTL/_internal/assets/dialog_info_ui.py =====
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL/dist/DMTL/_internal/assets/dialog_info.ui' 
+# 
+# Created by: PyQt6 UI code generator 6.11.0 
+# 
+# WARNING: Any manual changes made to this file will be lost when pyuic6 is 
+# run again.  Do not edit this file unless you know what you are doing. 
+ 
+ 
+from PyQt6 import QtCore, QtGui, QtWidgets 
+ 
+ 
+class Ui_ServerInfoDialog(object): 
+    def setupUi(self, ServerInfoDialog): 
+        ServerInfoDialog.setObjectName("ServerInfoDialog") 
+        ServerInfoDialog.resize(426, 563) 
+        self.verticalLayout = QtWidgets.QVBoxLayout(ServerInfoDialog) 
+        self.verticalLayout.setObjectName("verticalLayout") 
+        self.formLayout = QtWidgets.QFormLayout() 
+        self.formLayout.setObjectName("formLayout") 
+        self.label_name_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_name_title.setObjectName("label_name_title") 
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_name_title) 
+        self.lbl_name = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred) 
+        sizePolicy.setHorizontalStretch(0) 
+        sizePolicy.setVerticalStretch(0) 
+        sizePolicy.setHeightForWidth(self.lbl_name.sizePolicy().hasHeightForWidth()) 
+        self.lbl_name.setSizePolicy(sizePolicy) 
+        self.lbl_name.setWordWrap(True) 
+        self.lbl_name.setObjectName("lbl_name") 
+        self.formLayout.setWidget(0, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_name) 
+        self.label_ip_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_ip_title.setObjectName("label_ip_title") 
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_ip_title) 
+        self.lbl_ip = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_ip.setObjectName("lbl_ip") 
+        self.formLayout.setWidget(1, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_ip) 
+        self.label_ping_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_ping_title.setObjectName("label_ping_title") 
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_ping_title) 
+        self.lbl_ping = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_ping.setObjectName("lbl_ping") 
+        self.formLayout.setWidget(2, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_ping) 
+        self.label_players_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_players_title.setObjectName("label_players_title") 
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_players_title) 
+        self.lbl_players = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_players.setObjectName("lbl_players") 
+        self.formLayout.setWidget(3, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_players) 
+        self.label_pwd_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_pwd_title.setObjectName("label_pwd_title") 
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_pwd_title) 
+        self.lbl_password = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_password.setObjectName("lbl_password") 
+        self.formLayout.setWidget(4, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_password) 
+        self.label_time_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_time_title.setObjectName("label_time_title") 
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_time_title) 
+        self.lbl_time = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_time.setObjectName("lbl_time") 
+        self.formLayout.setWidget(5, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_time) 
+        self.label_loc_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_loc_title.setObjectName("label_loc_title") 
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_loc_title) 
+        self.lbl_location = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_location.setObjectName("lbl_location") 
+        self.formLayout.setWidget(6, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_location) 
+        self.label_mods_title = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_mods_title.setObjectName("label_mods_title") 
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.ItemRole.LabelRole, self.label_mods_title) 
+        self.lbl_mods_count = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.lbl_mods_count.setObjectName("lbl_mods_count") 
+        self.formLayout.setWidget(7, QtWidgets.QFormLayout.ItemRole.FieldRole, self.lbl_mods_count) 
+        self.verticalLayout.addLayout(self.formLayout) 
+        self.label_modlist = QtWidgets.QLabel(parent=ServerInfoDialog) 
+        self.label_modlist.setObjectName("label_modlist") 
+        self.verticalLayout.addWidget(self.label_modlist) 
+        self.list_mods = QtWidgets.QListWidget(parent=ServerInfoDialog) 
+        self.list_mods.setObjectName("list_mods") 
+        self.verticalLayout.addWidget(self.list_mods) 
+        self.btn_copy_ip = QtWidgets.QPushButton(parent=ServerInfoDialog) 
+        self.btn_copy_ip.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor)) 
+        self.btn_copy_ip.setObjectName("btn_copy_ip") 
+        self.verticalLayout.addWidget(self.btn_copy_ip) 
+ 
+        self.retranslateUi(ServerInfoDialog) 
+        QtCore.QMetaObject.connectSlotsByName(ServerInfoDialog) 
+ 
+    def retranslateUi(self, ServerInfoDialog): 
+        _translate = QtCore.QCoreApplication.translate 
+        ServerInfoDialog.setWindowTitle(_translate("ServerInfoDialog", "Server Info")) 
+        self.label_name_title.setText(_translate("ServerInfoDialog", "Name:")) 
+        self.lbl_name.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_ip_title.setText(_translate("ServerInfoDialog", "IP:Port:")) 
+        self.lbl_ip.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_ping_title.setText(_translate("ServerInfoDialog", "Ping:")) 
+        self.lbl_ping.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_players_title.setText(_translate("ServerInfoDialog", "Players:")) 
+        self.lbl_players.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_pwd_title.setText(_translate("ServerInfoDialog", "Password:")) 
+        self.lbl_password.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_time_title.setText(_translate("ServerInfoDialog", "In-Game Time:")) 
+        self.lbl_time.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_loc_title.setText(_translate("ServerInfoDialog", "Location:")) 
+        self.lbl_location.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_mods_title.setText(_translate("ServerInfoDialog", "Mods Count:")) 
+        self.lbl_mods_count.setText(_translate("ServerInfoDialog", "-")) 
+        self.label_modlist.setText(_translate("ServerInfoDialog", "<b>Mod List:</b>")) 
+        self.btn_copy_ip.setText(_translate("ServerInfoDialog", "📋 Copy IP:Port")) 
+
+===== FILE: ./dist/DMTL/_internal/assets/main.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>MainWindow</class> 
+ <widget class="QMainWindow" name="MainWindow"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>900</width> 
+    <height>600</height> 
+   </rect> 
+  </property> 
+  <property name="windowTitle"> 
+   <string>DMTL - DayZ MefTeam Launcher</string> 
+  </property> 
+  <widget class="QWidget" name="centralwidget"> 
+   <layout class="QHBoxLayout" name="main_layout"> 
+    <property name="spacing"><number>0</number></property> 
+    <property name="leftMargin"><number>0</number></property> 
+    <property name="topMargin"><number>0</number></property> 
+    <property name="rightMargin"><number>0</number></property> 
+    <property name="bottomMargin"><number>0</number></property> 
+    <item> 
+     <widget class="QWidget" name="content_container" native="true"> 
+      <layout class="QVBoxLayout" name="content_layout"> 
+       <item> 
+        <widget class="QTabWidget" name="tabs"> 
+         <property name="currentIndex"><number>-1</number></property> 
+        </widget> 
+       </item> 
+      </layout> 
+     </widget> 
+    </item> 
+   </layout> 
+  </widget> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+
+===== FILE: ./dist/DMTL/_internal/assets/main_ui.py =====
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL/dist/DMTL/_internal/assets/main.ui' 
+# 
+# Created by: PyQt6 UI code generator 6.11.0 
+# 
+# WARNING: Any manual changes made to this file will be lost when pyuic6 is 
+# run again.  Do not edit this file unless you know what you are doing. 
+ 
+ 
+from PyQt6 import QtCore, QtGui, QtWidgets 
+ 
+ 
+class Ui_MainWindow(object): 
+    def setupUi(self, MainWindow): 
+        MainWindow.setObjectName("MainWindow") 
+        MainWindow.resize(900, 600) 
+        self.centralwidget = QtWidgets.QWidget(parent=MainWindow) 
+        self.centralwidget.setObjectName("centralwidget") 
+        self.main_layout = QtWidgets.QHBoxLayout(self.centralwidget) 
+        self.main_layout.setContentsMargins(0, 0, 0, 0) 
+        self.main_layout.setSpacing(0) 
+        self.main_layout.setObjectName("main_layout") 
+        self.content_container = QtWidgets.QWidget(parent=self.centralwidget) 
+        self.content_container.setObjectName("content_container") 
+        self.content_layout = QtWidgets.QVBoxLayout(self.content_container) 
+        self.content_layout.setObjectName("content_layout") 
+        self.tabs = QtWidgets.QTabWidget(parent=self.content_container) 
+        self.tabs.setObjectName("tabs") 
+        self.content_layout.addWidget(self.tabs) 
+        self.main_layout.addWidget(self.content_container) 
+        MainWindow.setCentralWidget(self.centralwidget) 
+ 
+        self.retranslateUi(MainWindow) 
+        self.tabs.setCurrentIndex(-1) 
+        QtCore.QMetaObject.connectSlotsByName(MainWindow) 
+ 
+    def retranslateUi(self, MainWindow): 
+        _translate = QtCore.QCoreApplication.translate 
+        MainWindow.setWindowTitle(_translate("MainWindow", "DMTL - DayZ MefTeam Launcher")) 
+
+===== FILE: ./dist/DMTL/_internal/assets/panel_settings.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>PanelSettings</class> 
+ <widget class="QWidget" name="PanelSettings"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>300</width> 
+    <height>500</height> 
+   </rect> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <widget class="QLabel" name="label_title"> 
+     <property name="font"> 
+      <font> 
+       <weight>75</weight> 
+       <bold>true</bold> 
+      </font> 
+     </property> 
+     <property name="text"> 
+      <string>Settings</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="label_nick"> 
+     <property name="text"> 
+      <string>Nickname:</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <widget class="QLineEdit" name="input_nick"/> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="label_path"> 
+     <property name="text"> 
+      <string>Game Path:</string> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <layout class="QHBoxLayout" name="horizontalLayout"> 
+     <item> 
+      <widget class="QLineEdit" name="input_path"/> 
+     </item> 
+     <item> 
+      <widget class="QPushButton" name="btn_browse"> 
+       <property name="text"> 
+        <string>Browse</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QLabel" name="linux_warning"> 
+     <property name="text"> 
+      <string>Make sure to force a Steam Play compatibility tool in DayZ properties.</string> 
+     </property> 
+     <property name="wordWrap"> 
+      <bool>true</bool> 
+     </property> 
+    </widget> 
+   </item> 
+   <item> 
+    <spacer name="verticalSpacer"> 
+     <property name="orientation"><enum>Qt::Vertical</enum></property> 
+     <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property> 
+    </spacer> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+===== FILE: ./dist/DMTL/_internal/assets/panel_settings_ui.py =====
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL/dist/DMTL/_internal/assets/panel_settings.ui' 
+# 
+# Created by: PyQt6 UI code generator 6.11.0 
+# 
+# WARNING: Any manual changes made to this file will be lost when pyuic6 is 
+# run again.  Do not edit this file unless you know what you are doing. 
+ 
+ 
+from PyQt6 import QtCore, QtGui, QtWidgets 
+ 
+ 
+class Ui_PanelSettings(object): 
+    def setupUi(self, PanelSettings): 
+        PanelSettings.setObjectName("PanelSettings") 
+        PanelSettings.resize(300, 500) 
+        self.verticalLayout = QtWidgets.QVBoxLayout(PanelSettings) 
+        self.verticalLayout.setObjectName("verticalLayout") 
+        self.label_title = QtWidgets.QLabel(parent=PanelSettings) 
+        font = QtGui.QFont() 
+        font.setBold(True) 
+        font.setWeight(75) 
+        self.label_title.setFont(font) 
+        self.label_title.setObjectName("label_title") 
+        self.verticalLayout.addWidget(self.label_title) 
+        self.label_nick = QtWidgets.QLabel(parent=PanelSettings) 
+        self.label_nick.setObjectName("label_nick") 
+        self.verticalLayout.addWidget(self.label_nick) 
+        self.input_nick = QtWidgets.QLineEdit(parent=PanelSettings) 
+        self.input_nick.setObjectName("input_nick") 
+        self.verticalLayout.addWidget(self.input_nick) 
+        self.label_path = QtWidgets.QLabel(parent=PanelSettings) 
+        self.label_path.setObjectName("label_path") 
+        self.verticalLayout.addWidget(self.label_path) 
+        self.horizontalLayout = QtWidgets.QHBoxLayout() 
+        self.horizontalLayout.setObjectName("horizontalLayout") 
+        self.input_path = QtWidgets.QLineEdit(parent=PanelSettings) 
+        self.input_path.setObjectName("input_path") 
+        self.horizontalLayout.addWidget(self.input_path) 
+        self.btn_browse = QtWidgets.QPushButton(parent=PanelSettings) 
+        self.btn_browse.setObjectName("btn_browse") 
+        self.horizontalLayout.addWidget(self.btn_browse) 
+        self.verticalLayout.addLayout(self.horizontalLayout) 
+        self.linux_warning = QtWidgets.QLabel(parent=PanelSettings) 
+        self.linux_warning.setWordWrap(True) 
+        self.linux_warning.setObjectName("linux_warning") 
+        self.verticalLayout.addWidget(self.linux_warning) 
+        spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding) 
+        self.verticalLayout.addItem(spacerItem) 
+ 
+        self.retranslateUi(PanelSettings) 
+        QtCore.QMetaObject.connectSlotsByName(PanelSettings) 
+ 
+    def retranslateUi(self, PanelSettings): 
+        _translate = QtCore.QCoreApplication.translate 
+        self.label_title.setText(_translate("PanelSettings", "Settings")) 
+        self.label_nick.setText(_translate("PanelSettings", "Nickname:")) 
+        self.label_path.setText(_translate("PanelSettings", "Game Path:")) 
+        self.btn_browse.setText(_translate("PanelSettings", "Browse")) 
+        self.linux_warning.setText(_translate("PanelSettings", "Make sure to force a Steam Play compatibility tool in DayZ properties.")) 
+
+===== FILE: ./dist/DMTL/_internal/assets/style.qss =====
+QMainWindow { background-color: #09050d; } 
+QWidget { color: #d4c8e3; font-family: "Segoe UI", Arial, sans-serif; font-size: 14px; } 
+ 
+QTabWidget::pane { 
+    border: 1px solid #1f1133; 
+    background-color: #100818; 
+    border-radius: 6px; 
+    margin-top: -1px; 
+} 
+QTabBar::tab { 
+    background-color: #0c0712; 
+    border: 1px solid #1f1133; 
+    padding: 8px 20px; 
+    border-top-left-radius: 6px; 
+    border-top-right-radius: 6px; 
+    margin-right: 2px; 
+    color: #8c76a8; 
+} 
+QTabBar::tab:selected { 
+    background-color: #100818; 
+    border-bottom-color: #100818; 
+    color: #ffffff; 
+    font-weight: bold; 
+} 
+QTabBar::tab:hover:!selected { background-color: #160b21; } 
+ 
+QTableWidget { 
+    background-color: #100818; 
+    alternate-background-color: #140a1f; 
+    border: 1px solid #1f1133; 
+    border-radius: 4px; 
+    gridline-color: #1a0e29; 
+    outline: none; 
+} 
+QTableWidget::item { 
+    padding: 4px 8px; 
+} 
+QTableWidget::item:selected { 
+    background-color: rgba(94, 53, 177, 0.4); 
+    color: white; 
+} 
+QHeaderView::section { 
+    background-color: #0c0712; 
+    color: #a08cba; 
+    padding: 6px; 
+    border: none; 
+    border-right: 1px solid #1f1133; 
+    border-bottom: 2px solid #2b1847; 
+    font-weight: bold; 
+} 
+ 
+QPushButton { 
+    background: #2a1643; 
+    border: 1px solid #3d2066; 
+    border-radius: 4px; 
+    padding: 6px 12px; 
+    color: white; 
+    font-weight: bold; 
+} 
+QPushButton:hover { background: #381e59; border: 1px solid #4f2982; } 
+QPushButton:pressed { background: #1f1030; border: 1px solid #3d2066; } 
+ 
+QLineEdit, QComboBox { 
+    background-color: #09050d; 
+    border: 1px solid #2b1847; 
+    border-radius: 4px; 
+    padding: 6px; 
+    color: white; 
+} 
+QLineEdit:focus, QComboBox:focus { border: 1px solid #4f2982; background-color: #100818; } 
+ 
+QFrame#settings_panel { 
+    background-color: #0c0712; 
+    border-left: 1px solid #1f1133; 
+} 
+ 
+QMenu { 
+    background-color: #100818; 
+    border: 1px solid #2b1847; 
+    border-radius: 4px; 
+} 
+QMenu::item { 
+    padding: 6px 20px; 
+    color: white; 
+} 
+QPushButton#btn_settings { 
+    margin: 2px 4px; 
+    padding: 4px 10px; 
+} 
+ 
+QLabel#linux_warning { 
+    color: #a08cba; 
+    font-size: 12px; 
+    font-style: italic; 
+    margin-top: 15px; 
+} 
+===== FILE: ./dist/DMTL/_internal/assets/tab_mods.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>TabMods</class> 
+ <widget class="QWidget" name="TabMods"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>600</width> 
+    <height>400</height> 
+   </rect> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <layout class="QHBoxLayout" name="horizontalLayout"> 
+     <item> 
+      <spacer name="horizontalSpacer"> 
+       <property name="orientation"> 
+        <enum>Qt::Horizontal</enum> 
+       </property> 
+       <property name="sizeHint" stdset="0"> 
+        <size> 
+         <width>40</width> 
+         <height>20</height> 
+        </size> 
+       </property> 
+      </spacer> 
+     </item> 
+     <item> 
+      <widget class="QPushButton" name="btn_reload"> 
+       <property name="cursor"> 
+        <cursorShape>PointingHandCursor</cursorShape> 
+       </property> 
+       <property name="text"> 
+        <string>🔄 Reload Mods</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QTableWidget" name="table_mods"> 
+     <property name="editTriggers"> 
+      <set>QAbstractItemView::NoEditTriggers</set> 
+     </property> 
+     <column><property name="text"><string>Name</string></property></column> 
+     <column><property name="text"><string>Author</string></property></column> 
+     <column><property name="text"><string>Size</string></property></column> 
+     <column><property name="text"><string>Sync</string></property></column> 
+     <column><property name="text"><string>Delete</string></property></column> 
+    </widget> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+===== FILE: ./dist/DMTL/_internal/assets/tab_mods_ui.py =====
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL/dist/DMTL/_internal/assets/tab_mods.ui' 
+# 
+# Created by: PyQt6 UI code generator 6.11.0 
+# 
+# WARNING: Any manual changes made to this file will be lost when pyuic6 is 
+# run again.  Do not edit this file unless you know what you are doing. 
+ 
+ 
+from PyQt6 import QtCore, QtGui, QtWidgets 
+ 
+ 
+class Ui_TabMods(object): 
+    def setupUi(self, TabMods): 
+        TabMods.setObjectName("TabMods") 
+        TabMods.resize(600, 400) 
+        self.verticalLayout = QtWidgets.QVBoxLayout(TabMods) 
+        self.verticalLayout.setObjectName("verticalLayout") 
+        self.horizontalLayout = QtWidgets.QHBoxLayout() 
+        self.horizontalLayout.setObjectName("horizontalLayout") 
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum) 
+        self.horizontalLayout.addItem(spacerItem) 
+        self.btn_reload = QtWidgets.QPushButton(parent=TabMods) 
+        self.btn_reload.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor)) 
+        self.btn_reload.setObjectName("btn_reload") 
+        self.horizontalLayout.addWidget(self.btn_reload) 
+        self.verticalLayout.addLayout(self.horizontalLayout) 
+        self.table_mods = QtWidgets.QTableWidget(parent=TabMods) 
+        self.table_mods.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers) 
+        self.table_mods.setObjectName("table_mods") 
+        self.table_mods.setColumnCount(5) 
+        self.table_mods.setRowCount(0) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_mods.setHorizontalHeaderItem(0, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_mods.setHorizontalHeaderItem(1, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_mods.setHorizontalHeaderItem(2, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_mods.setHorizontalHeaderItem(3, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_mods.setHorizontalHeaderItem(4, item) 
+        self.verticalLayout.addWidget(self.table_mods) 
+ 
+        self.retranslateUi(TabMods) 
+        QtCore.QMetaObject.connectSlotsByName(TabMods) 
+ 
+    def retranslateUi(self, TabMods): 
+        _translate = QtCore.QCoreApplication.translate 
+        self.btn_reload.setText(_translate("TabMods", "🔄 Reload Mods")) 
+        item = self.table_mods.horizontalHeaderItem(0) 
+        item.setText(_translate("TabMods", "Name")) 
+        item = self.table_mods.horizontalHeaderItem(1) 
+        item.setText(_translate("TabMods", "Author")) 
+        item = self.table_mods.horizontalHeaderItem(2) 
+        item.setText(_translate("TabMods", "Size")) 
+        item = self.table_mods.horizontalHeaderItem(3) 
+        item.setText(_translate("TabMods", "Sync")) 
+        item = self.table_mods.horizontalHeaderItem(4) 
+        item.setText(_translate("TabMods", "Delete")) 
+
+===== FILE: ./dist/DMTL/_internal/assets/tab_servers.ui =====
+<?xml version="1.0" encoding="UTF-8"?> 
+<ui version="4.0"> 
+ <class>TabServers</class> 
+ <widget class="QWidget" name="TabServers"> 
+  <property name="geometry"> 
+   <rect> 
+    <x>0</x> 
+    <y>0</y> 
+    <width>600</width> 
+    <height>400</height> 
+   </rect> 
+  </property> 
+  <layout class="QVBoxLayout" name="verticalLayout"> 
+   <item> 
+    <layout class="QHBoxLayout" name="horizontalLayout"> 
+     <item> 
+      <widget class="QLineEdit" name="search_bar"> 
+       <property name="placeholderText"> 
+        <string>Search server by name...</string> 
+       </property> 
+      </widget> 
+     </item> 
+     <item> 
+      <widget class="QLineEdit" name="search_map"> 
+       <property name="maximumSize"> 
+        <size> 
+         <width>150</width> 
+         <height>16777215</height> 
+        </size> 
+       </property> 
+       <property name="placeholderText"> 
+        <string>Map...</string> 
+       </property> 
+      </widget> 
+     </item> 
+    </layout> 
+   </item> 
+   <item> 
+    <widget class="QTableWidget" name="table_servers"> 
+     <property name="editTriggers"> 
+      <set>QAbstractItemView::NoEditTriggers</set> 
+     </property> 
+     <property name="selectionBehavior"> 
+      <enum>QAbstractItemView::SelectRows</enum> 
+     </property> 
+     <column><property name="text"><string>Fav</string></property></column> 
+     <column><property name="text"><string>Server Name</string></property></column> 
+     <column><property name="text"><string>IP:Port</string></property></column> 
+     <column><property name="text"><string>Ping</string></property></column> 
+     <column><property name="text"><string>Players</string></property></column> 
+     <column><property name="text"><string>Action</string></property></column> 
+    </widget> 
+   </item> 
+  </layout> 
+ </widget> 
+ <resources/> 
+ <connections/> 
+</ui> 
+
+===== FILE: ./dist/DMTL/_internal/assets/tab_servers_ui.py =====
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL/dist/DMTL/_internal/assets/tab_servers.ui' 
+# 
+# Created by: PyQt6 UI code generator 6.11.0 
+# 
+# WARNING: Any manual changes made to this file will be lost when pyuic6 is 
+# run again.  Do not edit this file unless you know what you are doing. 
+ 
+ 
+from PyQt6 import QtCore, QtGui, QtWidgets 
+ 
+ 
+class Ui_TabServers(object): 
+    def setupUi(self, TabServers): 
+        TabServers.setObjectName("TabServers") 
+        TabServers.resize(600, 400) 
+        self.verticalLayout = QtWidgets.QVBoxLayout(TabServers) 
+        self.verticalLayout.setObjectName("verticalLayout") 
+        self.horizontalLayout = QtWidgets.QHBoxLayout() 
+        self.horizontalLayout.setObjectName("horizontalLayout") 
+        self.search_bar = QtWidgets.QLineEdit(parent=TabServers) 
+        self.search_bar.setObjectName("search_bar") 
+        self.horizontalLayout.addWidget(self.search_bar) 
+        self.search_map = QtWidgets.QLineEdit(parent=TabServers) 
+        self.search_map.setMaximumSize(QtCore.QSize(150, 16777215)) 
+        self.search_map.setObjectName("search_map") 
+        self.horizontalLayout.addWidget(self.search_map) 
+        self.verticalLayout.addLayout(self.horizontalLayout) 
+        self.table_servers = QtWidgets.QTableWidget(parent=TabServers) 
+        self.table_servers.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers) 
+        self.table_servers.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows) 
+        self.table_servers.setObjectName("table_servers") 
+        self.table_servers.setColumnCount(6) 
+        self.table_servers.setRowCount(0) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_servers.setHorizontalHeaderItem(0, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_servers.setHorizontalHeaderItem(1, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_servers.setHorizontalHeaderItem(2, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_servers.setHorizontalHeaderItem(3, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_servers.setHorizontalHeaderItem(4, item) 
+        item = QtWidgets.QTableWidgetItem() 
+        self.table_servers.setHorizontalHeaderItem(5, item) 
+        self.verticalLayout.addWidget(self.table_servers) 
+ 
+        self.retranslateUi(TabServers) 
+        QtCore.QMetaObject.connectSlotsByName(TabServers) 
+ 
+    def retranslateUi(self, TabServers): 
+        _translate = QtCore.QCoreApplication.translate 
+        self.search_bar.setPlaceholderText(_translate("TabServers", "Search server by name...")) 
+        self.search_map.setPlaceholderText(_translate("TabServers", "Map...")) 
+        item = self.table_servers.horizontalHeaderItem(0) 
+        item.setText(_translate("TabServers", "Fav")) 
+        item = self.table_servers.horizontalHeaderItem(1) 
+        item.setText(_translate("TabServers", "Server Name")) 
+        item = self.table_servers.horizontalHeaderItem(2) 
+        item.setText(_translate("TabServers", "IP:Port")) 
+        item = self.table_servers.horizontalHeaderItem(3) 
+        item.setText(_translate("TabServers", "Ping")) 
+        item = self.table_servers.horizontalHeaderItem(4) 
+        item.setText(_translate("TabServers", "Players")) 
+        item = self.table_servers.horizontalHeaderItem(5) 
+        item.setText(_translate("TabServers", "Action")) 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qaxcontainer.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return "PyQt6.QAxContainer", ("QAxWidget", ) 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qscintilla.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return "PyQt6.Qsci", ("QsciScintilla", ) 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qtcharts.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return 'PyQt6.QtChart', ('QtCharts.QChartView', ) 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qtopenglwidgets.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return 'PyQt6.QtOpenGLWidgets', ('QOpenGLWidget', ) 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qtprintsupport.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return 'PyQt6.QtPrintSupport', ('QAbstractPrintDialog', 'QPageSetupDialog') 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qtquickwidgets.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return "PyQt6.QtQuickWidgets", ("QQuickWidget", ) 
+
+===== FILE: ./dist/DMTL/_internal/PyQt6/uic/widget-plugins/qtwebenginewidgets.py =====
+############################################################################# 
+## 
+## Copyright (c) 2026 Riverbank Computing Limited <info@riverbankcomputing.com> 
+##  
+## This file is part of PyQt6. 
+##  
+## This file may be used under the terms of the GNU General Public License 
+## version 3.0 as published by the Free Software Foundation and appearing in 
+## the file LICENSE included in the packaging of this file.  Please review the 
+## following information to ensure the GNU General Public License version 3.0 
+## requirements will be met: http://www.gnu.org/copyleft/gpl.html. 
+##  
+## If you do not wish to use this file under the terms of the GPL version 3.0 
+## then you may purchase a commercial license.  For more information contact 
+## info@riverbankcomputing.com. 
+##  
+## This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE 
+## WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. 
+## 
+############################################################################# 
+ 
+ 
+# If pluginType is MODULE, the plugin loader will call moduleInformation.  The 
+# variable MODULE is inserted into the local namespace by the plugin loader. 
+pluginType = MODULE 
+ 
+ 
+# moduleInformation() must return a tuple (module, widget_list).  If "module" 
+# is "A" and any widget from this module is used, the code generator will write 
+# "import A".  If "module" is "A[.B].C", the code generator will write 
+# "from A[.B] import C".  Each entry in "widget_list" must be unique. 
+def moduleInformation(): 
+    return "PyQt6.QtWebEngineWidgets", ("QWebEngineView", ) 
+
+===== FILE: ./dist/DMTL/_internal/steam_appid.txt =====
+221100 
+===== FILE: ./.github/ISSUE_TEMPLATE/bug_report.md =====
+--- 
+name: Bug report 
+about: Create a report to help fix an issue 
+title: '' 
+labels: '' 
+assignees: '' 
+ 
+--- 
+ 
+**Describe the bug** 
+A clear and concise description of what the bug is (e.g., crashes when clicking a server, mods fail to download). 
+ 
+**To Reproduce** 
+Steps to reproduce the behavior: 
+1. Launch DMTL 
+2. Click on '...' 
+3. See error... 
+ 
+**Expected behavior** 
+A clear and concise description of what you expected to happen. 
+ 
+**Screenshots or Logs** 
+If applicable, add screenshots or console logs to help explain your problem. 
+ 
+**Your System (REQUIRED):** 
+- OS (Windows 10/11, Arch, Linux Mint, etc.):  
+- Launcher version (pre-compiled release or built from source):  
+- (For Linux) Proton version used:  
+- Was Steam running in the background?: [Yes/No] 
+
+===== FILE: ./.github/ISSUE_TEMPLATE/feature_request.md =====
+--- 
+name: Feature request 
+about: Suggest a new idea for DMTLauncher 
+title: '' 
+labels: '' 
+assignees: '' 
+ 
+--- 
+ 
+**Is your feature request related to a problem?** 
+A clear and concise description of what the problem is. For example: "I find it hard to navigate the server list because..." 
+ 
+**Describe the solution you'd like** 
+A clear and detailed explanation of how this feature should work in the launcher. 
+ 
+**Examples or Screenshots** 
+If you've seen a similar feature in other launchers (like DZSA), feel free to attach screenshots to make it clearer. 
+ 
+*P.S. Before submitting, please double-check the Roadmap in our README to see if this feature is already planned!* 
+
+===== FILE: ./.github/workflows/build.yml =====
+name: Build Launcher 
+ 
+on: 
+  push: 
+    tags: 
+      - 'v*' 
+  workflow_dispatch: 
+ 
+permissions: 
+  contents: write 
+ 
+jobs: 
+  build: 
+    runs-on: ${{ matrix.os }} 
+    strategy: 
+      matrix: 
+        os: [ubuntu-latest, windows-latest] 
+ 
+    steps: 
+    - name: Checkout code 
+      uses: actions/checkout@v4 
+ 
+    - name: Setup Python 
+      uses: actions/setup-python@v5 
+      with: 
+        python-version: '3.11' 
+ 
+    - name: Install dependencies 
+      run: | 
+        python -m pip install --upgrade pip 
+        pip install -r requirements.txt 
+        pip install pyinstaller 
+ 
+    - name: Build on Linux 
+      if: runner.os == 'Linux' 
+      run: | 
+        pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets:assets" --add-data "steam_appid.txt:." --add-data "libsteam_api.so:." --add-data "SteamworksPy.so:." --name "DMTL-Linux" launcher.py 
+        cd dist 
+        tar -czvf DMTL-Linux.tar.gz DMTL-Linux/ 
+ 
+    - name: Build on Windows 
+      if: runner.os == 'Windows' 
+      run: | 
+        pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets;assets" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL-Windows" launcher.py 
+        Compress-Archive -Path dist\DMTL-Windows -DestinationPath dist\DMTL-Windows.zip 
+ 
+    - name: Upload Linux Artifact 
+      if: runner.os == 'Linux' 
+      uses: actions/upload-artifact@v4 
+      with: 
+        name: DMTL-Linux 
+        path: dist/DMTL-Linux.tar.gz 
+ 
+    - name: Upload Windows Artifact 
+      if: runner.os == 'Windows' 
+      uses: actions/upload-artifact@v4 
+      with: 
+        name: DMTL-Windows 
+        path: dist\DMTL-Windows.zip 
+ 
+  release: 
+    needs: build 
+    runs-on: ubuntu-latest 
+    if: startsWith(github.ref, 'refs/tags/') 
+    steps: 
+      - name: Download artifacts 
+        uses: actions/download-artifact@v4 
+        with: 
+          path: artifacts 
+ 
+      - name: Create Release 
+        uses: softprops/action-gh-release@v2 
+        with: 
+          files: | 
+            artifacts/DMTL-Linux/DMTL-Linux.tar.gz 
+            artifacts/DMTL-Windows/DMTL-Windows.zip 
+ 
+  aur-publish: 
+    needs: release 
+    runs-on: ubuntu-latest 
+    if: startsWith(github.ref, 'refs/tags/v') 
+    steps: 
+      - name: Checkout code 
+        uses: actions/checkout@v4 
+ 
+      - name: Prepare PKGBUILD and update Checksum 
+        run: | 
+          VERSION=${GITHUB_REF#refs/tags/v} 
+          sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD 
+ 
+          wget https://github.com/${{ github.repository }}/releases/download/v$VERSION/DMTL-Linux.tar.gz 
+          CHECKSUM=$(sha256sum DMTL-Linux.tar.gz | awk '{print $1}') 
+ 
+          sed -i "s/^sha256sums=.*/sha256sums=('$CHECKSUM')/" PKGBUILD 
+ 
+      - name: Publish to AUR 
+        uses: KSXGitHub/github-actions-deploy-aur@v3.0.1 
+        with: 
+          pkgname: dmtl-bin 
+          pkgbuild: ./PKGBUILD 
+          commit_username: ${{ github.repository_owner }} 
+          commit_email: lukash@aur.archlinux.org 
+          ssh_private_key: ${{ secrets.AUR_PRIVATE_KEY }} 
+          commit_message: "Auto-release version ${{ github.ref_name }}" 
+          force_push: true 
+
+===== FILE: ./launcher.py =====
+import sys 
+from PyQt6.QtWidgets import QApplication 
+from ui.main_window import DMTLMainWindow 
+ 
+if __name__ == "__main__": 
+    if len(sys.argv) >= 2 and sys.argv[1] in ("sync", "delete"): 
+        from core.steam_cmd import main 
+        main() 
+        sys.exit(0) 
+ 
+    app = QApplication(sys.argv) 
+ 
+    window = DMTLMainWindow() 
+    window.show() 
+ 
+    sys.exit(app.exec()) 
+===== FILE: ./README.md =====
+# DMTL - DayZ MefTeam Launcher 
+ 
+A lightweight and fast custom launcher for DayZ, built with Python. 
+It features direct integration with the Steamworks API for seamless background mod downloading and management without freezing the UI. 
+ 
+## ✨ Features 
+ 
+* 🚀 **Speed:** Asynchronous A2S UDP pinger for instant server querying. 
+* 🔄 **Steamworks Integration:** Native background synchronization for Steam Workshop mods. 
+* 🐧 **Linux/Proton Ready:** Full support for running on Linux without weird workarounds. 
+* 🎨 **UI:** Clean, minimalist dark theme with zero clutter. 
+ 
+![DMTL Screenshot](https://github.com/user-attachments/assets/16536bfa-0c32-429f-9266-2b426cdf26e5) 
+ 
+## ⚙️ How It Works (Under the Hood) 
+ 
+DMTL is designed to be fast, reliable, and completely non-blocking: 
+ 
+* **Asynchronous Server Queries:** Uses native UDP sockets to ping servers via the A2S protocol, updating the server list instantly without stuttering. 
+* **Isolated Steamworks Worker:** Steam Workshop interactions (syncing, deleting mods) are handled by a dedicated, isolated background process. This prevents heavy Steam API calls from freezing the PyQt6 UI and ensures stable execution across both Windows and Linux. 
+* **Smart Mod Parsing:** Reads `meta.cpp` files to identify mods and sizes, automatically creating safe symlinks in your `!Workshop` directory to run seamlessly with Proton/Wine or native Windows. 
+ 
+## 📥 How to Run (Pre-compiled Binaries) 
+ 
+ 
+ 
+You don't need to install Python or mess with dependencies to play. Just grab the latest release! 
+ 
+**From AUR (Arch Linux):** 
+ 
+If you are running Arch Linux or any Arch-based distribution (Manjaro, EndeavourOS, etc.), you can easily install the launcher directly from the AUR: 
+ 
+    ```bash 
+    yay -S dmtl-bin 
+    ``` 
+This will automatically install the launcher, set up the desktop application shortcut with an icon, and handle system-wide execution. 
+     
+**For Windows:** 
+ 
+1. Go to the [Releases](../../releases) tab and download `DMTL-Windows.zip`. 
+2. Extract the archive to any folder. 
+3. Make sure the Steam client is running in the background. 
+4. Run `DMTL-Windows.exe`. 
+ 
+**For Linux:** 
+ 
+1. Go to the [Releases](../../releases) tab and download `DMTL-Linux.tar.gz`. 
+2. Extract the archive using your file manager or terminal: 
+ 
+    ```bash 
+    tar -xzf DMTL-Linux.tar.gz 
+    ``` 
+ 
+3. Make the binary executable and run it: 
+ 
+    ```bash 
+    chmod +x DMTL-Linux/DMTL-Linux 
+    ./DMTL-Linux/DMTL-Linux 
+    ``` 
+ 
+*Note for Linux users: Make sure to force a Steam Play compatibility tool (e.g., Proton Experimental) in your DayZ properties in Steam.* 
+ 
+## 🛠️ Running from Source 
+ 
+If you want to modify the launcher or run it directly from the Python scripts: 
+ 
+1. Clone the repository: 
+ 
+    ```bash 
+    git clone https://github.com/69-Lukash/DMTLauncher.git 
+    cd DMTLauncher 
+    ``` 
+ 
+2. Create a virtual environment (optional but recommended): 
+ 
+    ```bash 
+    python -m venv venv 
+    source venv/bin/activate  # On Windows use: venv\Scripts\activate 
+    ``` 
+ 
+3. Install dependencies and run: 
+ 
+    ```bash 
+    make install 
+    make run 
+    ``` 
+ 
+*(Make sure `steam_appid.txt` and the required Steamworks `.so`/`.dll` libraries are present in the project root).* 
+ 
+## 📦 Building the Executable 
+ 
+If you want to compile your own standalone executable using PyInstaller, just run: 
+ 
+```bash 
+make build 
+``` 
+ 
+The compiled launcher will be available in the `dist/DMTL/` directory. 
+ 
+## 🐛 Bug Reports & Feedback 
+ 
+DMTLauncher is currently in **active development**. If you encounter any crashes, weird behavior, or just have a suggestion to improve the app, please report it in the [Issues](https://github.com/69-Lukash/DMTLauncher/issues) section! 
+ 
+Every bug report helps make the launcher faster and more stable for everyone. 
+ 
+## ⚠️ Important Notes 
+ 
+* The Steam client **must** be running in the background for the launcher to successfully fetch server mods and synchronize your Workshop subscriptions. 
+* Pre-compiled releases already include the necessary Steamworks API binaries. You only need to manually manage `steam_api64.dll` / `libsteam_api.so` if you are running or building from source. 
+ 
+## 🗺️ Roadmap (Future Plans) 
+ 
+Here are some features planned for future updates: 
+ 
+* [ ] **Mods Management:** Add a search bar to quickly find specific local mods by name in the Mods tab. 
+* [ ] **Server History:** Add an "Is Played" (or "Last Played") column/indicator to easily find previously visited servers. 
+* [ ] **Server Filters:** Add simple toggles for server list (e.g., Password-protected, Favorites only, Modded/Vanilla). 
+* [ ] **Quality of Life (QoL):** 
+  * Export/Import Favorites list to easily share your top servers with friends. 
+  * Custom game launch parameters in settings (e.g., `-nosplash`, `-nopause`, CPU core limits). 
+
+===== FILE: ./requirements.txt =====
+PyQt6>=6.5.0 
+certifi 
+Pillow 
+
+===== FILE: ./steam_appid.txt =====
+221100 
+===== FILE: ./ui/dialog_info.py =====
+import os 
+from PyQt6.QtWidgets import QDialog, QApplication 
+from PyQt6 import uic 
+ 
+class ServerInfoDialog(QDialog): 
+    def __init__(self, server_data, ping, parent=None): 
+        super().__init__(parent) 
+         
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
+        ui_path = os.path.join(BASE_DIR, 'assets', 'dialog_info.ui') 
+        uic.loadUi(ui_path, self) 
+         
+        self.server_data = server_data 
+        self.ping = ping 
+        self.address = "" 
+         
+        self.populate_data() 
+         
+        self.btn_copy_ip.clicked.connect(self.copy_ip) 
+ 
+    def populate_data(self): 
+        name = str(self.server_data.get("name", "Unknown Server")) 
+        ip = str(self.server_data.get("ip", self.server_data.get("endpoint", {}).get("ip", ""))) 
+        port = str(self.server_data.get("port", self.server_data.get("endpoint", {}).get("port", ""))) 
+        self.address = f"{ip}:{port}" 
+         
+        players = f"{self.server_data.get('players', 0)}/{self.server_data.get('maxplayers', self.server_data.get('maxPlayers', 0))}" 
+        is_password = self.server_data.get("password", False) 
+        time = str(self.server_data.get("dayTime", self.server_data.get("time", "Unknown"))) 
+        location = str(self.server_data.get("country", "Unknown")) 
+        mods = self.server_data.get("mods", []) 
+ 
+        self.lbl_name.setText(name) 
+        self.lbl_ip.setText(self.address) 
+        self.lbl_ping.setText(str(self.ping)) 
+        self.lbl_players.setText(players) 
+        self.lbl_password.setText("Yes 🔒" if is_password else "No 🔓") 
+        self.lbl_time.setText(time) 
+        self.lbl_location.setText(location) 
+        self.lbl_mods_count.setText(str(len(mods))) 
+ 
+        self.list_mods.clear() 
+        for mod in mods: 
+            mod_name = mod.get("name", mod.get("title", str(mod))) 
+            self.list_mods.addItem(mod_name) 
+ 
+    def copy_ip(self): 
+        QApplication.clipboard().setText(self.address) 
+===== FILE: ./ui/icon_factory.py =====
+from PyQt6.QtGui import QIcon, QPixmap, QPainter, QFont, QColor 
+from PyQt6.QtCore import Qt 
+ 
+def create_gear_icon(color: str = "#d4c8e3") -> QIcon: 
+    pixmap = QPixmap(22, 22) 
+    pixmap.fill(Qt.GlobalColor.transparent) 
+ 
+    painter = QPainter(pixmap) 
+    icon_font = QFont() 
+    icon_font.setPointSize(18) 
+    painter.setFont(icon_font) 
+    painter.setPen(QColor(color)) 
+     
+    draw_rect = pixmap.rect() 
+    draw_rect.translate(0, -3)  
+     
+    painter.drawText(draw_rect, Qt.AlignmentFlag.AlignCenter, "⚙") 
+    painter.end() 
+     
+    return QIcon(pixmap) 
+
+===== FILE: ./ui/__init__.py =====
+
+===== FILE: ./ui/main_window.py =====
+import sys 
+import os 
+ 
+from pathlib import Path 
+ 
+from PyQt6 import uic 
+from PyQt6.QtWidgets import QMainWindow, QFileDialog, QMenu, QPushButton, QMessageBox 
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QThreadPool 
+from PyQt6.QtGui import QColor, QIcon 
+ 
+from core.api_client import DZSAWorker 
+from core.table_loader import TableLoader 
+from core.config_manager import ConfigManager   
+from core.pinger import PingWorker 
+from core.mod_controller import ModController 
+from core.mod_parser import ModParserWorker 
+from core.server_filter import apply_local_filters 
+from core.runner import GameRunner 
+from ui.dialog_info import ServerInfoDialog 
+from ui.icon_factory import create_gear_icon 
+from ui.table_builder import TableBuilder 
+ 
+class DMTLMainWindow(QMainWindow): 
+    def __init__(self, *args, **kwargs): 
+        super(DMTLMainWindow, self).__init__(*args, **kwargs) 
+ 
+        if getattr(sys, 'frozen', False): 
+            BASE_DIR = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(sys.executable) 
+        else: 
+            BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
+             
+        assets_dir = os.path.join(BASE_DIR, "assets") 
+        self.setWindowIcon(QIcon(os.path.join(assets_dir, "icon.png"))) 
+ 
+        if sys.platform == "win32": 
+            app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA') 
+            DATA_DIR = os.path.join(app_data, "DMTL") 
+        else: 
+            DATA_DIR = os.path.join(str(Path.home()), ".config", "DMTL") 
+ 
+        os.makedirs(DATA_DIR, exist_ok=True) 
+         
+        config_path = os.path.join(DATA_DIR, "config.json") 
+ 
+        uic.loadUi(os.path.join(assets_dir, "main.ui"), self) 
+        self.tab_servers = uic.loadUi(os.path.join(assets_dir, "tab_servers.ui")) 
+        self.tab_mods = uic.loadUi(os.path.join(assets_dir, "tab_mods.ui")) 
+        self.settings_panel = uic.loadUi(os.path.join(assets_dir, "panel_settings.ui")) 
+ 
+        self.tabs.addTab(self.tab_servers, "Servers") 
+        self.tabs.addTab(self.tab_mods, "Mods") 
+         
+        self.tab_mods.btn_reload.clicked.connect(self.fetch_local_mods) 
+        self.btn_settings = QPushButton() 
+        self.btn_settings.setObjectName("btn_settings") 
+        self.btn_settings.setIcon(create_gear_icon()) 
+        self.btn_settings.setCursor(Qt.CursorShape.PointingHandCursor) 
+        self.btn_settings.clicked.connect(self.toggle_settings) 
+        self.tabs.setCornerWidget(self.btn_settings, Qt.Corner.TopRightCorner) 
+ 
+        self.main_layout.addWidget(self.settings_panel) 
+        self.settings_panel.setMaximumWidth(0) 
+ 
+        if not sys.platform.startswith("linux") and hasattr(self.settings_panel, 'linux_warning'): 
+            self.settings_panel.linux_warning.hide() 
+ 
+        self.config_manager = ConfigManager(config_path) 
+        self.favorites = self.config_manager.get_favorites() 
+        self.all_servers = [] 
+        self.pinged_servers = set() 
+        self.active_workers = [] 
+ 
+        self.table_loader = TableLoader(self) 
+        self.table_builder = TableBuilder(self.tab_servers.table_servers, self.tab_mods.table_mods) 
+        self.mod_controller = ModController(self.tab_mods.table_mods) 
+ 
+        self.thread_pool = QThreadPool.globalInstance() 
+ 
+        self.tab_servers.table_servers.verticalScrollBar().valueChanged.connect(self.ping_visible_servers) 
+        self.tab_servers.table_servers.cellClicked.connect(self.handle_server_click) 
+         
+        self.tab_servers.search_bar.textChanged.connect(self.trigger_apply_local_filters) 
+        self.tab_servers.search_map.textChanged.connect(self.trigger_apply_local_filters) 
+ 
+        self.apply_stylesheet() 
+        self.table_builder.setup_table_columns(self.sort_servers_table) 
+        self.load_config() 
+         
+        self.settings_panel.input_nick.editingFinished.connect(self.save_config) 
+        self.settings_panel.input_path.editingFinished.connect(self.save_config) 
+        self.settings_panel.btn_browse.clicked.connect(self.browse_path) 
+         
+        self.fetch_global_database() 
+        self.fetch_local_mods() 
+         
+    def fetch_global_database(self): 
+        self.tab_servers.table_servers.setRowCount(0) 
+        self.table_builder.insert_server_row(False, "Downloading servers...", "", "", "", "") 
+         
+        worker = DZSAWorker() 
+        worker.setAutoDelete(False) 
+        worker.signals.finished.connect(self.on_database_downloaded) 
+        self.active_workers.append(worker) 
+        self.thread_pool.start(worker) 
+ 
+    def on_database_downloaded(self, data): 
+        self.all_servers = data 
+        self.trigger_apply_local_filters() 
+ 
+    def trigger_apply_local_filters(self): 
+        if not hasattr(self, "all_servers") or not self.all_servers: 
+            return 
+ 
+        search_text = self.tab_servers.search_bar.text() 
+        map_text = self.tab_servers.search_map.text() 
+         
+        filtered = apply_local_filters(self.all_servers, search_text, map_text, self.favorites) 
+        self.table_loader.load_servers(filtered) 
+ 
+    def ping_visible_servers(self): 
+        table = self.tab_servers.table_servers 
+        viewport = table.viewport() 
+         
+        top_row = table.indexAt(viewport.rect().topLeft()).row() 
+        bottom_row = table.indexAt(viewport.rect().bottomLeft()).row() 
+         
+        if top_row == -1: return 
+        if bottom_row == -1: bottom_row = table.rowCount() - 1 
+         
+        start_row = max(0, top_row - 10) 
+        end_row = min(table.rowCount() - 1, bottom_row + 10) 
+         
+        for row in range(start_row, end_row + 1): 
+            if table.isRowHidden(row):  
+                continue 
+                 
+            ip_item = table.item(row, 3) 
+            if not ip_item:  
+                continue 
+                 
+            address = ip_item.text() 
+             
+            if address not in self.pinged_servers and address != ":0": 
+                self.pinged_servers.add(address) 
+                 
+                try: 
+                    ip, port = address.split(":") 
+                    pinger = PingWorker(ip, int(port)) 
+                    pinger.setAutoDelete(False) 
+                    pinger.signals.finished.connect(self.update_ping_in_table) 
+                    self.active_workers.append(pinger) 
+                    self.thread_pool.start(pinger) 
+                except ValueError: 
+                    pass 
+ 
+    def update_ping_in_table(self, address, ping_ms, players_str): 
+        table = self.tab_servers.table_servers 
+        for row in range(table.rowCount()): 
+            item = table.item(row, 3) 
+            if item and item.text() == address: 
+                table.setItem(row, 4, self.table_builder.create_item(ping_ms, center=True)) 
+                if players_str: 
+                    table.setItem(row, 5, self.table_builder.create_item(players_str, center=True)) 
+                break 
+ 
+    def toggle_settings(self): 
+        width = self.settings_panel.width() 
+        target_width = 300 if width == 0 else 0 
+        self.animation = QPropertyAnimation(self.settings_panel, b"maximumWidth") 
+        self.animation.setDuration(300) 
+        self.animation.setStartValue(width) 
+        self.animation.setEndValue(target_width) 
+        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuart) 
+        self.animation.start() 
+ 
+    def browse_path(self): 
+        folder = QFileDialog.getExistingDirectory(self, "Select DayZ Folder") 
+        if folder: 
+            self.settings_panel.input_path.setText(folder) 
+            self.save_config() 
+            self.fetch_local_mods() 
+ 
+    def apply_stylesheet(self): 
+        BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) 
+        stylesheet_path = os.path.join(BASE_DIR, "assets", "style.qss") 
+        try: 
+            with open(stylesheet_path, "r", encoding="utf-8") as f: 
+                self.setStyleSheet(f.read()) 
+        except IOError: 
+            pass 
+ 
+    def load_config(self): 
+        self.settings_panel.input_nick.setText(self.config_manager.nickname) 
+        self.settings_panel.input_path.setText(self.config_manager.game_path) 
+ 
+    def save_config(self): 
+        self.config_manager.nickname = self.settings_panel.input_nick.text() or "Survivor" 
+        self.config_manager.game_path = self.settings_panel.input_path.text() 
+        self.config_manager.save() 
+ 
+    def handle_server_action(self, row, action_type): 
+        ip_item = self.tab_servers.table_servers.item(row, 3).text() 
+ 
+        if action_type in ("play", "load"): 
+            target_server = None 
+            for s in self.all_servers: 
+                s_ip = str(s.get("ip", s.get("endpoint", {}).get("ip", ""))) 
+                s_port = str(s.get("port", s.get("endpoint", {}).get("port", 0))) 
+                if f"{s_ip}:{s_port}" == ip_item: 
+                    target_server = s 
+                    break 
+             
+            if target_server: 
+                self.pending_launch = (target_server, action_type) 
+                print("[Launcher] Refreshing mods before launch...") 
+                self.fetch_local_mods() 
+                 
+        elif action_type == "info": 
+            target_server = None 
+            for s in self.all_servers: 
+                s_ip = str(s.get("ip", s.get("endpoint", {}).get("ip", ""))) 
+                s_port = str(s.get("port", s.get("endpoint", {}).get("port", 0))) 
+                if f"{s_ip}:{s_port}" == ip_item: 
+                    target_server = s 
+                    break 
+             
+            if target_server: 
+                ping_widget = self.tab_servers.table_servers.item(row, 4) 
+                ping_str = ping_widget.text() if ping_widget else "?" 
+                dialog = ServerInfoDialog(target_server, ping_str, self) 
+                dialog.exec() 
+            else: 
+                print(f"[INFO] Error: Data for {ip_item} not found in cache.") 
+ 
+    def handle_server_click(self, row, col): 
+        ip_widget = self.tab_servers.table_servers.item(row, 3) 
+        if not ip_widget: return 
+        ip_item = ip_widget.text() 
+ 
+        if col == 0:  
+            item = self.tab_servers.table_servers.item(row, col) 
+            is_currently_fav = (item.text() == "★") 
+             
+            if is_currently_fav: 
+                item.setText("☆") 
+                item.setForeground(QColor("gray")) 
+                self.config_manager.remove_favorite(ip_item) 
+            else: 
+                item.setText("★") 
+                item.setForeground(QColor("yellow")) 
+                self.config_manager.add_favorite(ip_item) 
+ 
+        elif col == 6: 
+            print(f"[REFRESH] Fetching live data for {ip_item}...") 
+            try: 
+                ip, port = ip_item.split(":") 
+                pinger = PingWorker(ip, int(port)) 
+                pinger.setAutoDelete(False) 
+                pinger.signals.finished.connect(self.update_ping_in_table)  
+                self.active_workers.append(pinger) 
+                self.thread_pool.start(pinger) 
+            except ValueError: 
+                pass 
+ 
+        elif col == 7: 
+            menu = QMenu(self.tab_servers.table_servers) 
+            menu.setCursor(Qt.CursorShape.PointingHandCursor) 
+             
+            action_play = menu.addAction("▶ Play") 
+            action_load = menu.addAction("📂 Load") 
+            action_info = menu.addAction("ℹ️ Info") 
+             
+            action_play.triggered.connect(lambda: self.handle_server_action(row, "play")) 
+            action_load.triggered.connect(lambda: self.handle_server_action(row, "load")) 
+            action_info.triggered.connect(lambda: self.handle_server_action(row, "info")) 
+             
+            menu.exec(self.sender().cursor().pos()) 
+ 
+    def handle_mod_click(self, row, col): 
+        if col == 3: 
+            mod_name = self.tab_mods.table_mods.item(row, 0).text() 
+ 
+    def sort_servers_table(self, col): 
+        self.table_builder.sort_servers_table(col) 
+ 
+    def fetch_local_mods(self): 
+        self.tab_mods.table_mods.setRowCount(0) 
+ 
+        game_path = self.config_manager.game_path 
+        if not game_path: 
+            return  
+ 
+        worker = ModParserWorker(game_path) 
+        worker.setAutoDelete(False) 
+        worker.signals.finished.connect(self.on_mods_loaded) 
+        self.active_workers.append(worker) 
+        self.thread_pool.start(worker) 
+ 
+    def on_mods_loaded(self, mods_data): 
+        self.tab_mods.table_mods.setRowCount(0) 
+        self.mod_controller.set_mods_data(mods_data) 
+ 
+        for mod in mods_data: 
+            self.table_builder.insert_mod_row( 
+                mod["display_name"],  
+                mod["author"],  
+                mod["size"],  
+                self.mod_controller.handle_mod_action  
+            ) 
+             
+        if hasattr(self, 'pending_launch') and self.pending_launch: 
+            target_server, action_type = self.pending_launch 
+            self.pending_launch = None 
+             
+            if hasattr(self, 'check_and_launch'): 
+                self.check_and_launch(target_server, action_type) 
+     
+    def check_and_launch(self, server_data, action_type): 
+        server_mods = server_data.get("mods", []) 
+         
+        local_mod_ids = { 
+            str(m.get("published_id"))  
+            for m in self.mod_controller.mods_data  
+            if m.get("published_id") 
+        } 
+         
+        missing_mods = [] 
+        for sm in server_mods: 
+            mod_id = str(sm.get("fileId", sm.get("steamWorkshopId", ""))) 
+            if mod_id and mod_id not in local_mod_ids: 
+                missing_mods.append(sm) 
+                 
+        if missing_mods: 
+            self.show_missing_mods_dialog(missing_mods, server_data, action_type) 
+        else: 
+            self.launch_game(server_data, action_type) 
+ 
+    def show_missing_mods_dialog(self, missing_mods, server_data, action_type): 
+        mods_text = "\n".join([m.get("name", m.get("title", "Unknown Mod")) for m in missing_mods]) 
+         
+        msg = QMessageBox(self) 
+        msg.setIcon(QMessageBox.Icon.Warning) 
+        msg.setWindowTitle("Missing Mods") 
+        msg.setText(f"Missing {len(missing_mods)} mods for this server. Download them via Steam?") 
+        msg.setDetailedText(mods_text) 
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel) 
+         
+        if msg.exec() == QMessageBox.StandardButton.Ok: 
+            mod_ids = [] 
+            for sm in missing_mods: 
+                mod_id = str(sm.get("fileId", sm.get("steamWorkshopId", ""))) 
+                if mod_id.isdigit(): 
+                    mod_ids.append(int(mod_id)) 
+             
+            if mod_ids: 
+                print(f"[Steamworks] Batch subscribing to {len(mod_ids)} mods") 
+                self.mod_controller.steam_mgr.sync_mods_batch(mod_ids) 
+             
+            QMessageBox.information(self, "Downloading", "Mods added to Steam downloads! Wait for them to finish and try connecting again.") 
+             
+    def launch_game(self, server_data, action_type): 
+        GameRunner.launch( 
+            config_manager=self.config_manager, 
+            mod_controller=self.mod_controller, 
+            server_data=server_data, 
+            action=action_type 
+        ) 
+
+===== FILE: ./ui/table_builder.py =====
+from PyQt6.QtWidgets import (QTableWidget, QTableWidgetItem, QHeaderView,  
+                             QPushButton) 
+from PyQt6.QtCore import Qt 
+from PyQt6.QtGui import QFont, QColor 
+ 
+class TableBuilder: 
+    def __init__(self, table_servers: QTableWidget, table_mods: QTableWidget): 
+        self.table_servers = table_servers 
+        self.table_mods = table_mods 
+        self.current_sort_col = -1 
+        self.current_sort_order = Qt.SortOrder.AscendingOrder 
+ 
+        self.table_mods.verticalHeader().setDefaultSectionSize(37) 
+        self.table_servers.verticalHeader().setVisible(False) 
+        self.table_mods.verticalHeader().setVisible(False) 
+        self.table_mods.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch) 
+        self.table_mods.setColumnHidden(1, True) 
+ 
+    def setup_table_columns(self, sort_callback=None): 
+        from PyQt6.QtWidgets import QHeaderView 
+         
+        headers = ["Fav", "Server Name", "Map", "IP", "Ping", "Players", "Sync", "Play"] 
+        self.table_servers.setColumnCount(len(headers)) 
+        self.table_servers.setHorizontalHeaderLabels(headers) 
+         
+        self.table_servers.setColumnHidden(3, True) 
+ 
+        self.table_servers.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch) 
+        self.table_servers.setColumnWidth(0, 40)  # Fav 
+        self.table_servers.setColumnWidth(4, 60)  # Ping 
+        self.table_servers.setColumnWidth(5, 80)  # Players 
+        self.table_servers.setColumnWidth(6, 50)  # Sync 
+        self.table_servers.setColumnWidth(7, 90)  # Play 
+         
+        if sort_callback: 
+            self.table_servers.horizontalHeader().sectionClicked.connect(sort_callback) 
+ 
+    def create_item(self, text, center=False): 
+        item = QTableWidgetItem(str(text)) 
+        if center: 
+            item.setTextAlignment(Qt.AlignmentFlag.AlignCenter) 
+        else: 
+            item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter) 
+        return item 
+ 
+    def insert_server_row(self, is_fav: bool, name: str, map_name: str, ip: str, ping: str, players: str, *args): 
+        row = self.table_servers.rowCount() 
+        self.table_servers.insertRow(row) 
+         
+        star_font = QFont() 
+        star_font.setPointSize(18) 
+         
+        fav_icon = "★" if is_fav else "☆" 
+        item_fav = self.create_item(fav_icon, center=True) 
+        item_fav.setFont(star_font) 
+        item_fav.setForeground(QColor("yellow") if is_fav else QColor("gray")) 
+         
+        self.table_servers.setItem(row, 0, item_fav) 
+        self.table_servers.setItem(row, 1, self.create_item(name)) 
+        self.table_servers.setItem(row, 2, self.create_item(map_name, center=True)) 
+        self.table_servers.setItem(row, 3, self.create_item(ip, center=True)) 
+        self.table_servers.setItem(row, 4, self.create_item(ping, center=True)) 
+        self.table_servers.setItem(row, 5, self.create_item(players, center=True)) 
+        self.table_servers.setItem(row, 6, self.create_item("🔄", center=True)) 
+        self.table_servers.setItem(row, 7, self.create_item("⚙ Menu", center=True)) 
+ 
+    def insert_mod_row(self, name: str, author: str, size: str, mod_click_callback): 
+        row = self.table_mods.rowCount() 
+        self.table_mods.insertRow(row) 
+        self.table_mods.setItem(row, 0, self.create_item(name)) 
+        self.table_mods.setItem(row, 1, self.create_item(author, center=True)) 
+        self.table_mods.setItem(row, 2, self.create_item(size, center=True)) 
+ 
+        btn_sync = QPushButton("Sync") 
+        btn_sync.setCursor(Qt.CursorShape.PointingHandCursor) 
+        btn_sync.clicked.connect(lambda checked, r=row: mod_click_callback(r, 3)) 
+        self.table_mods.setCellWidget(row, 3, btn_sync) 
+ 
+        btn_delete = QPushButton("Delete") 
+        btn_delete.setCursor(Qt.CursorShape.PointingHandCursor) 
+        btn_delete.clicked.connect(lambda checked, r=row: mod_click_callback(r, 4)) 
+        self.table_mods.setCellWidget(row, 4, btn_delete) 
+ 
+    def sort_servers_table(self, col): 
+        if col in [0, 2, 3, 6, 7]: 
+            return 
+             
+        if self.current_sort_col == col: 
+            self.current_sort_order = Qt.SortOrder.DescendingOrder if self.current_sort_order == Qt.SortOrder.AscendingOrder else Qt.SortOrder.AscendingOrder 
+        else: 
+            self.current_sort_col = col 
+            self.current_sort_order = Qt.SortOrder.AscendingOrder 
+             
+        rows_data = [] 
+        for row in range(self.table_servers.rowCount()): 
+            name_item = self.table_servers.item(row, 1) 
+            if not name_item: continue 
+            name = name_item.text() 
+            if "Downloading" in name or "found" in name.lower(): return 
+                 
+            fav_item = self.table_servers.item(row, 0) 
+            is_fav = (fav_item.text() == "★") if fav_item else False 
+            map_val = self.table_servers.item(row, 2).text() if self.table_servers.item(row, 2) else "" 
+            ip_val = self.table_servers.item(row, 3).text() if self.table_servers.item(row, 3) else "" 
+            ping_str = self.table_servers.item(row, 4).text() if self.table_servers.item(row, 4) else "9999" 
+            players_str = self.table_servers.item(row, 5).text() if self.table_servers.item(row, 5) else "0/0" 
+             
+            try: ping_val = int(ping_str) 
+            except ValueError: ping_val = 9999 
+            try: players_val = int(players_str.split('/')[0]) 
+            except (ValueError, IndexError): players_val = -1 
+             
+            sort_key = name.lower() if col == 1 else (ping_val if col == 4 else players_val) 
+             
+            rows_data.append({ 
+                "is_fav": is_fav, "name": name, "map": map_val,  
+                "ip": ip_val, "ping": ping_str, "players": players_str,  
+                "sort_key": sort_key 
+            }) 
+             
+        rows_data.sort(key=lambda r: r["sort_key"], reverse=(self.current_sort_order == Qt.SortOrder.DescendingOrder)) 
+        rows_data.sort(key=lambda r: r["is_fav"], reverse=True) 
+         
+        self.table_servers.setRowCount(0) 
+        for r in rows_data: 
+            self.insert_server_row(r["is_fav"], r["name"], r["map"], r["ip"], r["ping"], r["players"]) 
+===== FILE: ./.vscode/settings1.json =====
+{ 
+  "files.exclude": { 
+    "**/build": true, 
+    "**/dist": true, 
+    "**/venv": true, 
+    "**/steamworks": true, 
+    "*.dll": true, 
+    "*.so": true, 
+    "*.spec": true 
+  } 
+} 

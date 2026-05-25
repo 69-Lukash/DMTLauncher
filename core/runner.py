@@ -26,9 +26,9 @@ class GameRunner:
             
         if action == "play" and server_data:
             ip = str(server_data.get("ip", server_data.get("endpoint", {}).get("ip", "")))
-            port = str(server_data.get("port", server_data.get("endpoint", {}).get("port", "")))
+            port = str(server_data.get("gamePort", server_data.get("port", server_data.get("endpoint", {}).get("port", ""))))
             if ip and port:
-                cmd_args.extend([f"+connect={ip}", f"+port={port}"])
+                cmd_args.extend([f"-connect={ip}", f"-port={port}"])
                 
         if sys.platform == "win32":
             import winreg
