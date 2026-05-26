@@ -30,9 +30,10 @@ You don't need to install Python or mess with dependencies to play. Just grab th
 
 If you are running Arch Linux or any Arch-based distribution (Manjaro, EndeavourOS, etc.), you can easily install the launcher directly from the AUR:
 
-    ```bash
-    yay -S dmtl-bin
-    ```
+```bash
+yay -S dmtl-bin
+```
+
 This will automatically install the launcher, set up the desktop application shortcut with an icon, and handle system-wide execution.
     
 **For Windows:**
