@@ -34,7 +34,15 @@ class SteamManager:
                     else:
                         os.chdir(work_dir)
                         
-                        log_path = os.path.join(work_dir, "steam_worker.log")
+                        if sys.platform == "win32":
+                            app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
+                            log_dir = os.path.join(app_data, "DMTL")
+                        else:
+                                from pathlib import Path
+                                log_dir = os.path.join(str(Path.home()), ".config", "DMTL")
+
+                        os.makedirs(log_dir, exist_ok=True)
+                        log_path = os.path.join(log_dir, "steam_worker.log")
                         log_fd = os.open(log_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
                         
                         os.dup2(log_fd, sys.stdin.fileno())

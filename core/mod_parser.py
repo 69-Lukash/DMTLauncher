@@ -1,7 +1,10 @@
 import os
 import re
+import sys
+import subprocess
 from pathlib import Path
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
+
 
 class ModParserSignals(QObject):
     finished = pyqtSignal(list)
@@ -90,30 +93,72 @@ class ModParserWorker(QRunnable):
             symlink_path = workshop_dir / symlink_name
             
             if not symlink_path.exists():
-                try:
-                    os.symlink(item, symlink_path)
-                    print(f"[ModParser] Created symlink for {symlink_name}")
-                except OSError as e:
-                    print(f"[ModParser] Failed to create symlink {symlink_name}: {e}")
+                    try:
+                        if sys.platform == "win32":
+                            result = subprocess.run(
+                                f'mklink /J "{symlink_path}" "{item}"',
+                                shell=True,
+                                capture_output=True,
+                                text=True
+                            )
+                            if result.returncode != 0:
+                                print(f"[ModParser] MKLINK ERROR: {result.stderr.strip()}")
+                        else:
+                            os.symlink(item, symlink_path)
+                    except Exception as e:
+                        print(f"[ModParser] Failed to create link {symlink_name}: {e}")
 
     def run(self):
-        mods_list = []
-        if not self.game_path:
-            self.signals.finished.emit([])
-            return
+        try:
+            mods_list = []
+            if not self.game_path:
+                print("[ModParser] Гра не знайдена, шлях порожній!")
+                self.signals.finished.emit([])
+                return
 
-        workshop_path = Path(self.game_path) / "!Workshop"
-        
-        if workshop_path.exists() and workshop_path.is_dir():
-            import shutil
-            for item in workshop_path.iterdir():
-                try:
-                    if item.is_symlink():
-                        item.unlink()
-                    elif item.is_dir():
-                        shutil.rmtree(item)
-                except OSError:
-                    pass
+            workshop_path = Path(self.game_path) / "!Workshop"
+            print(f"[ModParser] Шукаємо моди в: {workshop_path}")
+            
+            if workshop_path.exists() and workshop_path.is_dir():
+                import shutil
+                for item in workshop_path.iterdir():
+                    try:
+ 
+                        if item.is_symlink() or os.path.isjunction(item):
+                            os.rmdir(item) if os.path.isjunction(item) else item.unlink()
+                        elif item.is_dir():
+                            shutil.rmtree(item)
+                    except Exception as e:
+                        print(f"[ModParser] Помилка очищення {item.name}: {e}")
+            
+            self._sync_symlinks(workshop_path)
+            
+            if workshop_path.exists() and workshop_path.is_dir():
+                for item in workshop_path.iterdir():
+                    if item.is_dir() and item.name.startswith("@"):
+                        try:
+                            size_bytes = self.get_dir_size(item)
+                            author, published_id = self.parse_meta(item)
+                            
+                            display_name = item.name[1:]
+                            
+                            mods_list.append({
+                                "display_name": display_name,
+                                "dir_name": item.name,
+                                "author": author,
+                                "size": self.format_size(size_bytes),
+                                "path": str(item),
+                                "published_id": published_id
+                            })
+                        except Exception as e:
+                            print(f"[ModParser] Помилка читання мода {item.name}: {e}")
+                            
+            print(f"[ModParser] Успішно знайдено {len(mods_list)} модів. Передаю в UI...")
+            self.signals.finished.emit(mods_list)
+            
+        except Exception as e:
+            print(f"[ModParser] КРИТИЧНА ПОМИЛКА ПОТОКУ: {e}")
+            self.signals.finished.emit([])
         
         self._sync_symlinks(workshop_path)
         

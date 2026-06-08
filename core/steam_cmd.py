@@ -35,7 +35,6 @@ def main():
         steam.run_callbacks()
         time.sleep(0.05)
 
-    # Жорсткий кіл процесу (щоб Стім одразу побачив смерть)
     os._exit(0)
 
 if __name__ == "__main__":
