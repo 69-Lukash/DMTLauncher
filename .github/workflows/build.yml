@@ -35,6 +35,7 @@ jobs:
       if: runner.os == 'Linux'
       run: |
         pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets:assets" --add-data "steam_appid.txt:." --add-data "libsteam_api.so:." --add-data "SteamworksPy.so:." --name "DMTL-Linux" launcher.py
+        rm -f dist/DMTL-Linux/_internal/libxkbcommon.so.0
         cd dist
         tar -czvf DMTL-Linux.tar.gz DMTL-Linux/
 

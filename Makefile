@@ -18,6 +18,7 @@ build: clean install
 		--add-data "SteamworksPy.so:." \
 		--name "DMTL" \
 		launcher.py
+	rm -f dist/DMTL/_internal/libxkbcommon.so.0
 	@echo "Build complete! Check the dist/DMTL/ folder for the launcher."
 
 clean:
