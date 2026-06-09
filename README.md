@@ -22,8 +22,6 @@ DMTL is designed to be fast, reliable, and completely non-blocking:
 
 ## 📥 How to Run (Pre-compiled Binaries)
 
-
-
 You don't need to install Python or mess with dependencies to play. Just grab the latest release!
 
 **From AUR (Arch Linux):**
@@ -35,7 +33,7 @@ yay -S dmtl-bin
 ```
 
 This will automatically install the launcher, set up the desktop application shortcut with an icon, and handle system-wide execution.
-    
+
 **For Windows:**
 
 1. Go to the [Releases](../../releases) tab and download `DMTL-Windows.zip`.
@@ -65,38 +63,43 @@ This will automatically install the launcher, set up the desktop application sho
 
 If you want to modify the launcher or run it directly from the Python scripts:
 
-1. Clone the repository:
+**1. Clone the repository:**
+`git clone https://github.com/69-Lukash/DMTLauncher.git`
+`cd DMTLauncher`
 
-    ```bash
-    git clone https://github.com/69-Lukash/DMTLauncher.git
-    cd DMTLauncher
-    ```
+**2. Create and activate a virtual environment:**
 
-2. Create a virtual environment (optional but recommended):
+* **On Windows:**
+  `py -m venv venv`
+  `venv\Scripts\activate`
 
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows use: venv\Scripts\activate
-    ```
+* **On Linux:**
+  `python3 -m venv venv`
+  `source venv/bin/activate`
 
-3. Install dependencies and run:
+**3. Install dependencies:**
+`pip install -r requirements.txt`
 
-    ```bash
-    make install
-    make run
-    ```
+**4. Run the launcher:**
+
+* **On Windows:** `py launcher.py`
+* **On Linux:** `python3 launcher.py`
 
 *(Make sure `steam_appid.txt` and the required Steamworks `.so`/`.dll` libraries are present in the project root).*
 
 ## 📦 Building the Executable
 
-If you want to compile your own standalone executable using PyInstaller, just run:
+Make sure your virtual environment is activated before building.
 
-```bash
-make build
-```
+**On Linux:**
+Simply run the command via Makefile, which handles the build process automatically:
+`make build`
 
-The compiled launcher will be available in the `dist/DMTL/` directory.
+**On Windows:**
+Since `make` is not natively supported and PyInstaller requires specific path separators (`;`) and dynamic libraries (`.dll`) on Windows, run this command:
+`pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets;assets" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL" launcher.py`
+
+*(The compiled application will be located in the `dist/DMTL/` folder).*
 
 ## 🐛 Bug Reports & Feedback
 
