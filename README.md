@@ -64,26 +64,47 @@ This will automatically install the launcher, set up the desktop application sho
 If you want to modify the launcher or run it directly from the Python scripts:
 
 **1. Clone the repository:**
-`git clone https://github.com/69-Lukash/DMTLauncher.git`
-`cd DMTLauncher`
+
+```bash
+git clone https://github.com/69-Lukash/DMTLauncher.git
+cd DMTLauncher
+```
 
 **2. Create and activate a virtual environment:**
 
 * **On Windows:**
-  `py -m venv venv`
-  `venv\Scripts\activate`
+
+```cmd
+  py -m venv venv
+  venv\Scripts\activate.bat
+  ```
 
 * **On Linux:**
-  `python3 -m venv venv`
-  `source venv/bin/activate`
+
+```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  ```
 
 **3. Install dependencies:**
-`pip install -r requirements.txt`
+
+```bash
+pip install -r requirements.txt
+```
 
 **4. Run the launcher:**
 
-* **On Windows:** `py launcher.py`
-* **On Linux:** `python3 launcher.py`
+* **On Windows:**
+
+```cmd
+  py launcher.py
+  ```
+
+* **On Linux:**
+
+```bash
+  python3 launcher.py
+  ```
 
 *(Make sure `steam_appid.txt` and the required Steamworks `.so`/`.dll` libraries are present in the project root).*
 
@@ -92,12 +113,17 @@ If you want to modify the launcher or run it directly from the Python scripts:
 Make sure your virtual environment is activated before building.
 
 **On Linux:**
-Simply run the command via Makefile, which handles the build process automatically:
-`make build`
+Simply run the command:
+
+```bash
+make build
+```
 
 **On Windows:**
-Since `make` is not natively supported and PyInstaller requires specific path separators (`;`) and dynamic libraries (`.dll`) on Windows, run this command:
-`pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets;assets" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL" launcher.py`
+
+```cmd
+pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets;assets" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL" launcher.py
+```
 
 *(The compiled application will be located in the `dist/DMTL/` folder).*
 
