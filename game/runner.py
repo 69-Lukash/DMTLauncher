@@ -9,16 +9,22 @@ class GameRunner:
         nickname = config_manager.nickname or "Survivor"
 
         server_mods = server_data.get("mods", [])
+        local_mods = mod_controller.mods_data
+        
         mod_paths = []
-
         for sm in server_mods:
             mod_id = str(sm.get("fileId", sm.get("steamWorkshopId", "")))
-            for local_mod in mod_controller.mods_data:
-                if local_mod.get("published_id") == mod_id:
-                    mod_paths.append(f"!Workshop/{local_mod['dir_name']}")
-                    break
+            local_mod = next((m for m in local_mods if m.get("published_id") == mod_id), None)
+            
+            if local_mod and "path" in local_mod:
+                mod_path = local_mod["path"]
+                
+                if sys.platform != "win32":
+                    mod_path = "Z:" + mod_path.replace("/", "\\")
+                    
+                mod_paths.append(mod_path)
 
-        game_args = [f"-name={nickname}"]
+        game_args = [f"-name={nickname}", "-nosplash", "-noPause"]
 
         if mod_paths:
             mods_str = ";".join(mod_paths)
@@ -38,12 +44,12 @@ class GameRunner:
 
         print(f"[Runner] Launching: {' '.join(cmd)}")
 
-        mod_controller.steam_mgr.disconnect()
+        if hasattr(mod_controller, 'steam_mgr'):
+            mod_controller.steam_mgr.disconnect()
         time.sleep(1.0)
 
         try:
             flags = subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
-
             run_dir = config_manager.game_path if config_manager.game_path else None
 
             subprocess.Popen(
@@ -54,5 +60,4 @@ class GameRunner:
                 cwd=run_dir
             )
         except Exception as e:
-            with open("launcher_error.log", "w") as f:
-                f.write(f"Launch error: {e}")
+            print(f"Launch error: {e}")

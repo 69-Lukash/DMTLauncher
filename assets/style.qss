@@ -94,3 +94,21 @@ QLabel#linux_warning {
     font-style: italic;
     margin-top: 15px;
 }
+
+QListWidget {
+    background-color: #100818;
+    alternate-background-color: #140a1f;
+    border: 1px solid #1f1133;
+    border-radius: 4px;
+    outline: none;
+}
+QListWidget::item {
+    padding: 4px 8px;
+}
+QListWidget::item:selected {
+    background-color: rgba(94, 53, 177, 0.4);
+    color: white;
+}
+QListWidget::item:hover:!selected {
+    background-color: #160b21;
+}

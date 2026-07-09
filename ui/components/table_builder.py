@@ -73,13 +73,19 @@ class TableBuilder:
 
         btn_sync = QPushButton("Sync")
         btn_sync.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn_sync.clicked.connect(lambda checked, r=row: mod_click_callback(r, 3))
+        btn_sync.clicked.connect(lambda checked, b=btn_sync: self._handle_mod_btn(b, 3, mod_click_callback))
         self.table_mods.setCellWidget(row, 3, btn_sync)
 
         btn_delete = QPushButton("Delete")
         btn_delete.setCursor(Qt.CursorShape.PointingHandCursor)
-        btn_delete.clicked.connect(lambda checked, r=row: mod_click_callback(r, 4))
+        btn_delete.clicked.connect(lambda checked, b=btn_delete: self._handle_mod_btn(b, 4, mod_click_callback))
         self.table_mods.setCellWidget(row, 4, btn_delete)
+
+    def _handle_mod_btn(self, btn, col, callback):
+        for i in range(self.table_mods.rowCount()):
+            if self.table_mods.cellWidget(i, col) == btn:
+                callback(i, col)
+                break
 
     def sort_servers_table(self, col):
         if col in [0, 2, 3, 6, 7]:

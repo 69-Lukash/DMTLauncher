@@ -5,7 +5,7 @@ import subprocess
 class SteamManager:
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        self.cmd_script = os.path.join(self.base_dir, "core", "steam_cmd.py")
+        self.cmd_script = os.path.join(self.base_dir, "steam", "cmd_worker.py")
 
     def disconnect(self):
         pass
