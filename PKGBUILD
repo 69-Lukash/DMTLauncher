@@ -9,7 +9,7 @@ license=('MIT')
 provides=('dmtl')
 conflicts=('dmtl')
 options=('!strip' '!debug')
-source=("https://github.com/69-Lukash/DMTLauncher/releases/download/v${pkgver}/DMTL-Linux.tar.gz")
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/69-Lukash/DMTLauncher/releases/download/v${pkgver}/DMTL-Linux.tar.gz")
 sha256sums=('SKIP')
 
 package() {
