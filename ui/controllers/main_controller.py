@@ -32,6 +32,7 @@ class MainController:
         self.mod_update_timer = QTimer()
         self.mod_update_timer.setSingleShot(True)
         self.mod_update_timer.timeout.connect(self.fetch_local_mods)
+        self.check_existing_downloads()
 
         self._setup_connections()
         
@@ -127,7 +128,53 @@ class MainController:
         if finished_any:
             self.fetch_local_mods()
         else:
-            self.mod_controller.render_mods()
+            self.mod_controller.update_download_progress()
+
+    def check_existing_downloads(self):
+        if not self.config_manager.game_path:
+            return
+            
+        game_path = Path(self.config_manager.game_path)
+        downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
+        
+        if not downloads_dir.exists():
+            return
+            
+        mod_ids = []
+        for item in downloads_dir.iterdir():
+            if item.is_dir() and item.name.isdigit():
+                mod_id = int(item.name)
+                if mod_id not in self.mod_controller.downloading_mods:
+                    mod_ids.append(mod_id)
+                    
+        if not mod_ids:
+            return
+
+        import urllib.request, urllib.parse, json
+        
+        post_data = {'itemcount': len(mod_ids)}
+        for i, m_id in enumerate(mod_ids):
+            post_data[f'publishedfileids[{i}]'] = m_id
+            
+        titles = {}
+        try:
+            url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+            data = urllib.parse.urlencode(post_data).encode('utf-8')
+            req = urllib.request.Request(url, data=data)
+            with urllib.request.urlopen(req, timeout=3) as response:
+                api_data = json.loads(response.read().decode('utf-8'))
+                for detail in api_data.get("response", {}).get("publishedfiledetails", []):
+                    if "publishedfileid" in detail and "title" in detail:
+                        titles[int(detail["publishedfileid"])] = detail["title"]
+        except Exception as e:
+            print(f"[Steam API] Eroor getting mod names: {e}")
+
+        for mod_id in mod_ids:
+            mod_name = titles.get(mod_id, f"Mod {mod_id}")
+            self.mod_controller.downloading_mods[mod_id] = {"name": mod_name, "size": "0 B"}
+            
+        self.download_timer.start(500)
+        self.mod_controller.render_mods()
 
     def on_workshop_changed(self, path):
         self.mod_update_timer.start(2000)

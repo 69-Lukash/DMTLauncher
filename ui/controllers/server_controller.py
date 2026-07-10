@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMenu
-from PyQt6.QtCore import Qt, QThreadPool
+from PyQt6.QtCore import Qt, QThreadPool, QTimer
 from PyQt6.QtGui import QColor
 
 from network.api import DZSAWorker
@@ -26,10 +26,14 @@ class ServerController:
         
         self.table_loader = TableLoader(self)
         
+        self.scroll_timer = QTimer()
+        self.scroll_timer.setSingleShot(True)
+        self.scroll_timer.timeout.connect(self.ping_visible_servers)
+
         self._setup_connections()
 
     def _setup_connections(self):
-        self.table_servers.verticalScrollBar().valueChanged.connect(self.ping_visible_servers)
+        self.table_servers.verticalScrollBar().valueChanged.connect(lambda: self.scroll_timer.start(400))
         self.table_servers.cellClicked.connect(self.handle_server_click)
         self.view.tab_servers.search_bar.textChanged.connect(self.trigger_apply_local_filters)
         self.view.tab_servers.search_map.textChanged.connect(self.trigger_apply_local_filters)

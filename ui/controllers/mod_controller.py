@@ -1,4 +1,5 @@
 from steam.manager import SteamManager
+from PyQt6.QtCore import Qt
 
 class ModController:
     def __init__(self, view):
@@ -37,6 +38,8 @@ class ModController:
                 d_mod["size"], 
                 lambda r, c: None
             )
+            row = self.table_mods.rowCount() - 1
+            self.table_mods.item(row, 0).setData(Qt.ItemDataRole.UserRole, mod_id)
 
         for mod in self.mods_data:
             display_name = mod.get("display_name", "")
@@ -50,6 +53,19 @@ class ModController:
                 mod.get("size", "0 B"), 
                 self.handle_mod_action 
             )
+
+    def update_download_progress(self):
+        for row in range(self.table_mods.rowCount()):
+            name_item = self.table_mods.item(row, 0)
+            if not name_item: 
+                continue
+            
+            mod_id = name_item.data(Qt.ItemDataRole.UserRole)
+            
+            if mod_id and mod_id in self.downloading_mods:
+                size_item = self.table_mods.item(row, 2)
+                if size_item:
+                    size_item.setText(self.downloading_mods[mod_id]["size"])
 
     def handle_mod_action(self, row, col):
         mod_name_item = self.table_mods.item(row, 0)
