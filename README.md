@@ -7,8 +7,11 @@ It features direct integration with the Steamworks API for seamless background m
 
 * 🚀 **Speed:** Asynchronous A2S UDP pinger for instant server querying.
 * 🔄 **Steamworks Integration:** Native background synchronization for Steam Workshop mods.
-* 🐧 **Linux/Proton Ready:** Full support for running on Linux without weird workarounds.
-* 🎨 **UI:** Clean, minimalist dark theme with zero clutter.
+* 🐧 **Linux/Proton Ready:** Full support for running on Linux without weird workarounds (UI built natively with PyQt6).
+* 🔌 **Direct Connect:** Instantly join a server using its IP:Port without scrolling through the list.
+* ℹ️ **Detailed Server Info:** View in-game time, password protection, and 1-click copy the entire server modlist.
+* 📂 **Quick Mod Access:** Double-click any downloaded mod in the list to open its folder directly in your system's file manager.
+* 🎨 **UI & QoL:** Clean dark theme, sortable server lists (by players or A-Z), and instant list refresh capabilities.
 
 ![DMTL Screenshot](https://github.com/user-attachments/assets/16536bfa-0c32-429f-9266-2b426cdf26e5)
 
@@ -106,7 +109,7 @@ pip install -r requirements.txt
   python3 launcher.py
   ```
 
-*(Make sure `steam_appid.txt` and the required Steamworks `.so`/`.dll` libraries are present in the project root).*
+*(Note: Custom-modified Steamworks libraries (`libsteam_api.so`, `SteamworksPy.so`, `steam_api64.dll`, `SteamworksPy64.dll`) and `steam_appid.txt` are already included in the repository root. Just clone, install requirements, and run!)*
 
 ## 📦 Building the Executable
 
@@ -142,7 +145,7 @@ Every bug report helps make the launcher faster and more stable for everyone.
 
 Here are some features planned for future updates:
 
-* [ ] **Mods Management:** Add a search bar to quickly find specific local mods by name in the Mods tab.
+* [x] **Mods Management:** Add a search bar to quickly find specific local mods by name in the Mods tab.
 * [ ] **Server History:** Add an "Is Played" (or "Last Played") column/indicator to easily find previously visited servers.
 * [ ] **Server Filters:** Add simple toggles for server list (e.g., Password-protected, Favorites only, Modded/Vanilla).
 * [ ] **Quality of Life (QoL):**
