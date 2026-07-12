@@ -56,6 +56,27 @@
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label_sort">
+     <property name="text">
+      <string>Сортування серверів:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="combo_sort">
+     <item>
+      <property name="text">
+       <string>By Players</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>By Name (A-Z)</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="linux_warning">
      <property name="text">
       <string>Make sure to force a Steam Play compatibility tool in DayZ properties.</string>

@@ -8,6 +8,7 @@ class ConfigManager:
         self.game_path = ""
         self.favorites = []
         self.load()
+        self.default_sort = 0
 
     def load(self):
         if not os.path.exists(self.config_path):
@@ -20,6 +21,7 @@ class ConfigManager:
                 self.nickname = config.get("nickname") or "Survivor"
                 self.game_path = config.get("game_path", "")
                 self.favorites = config.get("favorites", [])
+                self.default_sort = config.get("default_sort", 0)
         except (json.JSONDecodeError, IOError):
             print(f"Error reading {self.config_path}. Using defaults.")
             self.save()
@@ -28,7 +30,8 @@ class ConfigManager:
         config = {
             "nickname": self.nickname,
             "game_path": self.game_path,
-            "favorites": self.favorites
+            "favorites": self.favorites,
+            "default_sort": self.default_sort
         }
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:

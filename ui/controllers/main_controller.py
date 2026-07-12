@@ -39,6 +39,9 @@ class MainController:
         self.server_controller.fetch_global_database()
         self.fetch_local_mods()
 
+        self.view.settings_panel.combo_sort.setCurrentIndex(self.config_manager.default_sort)
+        self.view.settings_panel.combo_sort.currentIndexChanged.connect(self.save_config)
+
     def _get_config_path(self):
         if sys.platform == "win32":
             app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
@@ -58,7 +61,9 @@ class MainController:
     def save_config(self):
         self.config_manager.nickname = self.view.settings_panel.input_nick.text() or "Survivor"
         self.config_manager.game_path = self.view.settings_panel.input_path.text()
+        self.config_manager.default_sort = self.view.settings_panel.combo_sort.currentIndex()
         self.config_manager.save()
+        self.server_controller.trigger_apply_local_filters()
 
     def browse_path(self):
         from PyQt6.QtWidgets import QFileDialog

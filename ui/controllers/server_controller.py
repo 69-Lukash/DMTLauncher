@@ -58,7 +58,13 @@ class ServerController:
         if not self.all_servers: return
         search_text = self.view.tab_servers.search_bar.text()
         map_text = self.view.tab_servers.search_map.text()
-        filtered = apply_local_filters(self.all_servers, search_text, map_text, self.favorites)
+        filtered = apply_local_filters(
+            self.all_servers, 
+            search_text, 
+            map_text, 
+            self.favorites, 
+            self.config_manager.default_sort
+        )
         self.table_loader.load_servers(filtered)
 
     def ping_visible_servers(self):
