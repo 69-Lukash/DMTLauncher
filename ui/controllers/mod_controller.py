@@ -1,3 +1,6 @@
+import sys
+import os
+import subprocess
 from steam.manager import SteamManager
 from PyQt6.QtCore import Qt
 
@@ -17,6 +20,7 @@ class ModController:
     def _setup_connections(self):
             self.tab_mods.search_mod.textChanged.connect(self.filter_mods)
             self.tab_mods.btn_sync_all.clicked.connect(self.sync_all_mods)
+            self.table_mods.cellDoubleClicked.connect(self.open_mod_folder)
 
     def set_mods_data(self, data):
         self.mods_data = data
@@ -112,3 +116,18 @@ class ModController:
         if mod in self.mods_data:
             self.mods_data.remove(mod) 
         print(f"[ModController] Mod {mod_id} deleted via Steamworks.")
+
+    def open_mod_folder(self, row, col):
+        mod_name_item = self.table_mods.item(row, 0)
+        if not mod_name_item:
+            return
+            
+        display_name = mod_name_item.text().replace("⬇️ ", "").replace(" [Downloading...]", "")
+        mod = next((m for m in self.mods_data if m["display_name"] == display_name), None)
+        
+        if mod and "path" in mod:
+            folder_path = mod["path"]
+            if sys.platform == "win32":
+                os.startfile(folder_path)
+            else:
+                subprocess.run(["xdg-open", folder_path])
