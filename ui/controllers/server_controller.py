@@ -38,6 +38,7 @@ class ServerController:
         self.view.tab_servers.search_bar.textChanged.connect(self.trigger_apply_local_filters)
         self.view.tab_servers.search_map.textChanged.connect(self.trigger_apply_local_filters)
         self.view.btn_direct_connect.clicked.connect(self.prompt_direct_connect)
+        self.view.tab_servers.btn_refresh.clicked.connect(self.fetch_global_database)
 
     def fetch_global_database(self):
         self.table_servers.setRowCount(0)
