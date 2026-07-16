@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMenu
 from PyQt6.QtCore import Qt, QThreadPool, QTimer
 from PyQt6.QtGui import QColor
 
+from network.mods_query import ModsQueryWorker
 from network.api import DZSAWorker
 from network.pinger import PingWorker
 from utils.server_filter import apply_local_filters
@@ -180,16 +181,20 @@ class ServerController:
             try:
                 ip, port = ip_item.split(":")
                 pinger = PingWorker(ip, int(port))
-                pinger.setAutoDelete(True)
+                pinger.setAutoDelete(False)
                 pinger.signals.finished.connect(
-                    lambda addr, p, pl, dt, sd=server_data, r_idx=row: 
-                    self.show_fresh_info(addr, p, pl, dt, sd, r_idx)
+                    lambda addr, p, pl, dt, sd=server_data, r_idx=row, w=pinger: 
+                    self.show_fresh_info(addr, p, pl, dt, sd, r_idx, w)
                 )
+                self.active_workers.append(pinger)
                 self.thread_pool.start(pinger)
             except ValueError:
                 pass
 
-    def show_fresh_info(self, address, ping, players_str, day_time, server_data, row):
+    def show_fresh_info(self, address, ping, players_str, day_time, server_data, row, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+            
         self.table_servers.setItem(row, 4, self.table_builder.create_item(ping, center=True))
         if players_str:
             self.table_servers.setItem(row, 5, self.table_builder.create_item(players_str, center=True))
@@ -221,28 +226,48 @@ class ServerController:
                 ip = ip.strip()
                 port = int(port_str.strip())
                 
-                pinger = PingWorker(ip, port)
-                pinger.setAutoDelete(True)
+                query_port = 27016 if port == 2302 else port + 24714 
+                
+                pinger = PingWorker(ip, query_port)
+                pinger.setAutoDelete(False)
                 pinger.signals.finished.connect(
-                    lambda addr, p, pl, dt, i=ip, po=port: self._process_direct_connect(p, i, po)
+                    lambda addr, p, pl, dt, i=ip, po=port, w=pinger: self._process_direct_connect(p, i, po, w)
                 )
+                self.active_workers.append(pinger)
                 self.thread_pool.start(pinger)
                 
             except ValueError:
                 QMessageBox.warning(self.view, "Error", "Invalid format! Please use IP:Port")
 
-    def _process_direct_connect(self, ping_str, ip, port):
+    def _process_direct_connect(self, ping_str, ip, port, worker=None):
         from PyQt6.QtWidgets import QMessageBox
+
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
 
         if ping_str == "999":
             QMessageBox.warning(self.view, "Connection Failed", f"Сервер {ip}:{port} не відповідає або вимкнений!")
             return
-            
+
+        query_port = 27016 if port == 2302 else port + 24714
+
+        mods_worker = ModsQueryWorker(ip, query_port)
+        mods_worker.setAutoDelete(False)
+        mods_worker.signals.finished.connect(
+            lambda addr, mods, i=ip, po=port, w=mods_worker: self._finalize_direct_connect(mods, i, po, w)
+        )
+        self.active_workers.append(mods_worker)
+        self.thread_pool.start(mods_worker)
+
+    def _finalize_direct_connect(self, mods, ip, port, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+
         mock_server = {
             "name": "Direct Connection",
             "ip": ip,
             "port": port,
-            "mods": [] 
+            "mods": mods
         }
-        
+
         self.launch_callback(mock_server, "play")
