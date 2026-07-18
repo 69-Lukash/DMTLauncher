@@ -246,7 +246,7 @@ class ServerController:
             self.active_workers.remove(worker)
 
         if ping_str == "999":
-            QMessageBox.warning(self.view, "Connection Failed", f"Сервер {ip}:{port} не відповідає або вимкнений!")
+            QMessageBox.warning(self.view, "Connection Failed", f"Server {ip}:{port} is not responding or offline!")
             return
 
         query_port = 27016 if port == 2302 else port + 24714
