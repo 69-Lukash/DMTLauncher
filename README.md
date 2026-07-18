@@ -14,7 +14,7 @@ It features direct integration with the Steamworks API for seamless background m
 * 🔍 **Mods Management:** Quick search bar to easily find specific local mods by name in the Mods tab.
 * 🎨 **UI & QoL:** Clean dark theme, sortable server lists (by players or A-Z), and instant list refresh capabilities.
 
-![DMTL Screenshot](images/picture.png)
+![DMTL Screenshot](images/image.png)
 
 ## ⚙️ How It Works (Under the Hood)
 
