@@ -1,5 +1,4 @@
 PyQt6>=6.5.0
 certifi
 Pillow
-python-a2s
 dayzquery

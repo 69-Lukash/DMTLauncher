@@ -172,7 +172,7 @@ class MainController:
                     if "publishedfileid" in detail and "title" in detail:
                         titles[int(detail["publishedfileid"])] = detail["title"]
         except Exception as e:
-            print(f"[Steam API] Eroor getting mod names: {e}")
+            print(f"[Steam API] Error getting mod names: {e}")
 
         for mod_id in mod_ids:
             mod_name = titles.get(mod_id, f"Mod {mod_id}")

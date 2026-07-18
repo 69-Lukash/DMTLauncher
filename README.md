@@ -11,9 +11,10 @@ It features direct integration with the Steamworks API for seamless background m
 * 🔌 **Direct Connect:** Instantly join a server using its IP:Port without scrolling through the list.
 * ℹ️ **Detailed Server Info:** View in-game time, password protection, and 1-click copy the entire server modlist.
 * 📂 **Quick Mod Access:** Double-click any downloaded mod in the list to open its folder directly in your system's file manager.
+* 🔍 **Mods Management:** Quick search bar to easily find specific local mods by name in the Mods tab.
 * 🎨 **UI & QoL:** Clean dark theme, sortable server lists (by players or A-Z), and instant list refresh capabilities.
 
-![DMTL Screenshot](https://github.com/user-attachments/assets/16536bfa-0c32-429f-9266-2b426cdf26e5)
+![DMTL Screenshot](images/picture.png)
 
 ## ⚙️ How It Works (Under the Hood)
 
@@ -21,7 +22,7 @@ DMTL is designed to be fast, reliable, and completely non-blocking:
 
 * **Asynchronous Server Queries:** Uses native UDP sockets to ping servers via the A2S protocol, updating the server list instantly without stuttering.
 * **Isolated Steamworks Worker:** Steam Workshop interactions (syncing, deleting mods) are handled by a dedicated, isolated background process. This prevents heavy Steam API calls from freezing the PyQt6 UI and ensures stable execution across both Windows and Linux.
-* **Smart Mod Parsing:** Reads `meta.cpp` files to identify mods and sizes, automatically creating safe symlinks in your `!Workshop` directory to run seamlessly with Proton/Wine or native Windows.
+* **Smart Mod Parsing:** Reads `meta.cpp` files to identify mods and sizes, seamlessly passing exact mod paths directly to the game via launch arguments (no messy symlinks or `!Workshop` folder manipulation needed).
 
 ## 📥 How to Run (Pre-compiled Binaries)
 
@@ -78,16 +79,16 @@ cd DMTLauncher
 * **On Windows:**
 
 ```cmd
-  py -m venv venv
-  venv\Scripts\activate.bat
-  ```
+py -m venv venv
+venv\Scripts\activate.bat
+```
 
 * **On Linux:**
 
 ```bash
-  python3 -m venv venv
-  source venv/bin/activate
-  ```
+python3 -m venv venv
+source venv/bin/activate
+```
 
 **3. Install dependencies:**
 
@@ -100,14 +101,14 @@ pip install -r requirements.txt
 * **On Windows:**
 
 ```cmd
-  py launcher.py
-  ```
+py launcher.py
+```
 
 * **On Linux:**
 
 ```bash
-  python3 launcher.py
-  ```
+python3 launcher.py
+```
 
 *(Note: Custom-modified Steamworks libraries (`libsteam_api.so`, `SteamworksPy.so`, `steam_api64.dll`, `SteamworksPy64.dll`) and `steam_appid.txt` are already included in the repository root. Just clone, install requirements, and run!)*
 
@@ -145,7 +146,6 @@ Every bug report helps make the launcher faster and more stable for everyone.
 
 Here are some features planned for future updates:
 
-* [x] **Mods Management:** Add a search bar to quickly find specific local mods by name in the Mods tab.
 * [ ] **Server History:** Add an "Is Played" (or "Last Played") column/indicator to easily find previously visited servers.
 * [ ] **Server Filters:** Add simple toggles for server list (e.g., Password-protected, Favorites only, Modded/Vanilla).
 * [ ] **Quality of Life (QoL):**
