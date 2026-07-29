@@ -1,3 +1,5 @@
+from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
+
 def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode=0):
     if not all_servers:
         return []
@@ -31,3 +33,26 @@ def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode
     filtered.sort(key=is_favorite, reverse=True)
     
     return filtered
+
+class FilterSignals(QObject):
+    finished = pyqtSignal(list)
+
+class FilterWorker(QRunnable):
+    def __init__(self, all_servers, search_text, map_text, favorites, sort_mode=0):
+        super().__init__()
+        self.all_servers = all_servers
+        self.search_text = search_text
+        self.map_text = map_text
+        self.favorites = favorites
+        self.sort_mode = sort_mode
+        self.signals = FilterSignals()
+
+    def run(self):
+        filtered = apply_local_filters(
+            self.all_servers, 
+            self.search_text, 
+            self.map_text, 
+            self.favorites, 
+            self.sort_mode
+        )
+        self.signals.finished.emit(filtered)

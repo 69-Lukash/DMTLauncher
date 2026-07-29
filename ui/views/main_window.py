@@ -7,6 +7,7 @@ from PyQt6.QtGui import QIcon
 
 from ui.components.icon_factory import create_gear_icon
 from ui.components.table_builder import TableBuilder
+from utils.logger import logger
 
 class DMTLMainWindow(QMainWindow):
     def __init__(self, *args, **kwargs):
@@ -25,15 +26,15 @@ class DMTLMainWindow(QMainWindow):
         self.tab_mods = uic.loadUi(os.path.join(assets_dir, "tab_mods.ui"))
         self.settings_panel = uic.loadUi(os.path.join(assets_dir, "panel_settings.ui"))
 
-        self.tabs.addTab(self.tab_servers, "Servers")
-        self.tabs.addTab(self.tab_mods, "Mods")
+        self.tabs.addTab(self.tab_servers, self.tr("Servers"))
+        self.tabs.addTab(self.tab_mods, self.tr("Mods"))
         
         self.corner_container = QWidget()
         self.corner_layout = QHBoxLayout(self.corner_container)
         self.corner_layout.setContentsMargins(0, 0, 0, 0)
         self.corner_layout.setSpacing(10)
 
-        self.btn_direct_connect = QPushButton("🔌 Direct Connect")
+        self.btn_direct_connect = QPushButton(self.tr("🔌 Direct Connect"))
         self.btn_direct_connect.setObjectName("btn_direct_connect")
         self.btn_direct_connect.setCursor(Qt.CursorShape.PointingHandCursor)
 
@@ -78,4 +79,4 @@ class DMTLMainWindow(QMainWindow):
             with open(stylesheet_path, "r", encoding="utf-8") as f:
                 self.setStyleSheet(f.read())
         except IOError as e:
-            print(f"[Theme Error] Failed to load QSS: {e}")
+            logger.error(f"Failed to load QSS stylesheet: {e}", exc_info=True)

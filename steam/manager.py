@@ -1,6 +1,7 @@
 import os
 import sys
 import subprocess
+from utils.logger import logger
 
 class SteamManager:
     def __init__(self):
@@ -51,7 +52,7 @@ class SteamManager:
                         
                         os.execv(sys.executable, exec_args)
             except Exception as e:
-                print(f"[SteamManager] Fork failed: {e}")
+                logger.error(f"Fork failed in SteamManager: {e}", exc_info=True)
         else:
             try:
                 subprocess.Popen(
@@ -60,16 +61,16 @@ class SteamManager:
                     creationflags=0x00000008 | subprocess.CREATE_NO_WINDOW
                 )
             except Exception as e:
-                print(f"[SteamManager] Popen failed: {e}")
+                logger.error(f"Popen failed in SteamManager: {e}", exc_info=True)
 
     def sync_mod(self, mod_id: int):
-        print(f"[SteamManager] Forcing sync/download for mod {mod_id}...")
+        logger.info(f"Forcing sync/download for mod {mod_id}...")
         self._run_steam_cmd("sync", [mod_id])
 
     def sync_mods_batch(self, mod_ids: list):
-        print(f"[SteamManager] Batch syncing {len(mod_ids)} mods...")
+        logger.info(f"Batch syncing {len(mod_ids)} mods...")
         self._run_steam_cmd("sync", mod_ids)
 
     def unsubscribe_mod(self, mod_id: int):
-        print(f"[SteamManager] Unsubscribing from mod {mod_id}")
+        logger.info(f"Unsubscribing from mod {mod_id}")
         self._run_steam_cmd("delete", [mod_id])

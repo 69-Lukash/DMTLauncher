@@ -77,6 +77,27 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_lang">
+     <property name="text">
+      <string>Language (requires restart):</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="combo_lang">
+     <item>
+      <property name="text">
+       <string>English</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Українська</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="linux_warning">
      <property name="text">
       <string>Make sure to force a Steam Play compatibility tool in DayZ properties.</string>

@@ -1,8 +1,10 @@
+import copy
 import sys
 import os
 import subprocess
 from steam.manager import SteamManager
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QCoreApplication
+from utils.logger import logger
 
 class ModController:
     def __init__(self, view):
@@ -30,14 +32,17 @@ class ModController:
         self.render_mods(text.strip().lower())
 
     def render_mods(self, search_query=""):
+        
         self.table_mods.setRowCount(0)
+        
+        downloading_text = QCoreApplication.translate("ModController", "[Downloading...]")
         
         for mod_id, d_mod in self.downloading_mods.items():
             if search_query and search_query not in d_mod["name"].lower():
                 continue
                 
             self.table_builder.insert_mod_row(
-                f"⬇️ {d_mod['name']} [Downloading...]", 
+                f"⬇️ {d_mod['name']} {downloading_text}", 
                 "Steam",
                 d_mod["size"], 
                 lambda r, c: None
@@ -80,13 +85,13 @@ class ModController:
         mod = next((m for m in self.mods_data if m["display_name"] == display_name), None)
         
         if not mod or not mod.get("published_id"):
-            print(f"[ModController] Error: Valid Steam ID not found for {display_name}.")
+            logger.warning(f"Valid Steam ID not found for {display_name}.")
             return
             
         try:
             mod_id = int(mod["published_id"])
         except ValueError:
-            print("[ModController] Error: Invalid Steam ID format.")
+            logger.error("Invalid Steam ID format.")
             return
             
         if col == 3:
@@ -97,7 +102,7 @@ class ModController:
 
     def sync_mod(self, mod_id: int):
         self.steam_mgr.sync_mod(mod_id)
-        print(f"[ModController] Sync command for {mod_id} sent to Steamworks.")
+        logger.info(f"Sync command for {mod_id} sent to Steamworks.")
 
     def sync_all_mods(self):
         mod_ids = []
@@ -107,7 +112,7 @@ class ModController:
                 mod_ids.append(int(pub_id))
         
         if mod_ids:
-            print(f"[ModController] Batch syncing {len(mod_ids)} mods...")
+            logger.info(f"Batch syncing {len(mod_ids)} mods...")
             self.steam_mgr.sync_mods_batch(mod_ids)
             
     def delete_mod(self, mod_id: int, mod: dict, row: int):
@@ -115,7 +120,7 @@ class ModController:
         self.table_mods.removeRow(row)
         if mod in self.mods_data:
             self.mods_data.remove(mod) 
-        print(f"[ModController] Mod {mod_id} deleted via Steamworks.")
+        logger.info(f"Mod {mod_id} deleted via Steamworks.")
 
     def open_mod_folder(self, row, col):
         mod_name_item = self.table_mods.item(row, 0)
@@ -126,8 +131,25 @@ class ModController:
         mod = next((m for m in self.mods_data if m["display_name"] == display_name), None)
         
         if mod and "path" in mod:
-            folder_path = mod["path"]
-            if sys.platform == "win32":
-                os.startfile(folder_path)
-            else:
-                subprocess.run(["xdg-open", folder_path])
+            folder_path = os.path.normpath(mod["path"])
+            
+
+            clean_env = copy.deepcopy(os.environ)
+            
+            if sys.platform != "win32":
+                if "LD_LIBRARY_PATH_ORIG" in clean_env:
+                    clean_env["LD_LIBRARY_PATH"] = clean_env["LD_LIBRARY_PATH_ORIG"]
+                else:
+                    clean_env.pop("LD_LIBRARY_PATH", None)
+                    
+            try:
+                if sys.platform == "win32":
+                    subprocess.Popen(
+                        ["explorer", folder_path], 
+                        env=clean_env, 
+                        creationflags=subprocess.CREATE_NO_WINDOW
+                    )
+                else:
+                    subprocess.Popen(["xdg-open", folder_path], env=clean_env)
+            except Exception as e:
+                logger.error(f"Error opening folder: {e}", exc_info=True)

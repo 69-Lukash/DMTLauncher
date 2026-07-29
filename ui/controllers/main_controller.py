@@ -10,6 +10,7 @@ from ui.controllers.mod_controller import ModController
 from ui.controllers.server_controller import ServerController
 from steam.parser import ModParserWorker
 from game.runner import GameRunner
+from utils.logger import logger
 
 class MainController:
     def __init__(self):
@@ -41,6 +42,10 @@ class MainController:
 
         self.view.settings_panel.combo_sort.setCurrentIndex(self.config_manager.default_sort)
         self.view.settings_panel.combo_sort.currentIndexChanged.connect(self.save_config)
+        
+        lang_index = 1 if self.config_manager.language == "uk_UA" else 0
+        self.view.settings_panel.combo_lang.setCurrentIndex(lang_index)
+        self.view.settings_panel.combo_lang.currentIndexChanged.connect(self.save_config)
 
     def _get_config_path(self):
         if sys.platform == "win32":
@@ -62,6 +67,10 @@ class MainController:
         self.config_manager.nickname = self.view.settings_panel.input_nick.text() or "Survivor"
         self.config_manager.game_path = self.view.settings_panel.input_path.text()
         self.config_manager.default_sort = self.view.settings_panel.combo_sort.currentIndex()
+        
+        lang_idx = self.view.settings_panel.combo_lang.currentIndex()
+        self.config_manager.language = "uk_UA" if lang_idx == 1 else "en_US"
+        
         self.config_manager.save()
         self.server_controller.trigger_apply_local_filters()
 
@@ -172,7 +181,7 @@ class MainController:
                     if "publishedfileid" in detail and "title" in detail:
                         titles[int(detail["publishedfileid"])] = detail["title"]
         except Exception as e:
-            print(f"[Steam API] Error getting mod names: {e}")
+            logger.error(f"Error getting mod names from Steam API: {e}", exc_info=True)
 
         for mod_id in mod_ids:
             mod_name = titles.get(mod_id, f"Mod {mod_id}")
@@ -207,11 +216,11 @@ class MainController:
             GameRunner.launch(self.config_manager, self.mod_controller, server_data, action=action_type)
 
     def show_missing_mods_dialog(self, missing_mods, server_data, action_type):
-        mods_text = "\n".join([m.get("name", m.get("title", "Unknown Mod")) for m in missing_mods])
+        mods_text = "\n".join([m.get("name", m.get("title", self.view.tr("Unknown Mod"))) for m in missing_mods])
         msg = QMessageBox(self.view)
         msg.setIcon(QMessageBox.Icon.Warning)
-        msg.setWindowTitle("Missing Mods")
-        msg.setText(f"Missing {len(missing_mods)} mods for this server. Download them via Steam?")
+        msg.setWindowTitle(self.view.tr("Missing Mods"))
+        msg.setText(self.view.tr("Missing {0} mods for this server. Download them via Steam?").format(len(missing_mods)))
         msg.setDetailedText(mods_text)
         msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
         

@@ -2,6 +2,7 @@ import os
 import re
 from pathlib import Path
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
+from utils.logger import logger
 
 class ModParserSignals(QObject):
     finished = pyqtSignal(list)
@@ -19,8 +20,8 @@ class ModParserWorker(QRunnable):
             for item in path.rglob('*'):
                 if item.is_file() and not item.is_symlink():
                     total_size += item.stat().st_size
-        except OSError:
-            pass
+        except OSError as e:
+            logger.debug(f"Failed to read directory size for {path}: {e}")
         return total_size
 
     def format_size(self, size_bytes: int) -> str:
@@ -36,8 +37,10 @@ class ModParserWorker(QRunnable):
 
     def run(self):
         mods_list = []
+        logger.info("Starting local workshop mods parsing")
         try:
             if not str(self.game_path) or not self.game_path.exists():
+                logger.warning(f"Game path invalid or does not exist: {self.game_path}")
                 self.signals.finished.emit([])
                 return
 
@@ -45,6 +48,7 @@ class ModParserWorker(QRunnable):
             content_dir = steamapps_dir / "workshop" / "content" / self.app_id
 
             if not content_dir.exists():
+                logger.warning(f"Workshop content dir not found at: {content_dir}")
                 self.signals.finished.emit([])
                 return
 
@@ -62,8 +66,8 @@ class ModParserWorker(QRunnable):
                         name_match = re.search(r'name\s*=\s*"([^"]+)"', content, re.IGNORECASE)
                         if name_match:
                             display_name = name_match.group(1)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        logger.debug(f"Failed to parse meta.cpp for {item.name}: {e}")
 
                 size_bytes = self.get_dir_size(item)
 
@@ -76,7 +80,9 @@ class ModParserWorker(QRunnable):
                     "published_id": published_id
                 })
 
+            logger.info(f"Successfully parsed {len(mods_list)} local mods")
             self.signals.finished.emit(mods_list)
             
-        except Exception:
+        except Exception as e:
+            logger.error(f"Critical error while parsing workshop mods: {e}", exc_info=True)
             self.signals.finished.emit([])

@@ -1,6 +1,6 @@
 # DMTL - DayZ MefTeam Launcher
 
-A lightweight and fast custom launcher for DayZ, built with Python.
+A lightweight and fast DayZ server launcher built with **Python (PyQt6)**, featuring a native **Rust** integration for lightning-fast server querying.
 It features direct integration with the Steamworks API for seamless background mod downloading and management without freezing the UI.
 
 ## ✨ Features
@@ -13,6 +13,7 @@ It features direct integration with the Steamworks API for seamless background m
 * 📂 **Quick Mod Access:** Double-click any downloaded mod in the list to open its folder directly in your system's file manager.
 * 🔍 **Mods Management:** Quick search bar to easily find specific local mods by name in the Mods tab.
 * 🎨 **UI & QoL:** Clean dark theme, sortable server lists (by players or A-Z), and instant list refresh capabilities.
+* 🌍 **Localization:** Native multi-language support (English and Ukrainian out of the box) with an easy system to add community translations.
 
 ![DMTL Screenshot](images/image.png)
 
@@ -90,10 +91,13 @@ python3 -m venv venv
 source venv/bin/activate
 ```
 
-**3. Install dependencies:**
+**3. Install dependencies and build the Rust networking module:**
+
+Make sure you have the [Rust toolchain](https://rustup.rs/) installed on your system before running this.
 
 ```bash
 pip install -r requirements.txt
+maturin develop --release -m rust_src/Cargo.toml
 ```
 
 **4. Run the launcher:**
@@ -126,7 +130,7 @@ make build
 **On Windows:**
 
 ```cmd
-pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets;assets" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL" launcher.py
+pyinstaller --noconfirm --onedir --windowed --icon "assets/icon.png" --add-data "assets;assets" --add-data "locales;locales" --add-data "steam_appid.txt;." --add-data "steam_api64.dll;." --add-data "SteamworksPy64.dll;." --name "DMTL" launcher.py
 ```
 
 *(The compiled application will be located in the `dist/DMTL/` folder).*

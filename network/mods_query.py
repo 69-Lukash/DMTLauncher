@@ -1,13 +1,11 @@
+import dmtl_net
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
-import dayzquery
+from utils.logger import logger
 
 class ModsQuerySignals(QObject):
-    # address ("ip:port"), mods (list[dict])
     finished = pyqtSignal(str, list)
 
-
 class ModsQueryWorker(QRunnable):
-
     def __init__(self, ip, query_port, timeout=2.0):
         super().__init__()
         self.address = (ip, query_port)
@@ -16,15 +14,17 @@ class ModsQueryWorker(QRunnable):
 
     def run(self):
         mods = []
+        logger.debug(f"Querying A2S rules (mods) via Rust for {self.address[0]}:{self.address[1]}")
         try:
-            rules = dayzquery.dayz_rules(self.address, timeout=self.timeout)
-
-            for m in rules.mods:
+            _, _, _, rust_mods = dmtl_net.query_server_full(self.address[0], self.address[1])
+            
+            for ws_id, mod_name in rust_mods:
                 mods.append({
-                    "steamWorkshopId": str(m.workshop_id),
-                    "name": m.name,
+                    "steamWorkshopId": ws_id,
+                    "name": mod_name,
                 })
+            logger.info(f"Successfully fetched {len(mods)} mods for {self.address[0]}:{self.address[1]}")
         except Exception as e:
-            print(f"[ModsQuery] Failed to fetch mods for {self.address}: {e}")
+            logger.warning(f"Failed to fetch mods for {self.address[0]}:{self.address[1]}: {e}")
         finally:
             self.signals.finished.emit(f"{self.address[0]}:{self.address[1]}", mods)

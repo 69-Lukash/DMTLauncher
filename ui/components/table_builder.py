@@ -1,6 +1,6 @@
 from PyQt6.QtWidgets import (QTableWidget, QTableWidgetItem, QHeaderView, 
                              QPushButton)
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QCoreApplication
 from PyQt6.QtGui import QFont, QColor
 
 class TableBuilder:
@@ -13,27 +13,66 @@ class TableBuilder:
         self.table_mods.verticalHeader().setDefaultSectionSize(37)
         self.table_servers.verticalHeader().setVisible(False)
         self.table_mods.verticalHeader().setVisible(False)
-        self.table_mods.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        self.table_mods.setColumnHidden(1, True)
+        self.setup_mod_columns()
 
     def setup_table_columns(self, sort_callback=None):
-        from PyQt6.QtWidgets import QHeaderView
         
-        headers = ["Fav", "Server Name", "Map", "IP", "Ping", "Players", "Sync", "Play"]
+        headers = [
+            QCoreApplication.translate("TableBuilder", "Fav"),
+            QCoreApplication.translate("TableBuilder", "Server Name"),
+            QCoreApplication.translate("TableBuilder", "Map"),
+            QCoreApplication.translate("TableBuilder", "IP"),
+            QCoreApplication.translate("TableBuilder", "Ping"),
+            QCoreApplication.translate("TableBuilder", "Players"),
+            QCoreApplication.translate("TableBuilder", "Sync"),
+            QCoreApplication.translate("TableBuilder", "Play")
+        ]
         self.table_servers.setColumnCount(len(headers))
         self.table_servers.setHorizontalHeaderLabels(headers)
         
         self.table_servers.setColumnHidden(3, True)
 
-        self.table_servers.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        self.table_servers.setColumnWidth(0, 40)  # Fav
-        self.table_servers.setColumnWidth(4, 60)  # Ping
-        self.table_servers.setColumnWidth(5, 80)  # Players
-        self.table_servers.setColumnWidth(6, 50)  # Sync
-        self.table_servers.setColumnWidth(7, 90)  # Play
+        header = self.table_servers.horizontalHeader()
+        
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        
+        fm = self.table_servers.fontMetrics()
+        
+        self.table_servers.setColumnWidth(0, max(40, fm.horizontalAdvance(headers[0]) + 15))
+        self.table_servers.setColumnWidth(2, max(140, fm.horizontalAdvance(headers[2]) + 30))
+        self.table_servers.setColumnWidth(4, max(60, fm.horizontalAdvance(headers[4]) + 30))
+        self.table_servers.setColumnWidth(5, max(80, fm.horizontalAdvance(headers[5]) + 30))
+        self.table_servers.setColumnWidth(6, max(50, fm.horizontalAdvance(headers[6]) + 30))
+        self.table_servers.setColumnWidth(7, max(90, fm.horizontalAdvance(headers[7]) + 30))
         
         if sort_callback:
-            self.table_servers.horizontalHeader().sectionClicked.connect(sort_callback)
+            header.sectionClicked.connect(sort_callback)
+
+    def setup_mod_columns(self):
+        
+        headers = [
+            QCoreApplication.translate("TableBuilder", "Name"),
+            QCoreApplication.translate("TableBuilder", "Author"),
+            QCoreApplication.translate("TableBuilder", "Size"),
+            QCoreApplication.translate("TableBuilder", "Sync"),
+            QCoreApplication.translate("TableBuilder", "Delete")
+        ]
+        self.table_mods.setHorizontalHeaderLabels(headers)
+        
+        header = self.table_mods.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        
+        fm = self.table_mods.fontMetrics()
+        
+        size_content_width = fm.horizontalAdvance("999.9 MB") + 35
+        size_header_width = fm.horizontalAdvance(headers[2]) + 30
+        
+        self.table_mods.setColumnWidth(2, max(size_header_width, size_content_width))
+        
+        self.table_mods.setColumnWidth(3, max(80, fm.horizontalAdvance(headers[3]) + 60))
+        self.table_mods.setColumnWidth(4, max(80, fm.horizontalAdvance(headers[4]) + 55))
+        
+        self.table_mods.setColumnHidden(1, True)
 
     def create_item(self, text, center=False):
         item = QTableWidgetItem(str(text))
@@ -62,21 +101,24 @@ class TableBuilder:
         self.table_servers.setItem(row, 4, self.create_item(ping, center=True))
         self.table_servers.setItem(row, 5, self.create_item(players, center=True))
         self.table_servers.setItem(row, 6, self.create_item("🔄", center=True))
-        self.table_servers.setItem(row, 7, self.create_item("⚙ Menu", center=True))
+        self.table_servers.setItem(row, 7, self.create_item(self.table_servers.tr("⚙ Menu"), center=True))
 
     def insert_mod_row(self, name: str, author: str, size: str, mod_click_callback):
+        
         row = self.table_mods.rowCount()
         self.table_mods.insertRow(row)
         self.table_mods.setItem(row, 0, self.create_item(name))
         self.table_mods.setItem(row, 1, self.create_item(author, center=True))
         self.table_mods.setItem(row, 2, self.create_item(size, center=True))
 
-        btn_sync = QPushButton("Sync")
+        sync_text = QCoreApplication.translate("TableBuilder", "Sync")
+        btn_sync = QPushButton(sync_text)
         btn_sync.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_sync.clicked.connect(lambda checked, b=btn_sync: self._handle_mod_btn(b, 3, mod_click_callback))
         self.table_mods.setCellWidget(row, 3, btn_sync)
 
-        btn_delete = QPushButton("Delete")
+        del_text = QCoreApplication.translate("TableBuilder", "Delete")
+        btn_delete = QPushButton(del_text)
         btn_delete.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_delete.clicked.connect(lambda checked, b=btn_delete: self._handle_mod_btn(b, 4, mod_click_callback))
         self.table_mods.setCellWidget(row, 4, btn_delete)

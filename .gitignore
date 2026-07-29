@@ -9,3 +9,4 @@ venv/
 *.spec
 *.git
 *_ui.py
+rust_src/target/

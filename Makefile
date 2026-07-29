@@ -3,6 +3,7 @@
 install:
 	pip install -r requirements.txt
 	pip install pyinstaller
+	maturin develop --release -m rust_src/Cargo.toml
 
 run:
 	python launcher.py
@@ -13,6 +14,7 @@ build: clean install
 		--windowed \
 		--icon "assets/icon.png" \
 		--add-data "assets:assets" \
+		--add-data "locales:locales" \
 		--add-data "steam_appid.txt:." \
 		--add-data "libsteam_api.so:." \
 		--add-data "SteamworksPy.so:." \

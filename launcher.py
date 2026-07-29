@@ -1,3 +1,8 @@
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QTranslator
+from ui.controllers.main_controller import MainController
+from config.manager import ConfigManager
+from pathlib import Path
 import sys
 import os
 
@@ -14,8 +19,6 @@ else:
     current_ld = os.environ.get("LD_LIBRARY_PATH", "")
     if BASE_DIR not in current_ld:
         os.environ["LD_LIBRARY_PATH"] = BASE_DIR + (os.pathsep + current_ld if current_ld else "")
-from PyQt6.QtWidgets import QApplication
-from ui.controllers.main_controller import MainController
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] in ("sync", "delete"):
@@ -24,6 +27,20 @@ if __name__ == "__main__":
         sys.exit(0)
 
     app = QApplication(sys.argv)
+    
+    if sys.platform == "win32":
+        app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
+        cfg_path = os.path.join(app_data, "DMTL", "config.json")
+    else:
+        cfg_path = os.path.join(str(Path.home()), ".config", "DMTL", "config.json")
+        
+    config = ConfigManager(cfg_path)
+    
+    translator = QTranslator()
+    locale_path = os.path.join(BASE_DIR, "locales", f"{config.language}.qm")
+    if os.path.exists(locale_path):
+        translator.load(locale_path)
+        app.installTranslator(translator)
     
     controller = MainController()
     controller.show()

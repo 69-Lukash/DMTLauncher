@@ -2,11 +2,13 @@ import subprocess
 import time
 import sys
 import os
+from utils.logger import logger
 
 class GameRunner:
     @staticmethod
     def launch(config_manager, mod_controller, server_data, action="load"):
         nickname = config_manager.nickname or "Survivor"
+        logger.info(f"Preparing to launch game. Action: {action}, Nickname: {nickname}")
 
         server_mods = server_data.get("mods", [])
         local_mods = mod_controller.mods_data
@@ -29,12 +31,14 @@ class GameRunner:
         if mod_paths:
             mods_str = ";".join(mod_paths)
             game_args.append(f"-mod={mods_str}")
+            logger.debug(f"Loaded {len(mod_paths)} mods for launch")
 
         if action == "play" and server_data:
             ip = str(server_data.get("ip", server_data.get("endpoint", {}).get("ip", "")))
             port = str(server_data.get("gamePort", server_data.get("port", server_data.get("endpoint", {}).get("port", ""))))
             if ip and port:
                 game_args.extend([f"-connect={ip}", f"-port={port}"])
+                logger.info(f"Connecting directly to {ip}:{port}")
 
         if sys.platform == "win32":
             be_exe = os.path.join(config_manager.game_path, "DayZ_BE.exe")
@@ -42,9 +46,10 @@ class GameRunner:
         else:
             cmd = ["steam", "-applaunch", "221100", "-noLauncher"] + game_args
 
-        print(f"[Runner] Launching: {' '.join(cmd)}")
+        logger.info(f"Launch command: {' '.join(cmd)}")
 
         if hasattr(mod_controller, 'steam_mgr'):
+            logger.debug("Disconnecting Steam manager before launch")
             mod_controller.steam_mgr.disconnect()
         time.sleep(1.0)
 
@@ -59,5 +64,6 @@ class GameRunner:
                 creationflags=flags,
                 cwd=run_dir
             )
+            logger.info("Game process started successfully")
         except Exception as e:
-            print(f"Launch error: {e}")
+            logger.error(f"Launch error: Failed to start game process: {e}", exc_info=True)

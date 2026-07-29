@@ -74,6 +74,15 @@ QFrame#settings_panel {
     border-left: 1px solid #1f1133;
 }
 
+QComboBox QAbstractItemView {
+    background-color: #100818;
+    color: white;
+    selection-background-color: rgba(94, 53, 177, 0.4);
+    selection-color: white;
+    border: 1px solid #1f1133;
+    outline: none;
+}
+
 QMenu {
     background-color: #100818;
     border: 1px solid #2b1847;
