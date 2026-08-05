@@ -31,7 +31,7 @@ jobs:
         pip install -r requirements.txt
         pip install pyinstaller
         maturin build --release -m rust_src/Cargo.toml --out wheels
-        pip install --no-index --find-links=wheels dmtl_net
+        pip install --no-index --find-links=wheels dmtl_core
 
     - name: Build on Linux
       if: runner.os == 'Linux'

@@ -1,4 +1,4 @@
-import dmtl_net
+import dmtl_core
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
 from utils.logger import logger
 
@@ -16,7 +16,7 @@ class ModsQueryWorker(QRunnable):
         mods = []
         logger.debug(f"Querying A2S rules (mods) via Rust for {self.address[0]}:{self.address[1]}")
         try:
-            _, _, _, rust_mods = dmtl_net.query_server_full(self.address[0], self.address[1])
+            _, _, _, rust_mods = dmtl_core.query_server_full(self.address[0], self.address[1])
             
             for ws_id, mod_name in rust_mods:
                 mods.append({

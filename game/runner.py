@@ -2,6 +2,7 @@ import subprocess
 import time
 import sys
 import os
+import shlex
 from utils.logger import logger
 
 class GameRunner:
@@ -26,7 +27,7 @@ class GameRunner:
                     
                 mod_paths.append(mod_path)
 
-        game_args = [f"-name={nickname}", "-nosplash", "-noPause"]
+        game_args = [f"-name={nickname}"]
 
         if mod_paths:
             mods_str = ";".join(mod_paths)
@@ -39,6 +40,24 @@ class GameRunner:
             if ip and port:
                 game_args.extend([f"-connect={ip}", f"-port={port}"])
                 logger.info(f"Connecting directly to {ip}:{port}")
+
+        if hasattr(config_manager, 'launch_params') and config_manager.launch_params:
+            import shlex
+            extra_args = shlex.split(config_manager.launch_params)
+            
+            protected_keys = {"-name", "-mod", "-connect", "-port"}
+            
+            for arg in extra_args:
+                arg_key = arg.split('=')[0]
+                
+                if arg_key in protected_keys:
+                    logger.warning(f"Ignored restricted custom param: {arg}")
+                    continue
+                    
+                if arg not in game_args:
+                    game_args.append(arg)
+                    
+            logger.debug(f"Final game_args with custom params: {game_args}")
 
         if sys.platform == "win32":
             be_exe = os.path.join(config_manager.game_path, "DayZ_BE.exe")

@@ -290,5 +290,29 @@
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
+    <message>
+        <source>Mod Cleanup</source>
+        <translation>Очищення модів</translation>
+    </message>
+    <message>
+        <source>Delete all local mods you are not subscribed to on Steam?</source>
+        <translation>Видалити всі локальні моди, на які ви не підписані в Steam?</translation>
+    </message>
+    <message>
+        <source>This will free up disk space, but you will have to download them again if you join a server that uses them.</source>
+        <translation>Це звільнить місце на диску, але файли доведеться качати наново, якщо ви захочете повернутись на сервер, який їх використовує.</translation>
+    </message>
+    <message>
+        <source>🗑️ Cleaning...</source>
+        <translation>🗑️ Очищення...</translation>
+    </message>
+    <message>
+        <source>Done</source>
+        <translation>Готово</translation>
+    </message>
+    <message>
+        <source>Successfully deleted {0} orphaned mods.</source>
+        <translation>Успішно видалено {0} відписаних модів.</translation>
+    </message>
 </context>
 </TS>

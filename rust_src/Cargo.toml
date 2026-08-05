@@ -1,15 +1,16 @@
 [package]
-name = "dmtl_net"
+name = "dmtl_core"
 version = "0.1.0"
 edition = "2021"
 authors = ["Lukash"]
-description = "Fast native A2S networking module for DMTLauncher"
+description = "Fast native core module for DMTLauncher"
 repository = "https://github.com/69-Lukash/DMTLauncher"
 license = "MIT"
 
 [lib]
-name = "dmtl_net"
+name = "dmtl_core"
 crate-type = ["cdylib"]
 
 [dependencies]
-pyo3 = { version = "0.22.0", features = ["extension-module", "abi3-py311"] }
+pyo3 = { version = "0.22.0", features = ["extension-module", "abi3-py311", "generate-import-lib"] }
+jwalk = "0.8.1"

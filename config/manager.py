@@ -10,6 +10,7 @@ class ConfigManager:
         self.favorites = []
         self.language = "en_US"
         self.default_sort = 0
+        self.launch_params = ""
         logger.debug(f"Initializing ConfigManager with path: {config_path}")
         self.load()
 
@@ -27,6 +28,7 @@ class ConfigManager:
                 self.favorites = config.get("favorites", [])
                 self.default_sort = config.get("default_sort", 0)
                 self.language = config.get("language", "en_US")
+                self.launch_params = config.get("launch_params", "")
             logger.info(f"Successfully loaded config from {self.config_path}")
         except (json.JSONDecodeError, IOError) as e:
             logger.error(f"Error reading {self.config_path}. Using defaults. Details: {e}")
@@ -38,7 +40,8 @@ class ConfigManager:
             "game_path": self.game_path,
             "favorites": self.favorites,
             "default_sort": self.default_sort,
-            "language": self.language
+            "language": self.language,
+            "launch_params": self.launch_params
         }
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:

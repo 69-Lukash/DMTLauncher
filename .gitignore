@@ -10,3 +10,4 @@ venv/
 *.git
 *_ui.py
 rust_src/target/
+1.sh

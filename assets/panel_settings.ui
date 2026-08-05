@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>300</width>
-    <height>500</height>
+    <height>530</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -15,7 +15,6 @@
     <widget class="QLabel" name="label_title">
      <property name="font">
       <font>
-       <weight>75</weight>
        <bold>true</bold>
       </font>
      </property>
@@ -58,7 +57,7 @@
    <item>
     <widget class="QLabel" name="label_sort">
      <property name="text">
-      <string>Сортування серверів:</string>
+      <string>Sort by:</string>
      </property>
     </widget>
    </item>
@@ -98,6 +97,40 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_params">
+     <property name="text">
+      <string>Launch Parameters:</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="input_params">
+     <property name="placeholderText">
+      <string>-cpuCount=6 -nosplash</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btn_cleanup">
+     <property name="text">
+      <string>🗑️ Clean Unsubscribed Mods</string>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="btn_about">
+     <property name="text">
+      <string>About DMTL</string>
+     </property>
+     <property name="cursor">
+      <cursorShape>PointingHandCursor</cursorShape>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="linux_warning">
      <property name="text">
       <string>Make sure to force a Steam Play compatibility tool in DayZ properties.</string>
@@ -109,8 +142,15 @@
    </item>
    <item>
     <spacer name="verticalSpacer">
-     <property name="orientation"><enum>Qt::Vertical</enum></property>
-     <property name="sizeHint" stdset="0"><size><width>20</width><height>40</height></size></property>
+     <property name="orientation">
+      <enum>Qt::Orientation::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
     </spacer>
    </item>
   </layout>

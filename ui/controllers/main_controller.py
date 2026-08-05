@@ -62,17 +62,29 @@ class MainController:
         self.view.settings_panel.input_nick.editingFinished.connect(self.save_config)
         self.view.settings_panel.input_path.editingFinished.connect(self.save_config)
         self.view.settings_panel.btn_browse.clicked.connect(self.browse_path)
+        if hasattr(self.view.settings_panel, 'input_params'):
+            self.view.settings_panel.input_params.setText(self.config_manager.launch_params)
+            self.view.settings_panel.input_params.editingFinished.connect(self.save_config)
+            
+        if hasattr(self.view.settings_panel, 'btn_about'):
+            self.view.settings_panel.btn_about.clicked.connect(self.show_about_dialog)
+
+        if hasattr(self.view.settings_panel, 'btn_cleanup'):
+            self.view.settings_panel.btn_cleanup.clicked.connect(self.prompt_mod_cleanup)
 
     def save_config(self):
         self.config_manager.nickname = self.view.settings_panel.input_nick.text() or "Survivor"
         self.config_manager.game_path = self.view.settings_panel.input_path.text()
-        self.config_manager.default_sort = self.view.settings_panel.combo_sort.currentIndex()
+        if hasattr(self.view.settings_panel, 'input_params'):
+            self.config_manager.launch_params = self.view.settings_panel.input_params.text()
+        
         
         lang_idx = self.view.settings_panel.combo_lang.currentIndex()
         self.config_manager.language = "uk_UA" if lang_idx == 1 else "en_US"
         
         self.config_manager.save()
         self.server_controller.trigger_apply_local_filters()
+        
 
     def browse_path(self):
         from PyQt6.QtWidgets import QFileDialog
@@ -241,5 +253,62 @@ class MainController:
                 
             QMessageBox.information(self.view, "Downloading", "Mods added to Steam downloads! Check the Mods tab for progress.")
 
+    def show_about_dialog(self):
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.about(
+            self.view,
+            self.view.tr("About DMTL"),
+            "<h3>DMTL - DayZ MefTeam Launcher</h3>"
+            "<p>Custom launcher for DayZ.</p>"
+            "<p><a href='https://github.com/69-Lukash/DMTLauncher'>https://github.com/69-Lukash/DMTLauncher</a></p>"
+            "<p><b>Credits:</b></p>"
+            "<ul>"
+            "<li>Thanks to everyone who helped with testing.</li>"
+            "<li>Thanks to Kolyakvas for help with the icon.</li>"
+            "</ul>"
+        )
+
+    def prompt_mod_cleanup(self):
+        from PyQt6.QtWidgets import QMessageBox
+        
+        msg = QMessageBox(self.view)
+        msg.setIcon(QMessageBox.Icon.Warning)
+        msg.setWindowTitle(self.view.tr("Mod Cleanup"))
+        msg.setText(self.view.tr("Delete all local mods you are not subscribed to on Steam?"))
+        msg.setInformativeText(self.view.tr("This will free up disk space, but you will have to download them again if you join a server that uses them."))
+        msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.Cancel)
+        
+        if msg.exec() == QMessageBox.StandardButton.Yes:
+            self.run_mod_cleanup()
+
+    def run_mod_cleanup(self):
+        if not self.config_manager.game_path:
+            return
+            
+        from steam.parser import ModCleanupWorker
+        
+        self.view.settings_panel.btn_cleanup.setEnabled(False)
+        self.view.settings_panel.btn_cleanup.setText(self.view.tr("🗑️ Cleaning..."))
+        
+        worker = ModCleanupWorker(self.config_manager.game_path)
+        worker.setAutoDelete(False)
+        worker.signals.finished.connect(self.on_cleanup_finished)
+        self.active_workers.append(worker)
+        self.thread_pool.start(worker)
+
+    def on_cleanup_finished(self, deleted_count):
+        from PyQt6.QtWidgets import QMessageBox
+        
+        self.view.settings_panel.btn_cleanup.setEnabled(True)
+        self.view.settings_panel.btn_cleanup.setText(self.view.tr("🗑️ Clean Unsubscribed Mods"))
+        
+        QMessageBox.information(
+            self.view, 
+            self.view.tr("Done"), 
+            self.view.tr("Successfully deleted {0} orphaned mods.").format(deleted_count)
+        )
+        
+        self.fetch_local_mods()
+    
     def show(self):
         self.view.show()
