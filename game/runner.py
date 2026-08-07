@@ -35,8 +35,8 @@ class GameRunner:
             logger.debug(f"Loaded {len(mod_paths)} mods for launch")
 
         if action == "play" and server_data:
-            ip = str(server_data.get("ip", server_data.get("endpoint", {}).get("ip", "")))
-            port = str(server_data.get("gamePort", server_data.get("port", server_data.get("endpoint", {}).get("port", ""))))
+            ip = str(server_data.get("ip", ""))
+            port = str(server_data.get("gamePort", ""))
             if ip and port:
                 game_args.extend([f"-connect={ip}", f"-port={port}"])
                 logger.info(f"Connecting directly to {ip}:{port}")

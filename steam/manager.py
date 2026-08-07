@@ -35,14 +35,9 @@ class SteamManager:
                     else:
                         os.chdir(work_dir)
                         
-                        if sys.platform == "win32":
-                            app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
-                            log_dir = os.path.join(app_data, "DMTL")
-                        else:
-                                from pathlib import Path
-                                log_dir = os.path.join(str(Path.home()), ".config", "DMTL")
-
-                        os.makedirs(log_dir, exist_ok=True)
+                        from utils.paths import get_data_dir
+                        log_dir = get_data_dir()
+                        
                         log_path = os.path.join(log_dir, "steam_worker.log")
                         log_fd = os.open(log_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
                         
@@ -50,7 +45,13 @@ class SteamManager:
                         os.dup2(log_fd, sys.stdout.fileno())
                         os.dup2(log_fd, sys.stderr.fileno())
                         
-                        os.execv(sys.executable, exec_args)
+                        try:
+                            os.execv(sys.executable, exec_args)
+                        except Exception as e:
+                            with open(log_path, "a") as f:
+                                f.write(f"FATAL: execv failed: {e}\n")
+                        finally:
+                            os._exit(1)
             except Exception as e:
                 logger.error(f"Fork failed in SteamManager: {e}", exc_info=True)
         else:

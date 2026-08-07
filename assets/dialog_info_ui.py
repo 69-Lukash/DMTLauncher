@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL/assets/dialog_info.ui'
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL-dev/assets/dialog_info.ui'
 #
 # Created by: PyQt6 UI code generator 6.11.0
 #

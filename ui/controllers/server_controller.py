@@ -10,6 +10,7 @@ from ui.views.dialog_info import ServerInfoDialog
 from ui.components.table_loader import TableLoader
 from utils.logger import logger
 
+
 class ServerController:
     def __init__(self, view, config_manager, launch_callback):
         self.view = view
@@ -43,19 +44,24 @@ class ServerController:
         self.view.tab_servers.btn_refresh.clicked.connect(self.fetch_global_database)
 
     def fetch_global_database(self):
+
         self.table_servers.setRowCount(0)
         self.table_builder.insert_server_row(False, QCoreApplication.translate("ServerController", "Downloading servers..."), "", "", "", "")
         
         worker = DZSAWorker()
         worker.setAutoDelete(False)
-        worker.signals.finished.connect(self.on_database_downloaded)
+        worker.signals.finished.connect(lambda data, w=worker: self.on_database_downloaded(data, w))
         self.active_workers.append(worker)
         self.thread_pool.start(worker)
 
-    def on_database_downloaded(self, data):
+    def on_database_downloaded(self, data, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+            
         self.all_servers = data
+        
         self.trigger_apply_local_filters()
-
+        
     def trigger_apply_local_filters(self):
         if not self.all_servers: return
         search_text = self.view.tab_servers.search_bar.text()
@@ -111,6 +117,7 @@ class ServerController:
                     self.thread_pool.start(pinger)
                 except ValueError: 
                     logger.warning(f"Invalid IP:Port format encountered: {address}")
+                
 
     def update_ping_in_table(self, address, ping_ms, players_str, day_time, worker=None):
         for row in range(self.table_servers.rowCount()):
@@ -190,8 +197,9 @@ class ServerController:
             return
 
         if action in ("play", "load"):
-            self.launch_callback(server_data, action)
-            
+            self._fetch_mods_then(ip_item, server_data,
+                lambda sd, act=action: self.launch_callback(sd, act))
+
         elif action == "info":
             try:
                 ip, port = ip_item.split(":")
@@ -205,6 +213,32 @@ class ServerController:
                 self.thread_pool.start(pinger)
             except ValueError:
                 logger.warning(f"Invalid IP:Port format encountered: {ip_item}")
+
+    def _fetch_mods_then(self, address, server_data, on_done):
+        try:
+            ip, port = address.split(":")
+            port = int(port)
+        except ValueError:
+            logger.warning(f"Invalid IP:Port format encountered: {address}")
+            on_done(server_data)
+            return
+
+        mods_worker = ModsQueryWorker(ip, port)
+        mods_worker.setAutoDelete(False)
+        mods_worker.signals.finished.connect(
+            lambda addr, mods, sd=server_data, cb=on_done, w=mods_worker:
+            self._on_live_mods(mods, sd, cb, w)
+        )
+        self.active_workers.append(mods_worker)
+        self.thread_pool.start(mods_worker)
+
+    def _on_live_mods(self, mods, server_data, on_done, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+
+        merged = dict(server_data)
+        merged["mods"] = mods
+        on_done(merged)
 
     def show_fresh_info(self, address, ping, players_str, day_time, server_data, row, worker=None):
         if worker and worker in self.active_workers:
@@ -222,9 +256,14 @@ class ServerController:
                 
         if day_time:
             server_data['dayTime'] = day_time
-            
-        dialog = ServerInfoDialog(server_data, ping, self.view)
-        dialog.exec()
+
+        self._fetch_mods_then(address, server_data, self._show_info_dialog_with_ping(ping))
+
+    def _show_info_dialog_with_ping(self, ping):
+        def _show(server_data):
+            dialog = ServerInfoDialog(server_data, ping, self.view)
+            dialog.exec()
+        return _show
 
     def prompt_direct_connect(self):
         from PyQt6.QtWidgets import QInputDialog, QMessageBox

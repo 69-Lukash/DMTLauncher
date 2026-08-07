@@ -13,6 +13,9 @@ class TableBuilder:
         self.table_mods.verticalHeader().setDefaultSectionSize(37)
         self.table_servers.verticalHeader().setVisible(False)
         self.table_mods.verticalHeader().setVisible(False)
+        self.star_font = QFont()
+        self.star_font.setPointSize(18)
+        
         self.setup_mod_columns()
 
     def setup_table_columns(self, sort_callback=None):
@@ -86,12 +89,10 @@ class TableBuilder:
         row = self.table_servers.rowCount()
         self.table_servers.insertRow(row)
         
-        star_font = QFont()
-        star_font.setPointSize(18)
-        
         fav_icon = "★" if is_fav else "☆"
         item_fav = self.create_item(fav_icon, center=True)
-        item_fav.setFont(star_font)
+        
+        item_fav.setFont(self.star_font)
         item_fav.setForeground(QColor("yellow") if is_fav else QColor("gray"))
         
         self.table_servers.setItem(row, 0, item_fav)

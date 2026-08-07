@@ -35,11 +35,11 @@ class TableLoader(QObject):
         
         for s in batch:
             name = str(s.get("name", "Unknown Server"))
-            ip = str(s.get("ip", s.get("endpoint", {}).get("ip", "")))
-            port = str(s.get("port", s.get("endpoint", {}).get("port", 0)))
-            players = f"{s.get('players', 0)}/{s.get('maxplayers', s.get('maxPlayers', 0))}"
+            ip = str(s.get("ip", ""))
+            port = str(s.get("port", 0))
+            players = f"{s.get('players', 0)}/{s.get('maxplayers', 0)}"
             
-            map_name = str(s.get("map", s.get("mission", "Chernarus"))).title()
+            map_name = str(s.get("map", "Chernarus")).title()
             
             full_address = f"{ip}:{port}"
             is_fav = (getattr(self.mw, "favorites", []) is not None) and (full_address in self.mw.favorites)

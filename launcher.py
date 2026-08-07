@@ -20,6 +20,7 @@ else:
     if BASE_DIR not in current_ld:
         os.environ["LD_LIBRARY_PATH"] = BASE_DIR + (os.pathsep + current_ld if current_ld else "")
 
+
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] in ("sync", "delete"):
         from steam.cmd_worker import main
@@ -29,7 +30,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     
     if sys.platform == "win32":
-        app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
+        app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA') or os.path.expanduser('~')
         cfg_path = os.path.join(app_data, "DMTL", "config.json")
     else:
         cfg_path = os.path.join(str(Path.home()), ".config", "DMTL", "config.json")

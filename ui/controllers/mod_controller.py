@@ -62,6 +62,10 @@ class ModController:
                 mod.get("size", "0 B"), 
                 self.handle_mod_action 
             )
+            row = self.table_mods.rowCount() - 1
+            mod_id = mod.get("published_id")
+            if mod_id:
+                self.table_mods.item(row, 0).setData(Qt.ItemDataRole.UserRole, str(mod_id))
 
     def update_download_progress(self):
         for row in range(self.table_mods.rowCount()):
@@ -82,7 +86,9 @@ class ModController:
             return
             
         display_name = mod_name_item.text()
-        mod = next((m for m in self.mods_data if m["display_name"] == display_name), None)
+        target_id = mod_name_item.data(Qt.ItemDataRole.UserRole)
+        
+        mod = next((m for m in self.mods_data if str(m.get("published_id")) == str(target_id)), None)
         
         if not mod or not mod.get("published_id"):
             logger.warning(f"Valid Steam ID not found for {display_name}.")
@@ -127,8 +133,8 @@ class ModController:
         if not mod_name_item:
             return
             
-        display_name = mod_name_item.text().replace("⬇️ ", "").replace(" [Downloading...]", "")
-        mod = next((m for m in self.mods_data if m["display_name"] == display_name), None)
+        target_id = mod_name_item.data(Qt.ItemDataRole.UserRole)
+        mod = next((m for m in self.mods_data if str(m.get("published_id")) == str(target_id)), None)
         
         if mod and "path" in mod:
             folder_path = os.path.normpath(mod["path"])

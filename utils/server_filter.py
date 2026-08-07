@@ -10,7 +10,7 @@ def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode
     filtered = []
     for s in all_servers:
         name = str(s.get("name", "")).lower()
-        map_val = str(s.get("map", s.get("mission", ""))).lower()
+        map_val = str(s.get("map", "")).lower()
 
         if query and query not in name:
             continue
@@ -25,8 +25,8 @@ def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode
         filtered.sort(key=lambda x: str(x.get("name", "")).lower())
     
     def is_favorite(server_dict):
-        ip = str(server_dict.get("ip", server_dict.get("endpoint", {}).get("ip", "")))
-        port = str(server_dict.get("port", server_dict.get("endpoint", {}).get("port", 0)))
+        ip = str(server_dict.get("ip", ""))
+        port = str(server_dict.get("port", 0))
         address = f"{ip}:{port}"
         return address in favorites
         

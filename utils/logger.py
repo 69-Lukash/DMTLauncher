@@ -1,16 +1,12 @@
 import os
 import sys
 import logging
+
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
+from utils.paths import get_data_dir
 
 def setup_logger() -> logging.Logger:
-    if sys.platform == "win32":
-        app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
-        log_dir = os.path.join(app_data, "DMTL", "logs")
-    else:
-        log_dir = os.path.join(str(Path.home()), ".config", "DMTL", "logs")
-    
+    log_dir = os.path.join(get_data_dir(), "logs")
     os.makedirs(log_dir, exist_ok=True)
 
     logger = logging.getLogger("DMTLauncher")

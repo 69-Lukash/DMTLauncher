@@ -12,8 +12,15 @@ use std::time::{Duration, Instant};
 /// Reads packets from the socket. Reassembles them if the server split the payload.
 fn receive_packet(socket: &UdpSocket) -> Result<Vec<u8>, std::io::Error> {
     let mut packets: HashMap<u8, Vec<u8>> = HashMap::new();
+    
+    let start = std::time::Instant::now();
+    let timeout = std::time::Duration::from_millis(2500);
 
     loop {
+        if start.elapsed() > timeout {
+            return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "Packet reassembly timed out"));
+        }
+
         let mut buf = [0u8; 4096];
         let (amt, _) = socket.recv_from(&mut buf)?;
         let data = &buf[..amt];

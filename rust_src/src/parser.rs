@@ -126,41 +126,14 @@ pub fn clean_orphan_mods(py: Python<'_>, game_path_str: String) -> PyResult<usiz
             return Ok(0);
         }
 
-        let acf_content = std::fs::read_to_string(acf_path).unwrap_or_default();
+       let acf_content = std::fs::read_to_string(acf_path).unwrap_or_default();
         let mut valid_ids = std::collections::HashSet::new();
         
-        let mut in_details_section = false;
-        let mut depth = 0;
-
-        for line in acf_content.lines() {
-            let trimmed = line.trim();
-            
-            if trimmed.contains("\"WorkshopItemDetails\"") {
-                in_details_section = true;
-                continue;
-            }
-            
-            if in_details_section {
-                if trimmed == "{" {
-                    depth += 1;
-                    continue;
-                }
-                if trimmed == "}" {
-                    depth -= 1;
-                    if depth <= 0 {
-                        break;
-                    }
-                    continue;
-                }
-                
-                if depth == 1 && trimmed.starts_with('"') {
-                    let parts: Vec<&str> = trimmed.split('"').collect();
-                    if parts.len() >= 3 {
-                        let id = parts[1];
-                        if !id.is_empty() && id.chars().all(|c| c.is_ascii_digit()) {
-                            valid_ids.insert(id.to_string());
-                        }
-                    }
+        let mut parts = acf_content.split('"');
+        while let Some(_outside) = parts.next() {
+            if let Some(inside_quotes) = parts.next() {
+                if inside_quotes.len() >= 4 && inside_quotes.chars().all(|c| c.is_ascii_digit()) {
+                    valid_ids.insert(inside_quotes.to_string());
                 }
             }
         }

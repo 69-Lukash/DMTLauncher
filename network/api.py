@@ -23,11 +23,27 @@ class DZSAWorker(QRunnable):
             with urllib.request.urlopen(req, timeout=15, context=context) as response:
                 data = json.loads(response.read().decode('utf-8'))
 
-            server_list = []
+            raw_list = []
             if isinstance(data, list):
-                server_list = data
+                raw_list = data
             elif isinstance(data, dict):
-                server_list = data.get("result", data.get("servers", data.get("data", [])))
+                raw_list = data.get("result", data.get("servers", data.get("data", [])))
+
+            server_list = []
+            for s in raw_list:
+                endpoint = s.get("endpoint", {})
+                server_list.append({
+                    "name": s.get("name", "Unknown Server"),
+                    "ip": s.get("ip", endpoint.get("ip", "")),
+                    "port": s.get("port", endpoint.get("port", 0)),
+                    "gamePort": s.get("gamePort", s.get("port", endpoint.get("port", 0))),
+                    "queryPort": s.get("queryPort", s.get("port", 0)),
+                    "players": s.get("players", 0),
+                    "maxplayers": s.get("maxplayers", s.get("maxPlayers", 0)),
+                    "map": s.get("map", s.get("mission", "Chernarus")),
+                    "password": s.get("password", False),
+                    "country": s.get("country", "Unknown")
+                })
 
             logger.info(f"Successfully loaded {len(server_list)} servers from API")
             self.signals.finished.emit(server_list)

@@ -26,14 +26,15 @@ class ServerInfoDialog(QDialog):
 
     def populate_data(self):
         name = str(self.server_data.get("name", "Unknown Server"))
-        ip = str(self.server_data.get("ip", self.server_data.get("endpoint", {}).get("ip", "")))
-        port = str(self.server_data.get("gamePort", self.server_data.get("port", self.server_data.get("endpoint", {}).get("port", ""))))
+        ip = str(self.server_data.get("ip", ""))
+        port = str(self.server_data.get("gamePort", ""))
         self.address = f"{ip}:{port}"
         
-        players = f"{self.server_data.get('players', 0)}/{self.server_data.get('maxplayers', self.server_data.get('maxPlayers', 0))}"
+        players = f"{self.server_data.get('players', 0)}/{self.server_data.get('maxplayers', 0)}"
         is_password = self.server_data.get("password", False)
-        time = str(self.server_data.get("dayTime", self.server_data.get("time", "Unknown")))
-        location = str(self.server_data.get("country", "Unknown"))
+        
+        time = str(self.server_data.get("dayTime", "Unknown"))
+        country = str(self.server_data.get("country", "Unknown"))
         mods = self.server_data.get("mods", [])
 
         html_content = f"""
@@ -44,7 +45,7 @@ class ServerInfoDialog(QDialog):
             <p style="margin: 4px 0;"><b>Players:</b> {players}</p>
             <p style="margin: 4px 0;"><b>Password:</b> {"Yes 🔒" if is_password else "No 🔓"}</p>
             <p style="margin: 4px 0;"><b>In-Game Time:</b> {time}</p>
-            <p style="margin: 4px 0;"><b>Location:</b> {location}</p>
+            <p style="margin: 4px 0;"><b>Country:</b> {country}</p>
             <p style="margin: 4px 0;"><b>Mods Count:</b> {len(mods)}</p>
         </div>
         """

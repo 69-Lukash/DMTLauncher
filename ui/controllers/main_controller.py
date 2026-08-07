@@ -1,7 +1,7 @@
 import os
-import sys
 from pathlib import Path
 from PyQt6.QtWidgets import QMessageBox
+from utils.paths import get_data_dir
 from PyQt6.QtCore import QThreadPool, QFileSystemWatcher, QTimer
 
 from ui.views.main_window import DMTLMainWindow
@@ -11,6 +11,7 @@ from ui.controllers.server_controller import ServerController
 from steam.parser import ModParserWorker
 from game.runner import GameRunner
 from utils.logger import logger
+from utils.paths import get_data_dir
 
 class MainController:
     def __init__(self):
@@ -28,8 +29,10 @@ class MainController:
         
         self.mod_watcher = QFileSystemWatcher()
         self.mod_watcher.directoryChanged.connect(self.on_workshop_changed)
-        self.download_timer = QTimer()
-        self.download_timer.timeout.connect(self.check_downloads)
+        self.dl_update_timer = QTimer()
+        self.dl_update_timer.setSingleShot(True)
+        self.dl_update_timer.timeout.connect(self.check_downloads)
+        
         self.mod_update_timer = QTimer()
         self.mod_update_timer.setSingleShot(True)
         self.mod_update_timer.timeout.connect(self.fetch_local_mods)
@@ -48,13 +51,7 @@ class MainController:
         self.view.settings_panel.combo_lang.currentIndexChanged.connect(self.save_config)
 
     def _get_config_path(self):
-        if sys.platform == "win32":
-            app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA')
-            data_dir = os.path.join(app_data, "DMTL")
-        else:
-            data_dir = os.path.join(str(Path.home()), ".config", "DMTL")
-        os.makedirs(data_dir, exist_ok=True)
-        return os.path.join(data_dir, "config.json")
+        return os.path.join(get_data_dir(), "config.json")
 
     def _setup_connections(self):
         self.view.settings_panel.input_nick.setText(self.config_manager.nickname)
@@ -78,10 +75,13 @@ class MainController:
         if hasattr(self.view.settings_panel, 'input_params'):
             self.config_manager.launch_params = self.view.settings_panel.input_params.text()
         
+        self.config_manager.default_sort = self.view.settings_panel.combo_sort.currentIndex()
         
         lang_idx = self.view.settings_panel.combo_lang.currentIndex()
         self.config_manager.language = "uk_UA" if lang_idx == 1 else "en_US"
-        
+
+        self.config_manager.default_sort = self.view.settings_panel.combo_sort.currentIndex()
+
         self.config_manager.save()
         self.server_controller.trigger_apply_local_filters()
         
@@ -100,23 +100,27 @@ class MainController:
         
         game_path = Path(self.config_manager.game_path)
         workshop_dir = game_path.parents[1] / "workshop" / "content" / "221100"
+        downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
         
-        if workshop_dir.exists():
-            watched_dirs = self.mod_watcher.directories()
-            if str(workshop_dir) not in watched_dirs:
-                if watched_dirs:
-                    self.mod_watcher.removePaths(watched_dirs)
-                self.mod_watcher.addPath(str(workshop_dir))
+        dirs_to_watch = []
+        if workshop_dir.exists(): dirs_to_watch.append(str(workshop_dir))
+        if downloads_dir.exists(): dirs_to_watch.append(str(downloads_dir))
+        
+        watched_dirs = self.mod_watcher.directories()
+        for d in dirs_to_watch:
+            if d not in watched_dirs:
+                self.mod_watcher.addPath(d)
         
         worker = ModParserWorker(self.config_manager.game_path)
         worker.setAutoDelete(False)
-        worker.signals.finished.connect(self.on_mods_loaded)
+        worker.signals.finished.connect(
+            lambda mods_data, w=worker: self.on_mods_loaded(mods_data, w)
+        )
         self.active_workers.append(worker)
         self.thread_pool.start(worker)
 
     def check_downloads(self):
         if not self.mod_controller.downloading_mods:
-            self.download_timer.stop()
             return
             
         game_path = Path(self.config_manager.game_path)
@@ -199,13 +203,19 @@ class MainController:
             mod_name = titles.get(mod_id, f"Mod {mod_id}")
             self.mod_controller.downloading_mods[mod_id] = {"name": mod_name, "size": "0 B"}
             
-        self.download_timer.start(500)
+        self.check_downloads()
         self.mod_controller.render_mods()
 
     def on_workshop_changed(self, path):
-        self.mod_update_timer.start(2000)
+        if "downloads" in path:
+            self.dl_update_timer.start(1000)
+        else:
+            self.mod_update_timer.start(2000)
 
-    def on_mods_loaded(self, mods_data):
+    def on_mods_loaded(self, mods_data, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+
         self.mod_controller.set_mods_data(mods_data)
         if self.pending_launch:
             target_server, action_type = self.pending_launch
@@ -249,7 +259,7 @@ class MainController:
             if mod_ids:
                 self.mod_controller.steam_mgr.sync_mods_batch(mod_ids)
                 self.mod_controller.render_mods()
-                self.download_timer.start(500)
+                self.check_downloads()
                 
             QMessageBox.information(self.view, "Downloading", "Mods added to Steam downloads! Check the Mods tab for progress.")
 
@@ -292,12 +302,13 @@ class MainController:
         
         worker = ModCleanupWorker(self.config_manager.game_path)
         worker.setAutoDelete(False)
-        worker.signals.finished.connect(self.on_cleanup_finished)
+        worker.signals.finished.connect(lambda count, w=worker: self.on_cleanup_finished(count, w))
         self.active_workers.append(worker)
         self.thread_pool.start(worker)
 
-    def on_cleanup_finished(self, deleted_count):
-        from PyQt6.QtWidgets import QMessageBox
+    def on_cleanup_finished(self, deleted_count, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
         
         self.view.settings_panel.btn_cleanup.setEnabled(True)
         self.view.settings_panel.btn_cleanup.setText(self.view.tr("🗑️ Clean Unsubscribed Mods"))
