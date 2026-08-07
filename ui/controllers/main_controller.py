@@ -1,9 +1,11 @@
 import os
 from pathlib import Path
+from PyQt6.QtWidgets import QLabel
+from PyQt6.QtCore import Qt
+
 from PyQt6.QtWidgets import QMessageBox
 from utils.paths import get_data_dir
 from PyQt6.QtCore import QThreadPool, QFileSystemWatcher, QTimer
-
 from ui.views.main_window import DMTLMainWindow
 from config.manager import ConfigManager
 from ui.controllers.mod_controller import ModController
@@ -12,6 +14,12 @@ from steam.parser import ModParserWorker
 from game.runner import GameRunner
 from utils.logger import logger
 from utils.paths import get_data_dir
+from network.updater import UpdateCheckWorker
+
+try:
+    from version import __version__ as CURRENT_VERSION
+except ImportError:
+    CURRENT_VERSION = "dev"
 
 class MainController:
     def __init__(self):
@@ -32,6 +40,17 @@ class MainController:
         self.dl_update_timer = QTimer()
         self.dl_update_timer.setSingleShot(True)
         self.dl_update_timer.timeout.connect(self.check_downloads)
+
+        self.version_label = QLabel(f"v{CURRENT_VERSION}")
+        self.version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.version_label.setStyleSheet("color: #8c76a8; margin-top: 10px; margin-bottom: 5px;")
+        
+        self.version_label.setOpenExternalLinks(True)
+        
+        layout = self.view.settings_panel.layout()
+        layout.insertWidget(layout.count() - 1, self.version_label)
+
+        self.check_for_updates()
         
         self.mod_update_timer = QTimer()
         self.mod_update_timer.setSingleShot(True)
@@ -320,6 +339,22 @@ class MainController:
         )
         
         self.fetch_local_mods()
+
+    def check_for_updates(self):
+        worker = UpdateCheckWorker(CURRENT_VERSION)
+        worker.setAutoDelete(False)
+        worker.signals.update_available.connect(
+            lambda ver, url, w=worker: self.show_update_in_settings(ver, url, w)
+        )
+        self.active_workers.append(worker)
+        self.thread_pool.start(worker)
+
+    def show_update_in_settings(self, latest_version, release_url, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+            
+        html = f'<span style="color: #f44336; text-decoration: line-through;">v{CURRENT_VERSION}</span> &gt;&gt; <a href="{release_url}" style="color: #4CAF50; text-decoration: none; font-weight: bold;">v{latest_version}</a>'
+        self.version_label.setText(html)
     
     def show(self):
         self.view.show()

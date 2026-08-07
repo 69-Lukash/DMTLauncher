@@ -25,6 +25,16 @@ jobs:
       with:
         python-version: '3.11'
 
+    - name: Inject version from tag
+      shell: bash
+      run: |
+        if [[ $GITHUB_REF == refs/tags/v* ]]; then
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "__version__ = '$VERSION'" > version.py
+        else
+          echo "__version__ = 'dev'" > version.py
+        fi
+
     - name: Install dependencies and build Rust module
       run: |
         python -m pip install --upgrade pip
