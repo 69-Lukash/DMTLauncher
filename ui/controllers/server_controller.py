@@ -1,3 +1,4 @@
+import time
 from PyQt6.QtWidgets import QMenu, QMessageBox
 from PyQt6.QtCore import Qt, QThreadPool, QTimer, QCoreApplication
 from PyQt6.QtGui import QColor
@@ -42,11 +43,11 @@ class ServerController:
         self.view.tab_servers.search_map.textChanged.connect(self.trigger_apply_local_filters)
         self.view.btn_direct_connect.clicked.connect(self.prompt_direct_connect)
         self.view.tab_servers.btn_refresh.clicked.connect(self.fetch_global_database)
+        self.view.tab_servers.check_last_played.stateChanged.connect(self.trigger_apply_local_filters)
 
     def fetch_global_database(self):
-
         self.table_servers.setRowCount(0)
-        self.table_builder.insert_server_row(False, QCoreApplication.translate("ServerController", "Downloading servers..."), "", "", "", "")
+        self.table_builder.insert_server_row(False, QCoreApplication.translate("ServerController", "Downloading servers..."), "", "", "", "", "")
         
         worker = DZSAWorker()
         worker.setAutoDelete(False)
@@ -66,13 +67,16 @@ class ServerController:
         if not self.all_servers: return
         search_text = self.view.tab_servers.search_bar.text()
         map_text = self.view.tab_servers.search_map.text()
+        sort_lp = self.view.tab_servers.check_last_played.isChecked()
         
         worker = FilterWorker(
             self.all_servers, 
             search_text, 
             map_text, 
             self.favorites, 
-            self.config_manager.default_sort
+            self.config_manager.last_played,
+            self.config_manager.default_sort,
+            sort_lp
         )
         worker.setAutoDelete(False)
         worker.signals.finished.connect(
@@ -157,7 +161,7 @@ class ServerController:
                 self.config_manager.add_favorite(ip_item)
             self.favorites = self.config_manager.get_favorites()
             
-        elif col == 6:
+        elif col == 7:
             try:
                 ip, port = ip_item.split(":")
                 pinger = PingWorker(ip, int(port))
@@ -170,7 +174,7 @@ class ServerController:
             except ValueError:
                 logger.warning(f"Invalid IP:Port format encountered: {ip_item}")
             
-        elif col == 7:
+        elif col == 8:
             menu = QMenu(self.table_servers)
             menu.setCursor(Qt.CursorShape.PointingHandCursor)
             menu.addAction("▶ Play").triggered.connect(lambda: self.handle_server_action(row, "play"))
@@ -197,6 +201,9 @@ class ServerController:
             return
 
         if action in ("play", "load"):
+            self.config_manager.last_played[ip_item] = time.time()
+            self.config_manager.save()
+
             self._fetch_mods_then(ip_item, server_data,
                 lambda sd, act=action: self.launch_callback(sd, act))
 

@@ -15,6 +15,10 @@ class ServerInfoDialog(QDialog):
     
         ui_path = os.path.join(BASE_DIR, 'assets', 'dialog_info.ui')
         uic.loadUi(ui_path, self)
+
+        self.setSizeGripEnabled(True)
+        self.setMinimumSize(400, 500)
+        self.setWindowFlags(self.windowFlags() | Qt.WindowType.WindowMaximizeButtonHint)
         
         self.server_data = server_data
         self.ping = ping
@@ -23,6 +27,7 @@ class ServerInfoDialog(QDialog):
         self.populate_data()
         
         self.btn_copy_ip.clicked.connect(self.copy_modlist)
+        self.btn_save_preset.clicked.connect(self.save_as_preset)
 
     def populate_data(self):
         name = str(self.server_data.get("name", "Unknown Server"))
@@ -65,3 +70,35 @@ class ServerInfoDialog(QDialog):
             QApplication.clipboard().setText("\n".join(mods))
         else:
             QApplication.clipboard().setText("No mods")
+
+    def save_as_preset(self):
+        preset_name = self.server_data.get("name", "Server Preset").strip()
+        if len(preset_name) > 30:
+            preset_name = preset_name[:27] + "..."
+            
+        mods = []
+        for mod in self.server_data.get("mods", []):
+            mod_id = str(mod.get("fileId", mod.get("steamWorkshopId", "")))
+            if mod_id.isdigit():
+                mods.append(int(mod_id))
+                
+        import os
+        import dmtl_core
+        from utils.paths import get_data_dir
+        from PyQt6.QtWidgets import QMessageBox
+        
+        presets_dir = os.path.join(get_data_dir(), "presets")
+        os.makedirs(presets_dir, exist_ok=True)
+        
+        final_name = preset_name
+        counter = 1
+        while os.path.exists(os.path.join(presets_dir, f"{final_name}.dmtlp")):
+            final_name = f"{preset_name} ({counter})"
+            counter += 1
+            
+        try:
+            dmtl_core.export_preset(os.path.join(presets_dir, f"{final_name}.dmtlp"), final_name, mods)
+            QMessageBox.information(self, "Success", f"Preset '{final_name}' saved!\nSwitch to the Local Game tab to see it.")
+        except Exception as e:
+            print(f"Error saving preset: {e}")
+            QMessageBox.critical(self, "Error", f"Failed to save preset: {e}")

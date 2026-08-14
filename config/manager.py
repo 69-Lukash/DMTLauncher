@@ -5,12 +5,15 @@ from utils.logger import logger
 class ConfigManager:
     def __init__(self, config_path):
         self.config_path = config_path
+        self.last_played = {}
         self.nickname = "Survivor"
         self.game_path = ""
         self.favorites = []
         self.language = "en_US"
         self.default_sort = 0
         self.launch_params = ""
+        self.presets = {"Default Preset": []}
+        self.last_local_preset = ""
         logger.debug(f"Initializing ConfigManager with path: {config_path}")
         self.load()
 
@@ -23,12 +26,14 @@ class ConfigManager:
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
+                self.last_played = {}
                 self.nickname = config.get("nickname") or "Survivor"
                 self.game_path = config.get("game_path", "")
                 self.favorites = config.get("favorites", [])
                 self.default_sort = config.get("default_sort", 0)
                 self.language = config.get("language", "en_US")
                 self.launch_params = config.get("launch_params", "")
+                self.last_local_preset = config.get("last_local_preset", "")
             logger.info(f"Successfully loaded config from {self.config_path}")
         except (json.JSONDecodeError, IOError) as e:
             logger.error(f"Error reading {self.config_path}. Using defaults. Details: {e}")
@@ -41,7 +46,9 @@ class ConfigManager:
             "favorites": self.favorites,
             "default_sort": self.default_sort,
             "language": self.language,
-            "launch_params": self.launch_params
+            "launch_params": self.launch_params,
+            "last_local_preset": self.last_local_preset,
+            "last_played": self.last_played
         }
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:

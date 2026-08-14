@@ -1,3 +1,4 @@
+import time
 from PyQt6.QtCore import QObject, QTimer
 
 class TableLoader(QObject):
@@ -22,6 +23,14 @@ class TableLoader(QObject):
             
         self.timer.start(5)
 
+    def format_time(self, ts):
+        if not ts: return "Never"
+        diff = time.time() - ts
+        if diff < 60: return "Just now"
+        if diff < 3600: return f"{int(diff/60)}m ago"
+        if diff < 86400: return f"{int(diff/3600)}h ago"
+        return f"{int(diff/86400)}d ago"
+
     def _insert_batch(self):
         if not self.servers_queue:
             self.timer.stop()
@@ -38,13 +47,14 @@ class TableLoader(QObject):
             ip = str(s.get("ip", ""))
             port = str(s.get("port", 0))
             players = f"{s.get('players', 0)}/{s.get('maxplayers', 0)}"
-            
             map_name = str(s.get("map", "Chernarus")).title()
-            
             full_address = f"{ip}:{port}"
             is_fav = (getattr(self.mw, "favorites", []) is not None) and (full_address in self.mw.favorites)
             
-            self.mw.table_builder.insert_server_row(is_fav, name, map_name, full_address, "-", players)
+            lp_ts = getattr(self.mw.config_manager, "last_played", {}).get(full_address, 0)
+            lp_str = self.format_time(lp_ts)
+            
+            self.mw.table_builder.insert_server_row(is_fav, name, map_name, full_address, "-", players, lp_str)
             
         self.table.setUpdatesEnabled(True)
         

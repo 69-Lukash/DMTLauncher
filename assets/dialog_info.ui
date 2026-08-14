@@ -47,6 +47,12 @@
      </property>
     </widget>
    </item>
+   <item>
+    <widget class="QPushButton" name="btn_save_preset">
+     <property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property>
+     <property name="text"><string>💾 Save as Preset</string></property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <resources/>

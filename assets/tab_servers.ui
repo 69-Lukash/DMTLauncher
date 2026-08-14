@@ -34,6 +34,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QCheckBox" name="check_last_played">
+       <property name="text">
+        <string>Last Played</string>
+       </property>
+       <property name="cursor">
+        <cursorShape>PointingHandCursor</cursorShape>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btn_refresh">
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
@@ -58,6 +68,7 @@
      <column><property name="text"><string>IP:Port</string></property></column>
      <column><property name="text"><string>Ping</string></property></column>
      <column><property name="text"><string>Players</string></property></column>
+     <column><property name="text"><string>Last Played</string></property></column>
      <column><property name="text"><string>Action</string></property></column>
     </widget>
    </item>

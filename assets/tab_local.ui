@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TabLocal</class>
+ <widget class="QWidget" name="TabLocal">
+  <property name="geometry"><rect><x>0</x><y>0</y><width>600</width><height>400</height></rect></property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QComboBox" name="combo_presets">
+       <property name="sizePolicy"><sizepolicy hsizetype="Expanding" vsizetype="Fixed"><horstretch>0</horstretch><verstretch>0</verstretch></sizepolicy></property>
+      </widget>
+     </item>
+     <item><widget class="QPushButton" name="btn_delete"><property name="text"><string>🗑️ Delete</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
+     <item><widget class="QPushButton" name="btn_export"><property name="text"><string>📤 Export</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
+     <item><widget class="QPushButton" name="btn_import"><property name="text"><string>📥 Import</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
+     <item><widget class="QPushButton" name="btn_play"><property name="text"><string>▶ Play</string></property><property name="styleSheet"><string>background-color: #4CAF50; color: white; font-weight: bold;</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="search_local_mod">
+     <property name="placeholderText"><string>🔍 Search mod by name...</string></property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTableWidget" name="table_local">
+     <property name="editTriggers"><set>QAbstractItemView::NoEditTriggers</set></property>
+     <column><property name="text"><string>Name</string></property></column>
+     <column><property name="text"><string>Size</string></property></column>
+     <column><property name="text"><string>Sync</string></property></column>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -24,10 +24,12 @@ class DMTLMainWindow(QMainWindow):
         uic.loadUi(os.path.join(assets_dir, "main.ui"), self)
         self.tab_servers = uic.loadUi(os.path.join(assets_dir, "tab_servers.ui"))
         self.tab_mods = uic.loadUi(os.path.join(assets_dir, "tab_mods.ui"))
+        self.tab_local = uic.loadUi(os.path.join(assets_dir, "tab_local.ui"))
         self.settings_panel = uic.loadUi(os.path.join(assets_dir, "panel_settings.ui"))
 
         self.tabs.addTab(self.tab_servers, self.tr("Servers"))
         self.tabs.addTab(self.tab_mods, self.tr("Mods"))
+        self.tabs.addTab(self.tab_local, self.tr("Local Game"))
         
         self.corner_container = QWidget()
         self.corner_layout = QHBoxLayout(self.corner_container)

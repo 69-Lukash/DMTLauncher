@@ -2,6 +2,9 @@ import urllib.request
 import json
 import ssl
 import certifi
+import urllib.parse
+import re
+
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
 from utils.logger import logger
 
@@ -54,3 +57,62 @@ class DZSAWorker(QRunnable):
 class SingleServerSignals(QObject):
     finished = pyqtSignal(dict)
     error = pyqtSignal(str)
+
+class DependencySignals(QObject):
+    # mod_id, list of names, list of ids
+    finished = pyqtSignal(int, list, list)
+
+class DependencyWorker(QRunnable):
+    def __init__(self, mod_id):
+        super().__init__()
+        self.mod_id = mod_id
+        self.signals = DependencySignals()
+
+    def run(self):
+        try:
+            # 1. Scrape required items from HTML
+            url_html = f"https://steamcommunity.com/sharedfiles/filedetails/?id={self.mod_id}"
+            req_html = urllib.request.Request(url_html, headers={'User-Agent': 'Mozilla/5.0'})
+            
+            with urllib.request.urlopen(req_html, timeout=5) as response:
+                html = response.read().decode('utf-8')
+                
+            start_idx = html.find('id="RequiredItems"')
+            if start_idx == -1:
+                self.signals.finished.emit(self.mod_id, [], [])
+                return
+                
+            end_idx = html.find('class="rightDetailsBlock"', start_idx)
+            if end_idx == -1:
+                end_idx = start_idx + 5000 
+                
+            block = html[start_idx:end_idx]
+            found_ids = re.findall(r'filedetails/\?id=(\d+)', block)
+            dep_ids = list(set([int(x) for x in found_ids]))
+            
+            if not dep_ids:
+                self.signals.finished.emit(self.mod_id, [], [])
+                return
+
+            # 2. Get real display names via legacy API
+            url_api = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+            post_data = {'itemcount': len(dep_ids)}
+            for i, d_id in enumerate(dep_ids):
+                post_data[f'publishedfileids[{i}]'] = d_id
+                
+            data_api = urllib.parse.urlencode(post_data).encode('utf-8')
+            req_api = urllib.request.Request(url_api, data=data_api, headers={'User-Agent': 'DMTL-Launcher/1.0'})
+            
+            with urllib.request.urlopen(req_api, timeout=3) as resp_api:
+                api_data = json.loads(resp_api.read().decode('utf-8'))
+                dep_details = api_data.get("response", {}).get("publishedfiledetails", [])
+                
+                dep_names = []
+                for d in dep_details:
+                    dep_names.append(d.get("title", f"Unknown Mod {d.get('publishedfileid')}"))
+
+                self.signals.finished.emit(self.mod_id, dep_names, dep_ids)
+                
+        except Exception as e:
+            logger.error(f"Failed to fetch dependencies for {self.mod_id}: {e}")
+            self.signals.finished.emit(self.mod_id, [], [])

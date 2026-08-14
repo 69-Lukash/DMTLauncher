@@ -3,6 +3,8 @@
 A lightweight and fast DayZ server launcher built with **Python (PyQt6)**, featuring a native **Rust** integration for lightning-fast server querying.
 It features direct integration with the Steamworks API for seamless background mod downloading and management without freezing the UI.
 
+![DMTL Screenshot](images/image.png)
+
 ## ✨ Features
 
 * 🚀 **Speed:** Asynchronous A2S UDP pinger for instant server querying.
@@ -14,8 +16,9 @@ It features direct integration with the Steamworks API for seamless background m
 * 🔍 **Mods Management:** Quick search bar to easily find specific local mods by name in the Mods tab.
 * 🎨 **UI & QoL:** Clean dark theme, sortable server lists (by players or A-Z), and instant list refresh capabilities.
 * 🌍 **Localization:** Native multi-language support (English and Ukrainian out of the box) with an easy system to add community translations.
-
-![DMTL Screenshot](images/image.png)
+* 📁 **Local Game & Presets:** Play locally or manage custom loaded mod sets using secure binary `.dmtlp` presets.
+* 🧩 **Auto-Dependency Resolution:** Automatically parses Steam Workshop pages to fetch and check required mod dependencies.
+* 🕒 **Server History & Smart Sorting:** Keep track of recently played servers with a dedicated "Last Played" column and toggle filter.
 
 ## ⚙️ How It Works (Under the Hood)
 
@@ -150,8 +153,6 @@ Every bug report helps make the launcher faster and more stable for everyone.
 
 Here are some features planned for future updates:
 
-* [ ] **Server History:** Add an "Is Played" (or "Last Played") column/indicator to easily find previously visited servers.
 * [ ] **Server Filters:** Add simple toggles for server list (e.g., Password-protected, Favorites only, Modded/Vanilla).
-* [ ] **Quality of Life (QoL):**
-  * Export/Import Favorites list to easily share your top servers with friends.
-  * Custom game launch parameters in settings (e.g., `-nosplash`, `-nopause`, CPU core limits).
+
+* [ ] **Rust Steam Integration:** Rewrite the entire Steamworks logic in Rust for improved performance, memory safety, and stability.

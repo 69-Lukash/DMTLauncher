@@ -1,8 +1,7 @@
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
 
-def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode=0):
-    if not all_servers:
-        return []
+def apply_local_filters(all_servers, search_text, map_text, favorites, last_played_dict, sort_mode=0, sort_lp=False):
+    if not all_servers: return []
 
     query = search_text.strip().lower()
     map_q = map_text.strip().lower()
@@ -12,10 +11,8 @@ def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode
         name = str(s.get("name", "")).lower()
         map_val = str(s.get("map", "")).lower()
 
-        if query and query not in name:
-            continue
-        if map_q and map_q not in map_val:
-            continue
+        if query and query not in name: continue
+        if map_q and map_q not in map_val: continue
         
         filtered.append(s)
 
@@ -24,11 +21,18 @@ def apply_local_filters(all_servers, search_text, map_text, favorites, sort_mode
     elif sort_mode == 1:
         filtered.sort(key=lambda x: str(x.get("name", "")).lower())
     
+    if sort_lp:
+        def get_lp(s):
+            ip = str(s.get("ip", ""))
+            port = str(s.get("port", 0))
+            return last_played_dict.get(f"{ip}:{port}", 0)
+        
+        filtered.sort(key=get_lp, reverse=True)
+
     def is_favorite(server_dict):
         ip = str(server_dict.get("ip", ""))
         port = str(server_dict.get("port", 0))
-        address = f"{ip}:{port}"
-        return address in favorites
+        return f"{ip}:{port}" in favorites
         
     filtered.sort(key=is_favorite, reverse=True)
     
@@ -38,21 +42,20 @@ class FilterSignals(QObject):
     finished = pyqtSignal(list)
 
 class FilterWorker(QRunnable):
-    def __init__(self, all_servers, search_text, map_text, favorites, sort_mode=0):
+    def __init__(self, all_servers, search_text, map_text, favorites, last_played_dict, sort_mode=0, sort_lp=False):
         super().__init__()
         self.all_servers = all_servers
         self.search_text = search_text
         self.map_text = map_text
         self.favorites = favorites
+        self.last_played_dict = last_played_dict
         self.sort_mode = sort_mode
+        self.sort_lp = sort_lp
         self.signals = FilterSignals()
 
     def run(self):
         filtered = apply_local_filters(
-            self.all_servers, 
-            self.search_text, 
-            self.map_text, 
-            self.favorites, 
-            self.sort_mode
+            self.all_servers, self.search_text, self.map_text, 
+            self.favorites, self.last_played_dict, self.sort_mode, self.sort_lp
         )
         self.signals.finished.emit(filtered)

@@ -1,4 +1,4 @@
-# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL-dev/assets/dialog_info.ui'
+# Form implementation generated from reading ui file '/home/lukash/Projects/DMTL-DEV/assets/dialog_info.ui'
 #
 # Created by: PyQt6 UI code generator 6.11.0
 #
@@ -30,6 +30,10 @@ class Ui_ServerInfoDialog(object):
         self.btn_copy_ip.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
         self.btn_copy_ip.setObjectName("btn_copy_ip")
         self.verticalLayout.addWidget(self.btn_copy_ip)
+        self.btn_save_preset = QtWidgets.QPushButton(parent=ServerInfoDialog)
+        self.btn_save_preset.setCursor(QtGui.QCursor(QtCore.Qt.CursorShape.PointingHandCursor))
+        self.btn_save_preset.setObjectName("btn_save_preset")
+        self.verticalLayout.addWidget(self.btn_save_preset)
 
         self.retranslateUi(ServerInfoDialog)
         QtCore.QMetaObject.connectSlotsByName(ServerInfoDialog)
@@ -40,3 +44,4 @@ class Ui_ServerInfoDialog(object):
         self.info_browser.setStyleSheet(_translate("ServerInfoDialog", "background-color: transparent; border: none;"))
         self.label_modlist.setText(_translate("ServerInfoDialog", "<b>Mod List:</b>"))
         self.btn_copy_ip.setText(_translate("ServerInfoDialog", "📋 Copy Modlist"))
+        self.btn_save_preset.setText(_translate("ServerInfoDialog", "💾 Save as Preset"))

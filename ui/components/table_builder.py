@@ -19,7 +19,6 @@ class TableBuilder:
         self.setup_mod_columns()
 
     def setup_table_columns(self, sort_callback=None):
-        
         headers = [
             QCoreApplication.translate("TableBuilder", "Fav"),
             QCoreApplication.translate("TableBuilder", "Server Name"),
@@ -27,6 +26,7 @@ class TableBuilder:
             QCoreApplication.translate("TableBuilder", "IP"),
             QCoreApplication.translate("TableBuilder", "Ping"),
             QCoreApplication.translate("TableBuilder", "Players"),
+            QCoreApplication.translate("TableBuilder", "Last Played"),
             QCoreApplication.translate("TableBuilder", "Sync"),
             QCoreApplication.translate("TableBuilder", "Play")
         ]
@@ -36,7 +36,6 @@ class TableBuilder:
         self.table_servers.setColumnHidden(3, True)
 
         header = self.table_servers.horizontalHeader()
-        
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         
         fm = self.table_servers.fontMetrics()
@@ -45,8 +44,9 @@ class TableBuilder:
         self.table_servers.setColumnWidth(2, max(140, fm.horizontalAdvance(headers[2]) + 30))
         self.table_servers.setColumnWidth(4, max(60, fm.horizontalAdvance(headers[4]) + 30))
         self.table_servers.setColumnWidth(5, max(80, fm.horizontalAdvance(headers[5]) + 30))
-        self.table_servers.setColumnWidth(6, max(50, fm.horizontalAdvance(headers[6]) + 30))
-        self.table_servers.setColumnWidth(7, max(90, fm.horizontalAdvance(headers[7]) + 30))
+        self.table_servers.setColumnWidth(6, max(100, fm.horizontalAdvance(headers[6]) + 30))
+        self.table_servers.setColumnWidth(7, max(50, fm.horizontalAdvance(headers[7]) + 30))
+        self.table_servers.setColumnWidth(8, max(90, fm.horizontalAdvance(headers[8]) + 30))
         
         if sort_callback:
             header.sectionClicked.connect(sort_callback)
@@ -85,13 +85,12 @@ class TableBuilder:
             item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         return item
 
-    def insert_server_row(self, is_fav: bool, name: str, map_name: str, ip: str, ping: str, players: str, *args):
+    def insert_server_row(self, is_fav: bool, name: str, map_name: str, ip: str, ping: str, players: str, last_played: str, *args):
         row = self.table_servers.rowCount()
         self.table_servers.insertRow(row)
         
         fav_icon = "★" if is_fav else "☆"
         item_fav = self.create_item(fav_icon, center=True)
-        
         item_fav.setFont(self.star_font)
         item_fav.setForeground(QColor("yellow") if is_fav else QColor("gray"))
         
@@ -101,8 +100,9 @@ class TableBuilder:
         self.table_servers.setItem(row, 3, self.create_item(ip, center=True))
         self.table_servers.setItem(row, 4, self.create_item(ping, center=True))
         self.table_servers.setItem(row, 5, self.create_item(players, center=True))
-        self.table_servers.setItem(row, 6, self.create_item("🔄", center=True))
-        self.table_servers.setItem(row, 7, self.create_item(self.table_servers.tr("⚙ Menu"), center=True))
+        self.table_servers.setItem(row, 6, self.create_item(last_played, center=True))
+        self.table_servers.setItem(row, 7, self.create_item("🔄", center=True))
+        self.table_servers.setItem(row, 8, self.create_item(self.table_servers.tr("⚙ Menu"), center=True))
 
     def insert_mod_row(self, name: str, author: str, size: str, mod_click_callback):
         
@@ -131,7 +131,7 @@ class TableBuilder:
                 break
 
     def sort_servers_table(self, col):
-        if col in [0, 2, 3, 6, 7]:
+        if col in [0, 2, 3, 6, 7, 8]:
             return
             
         if self.current_sort_col == col:

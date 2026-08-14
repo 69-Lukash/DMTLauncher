@@ -1,10 +1,12 @@
-from PyQt6.QtWidgets import QApplication
-from PyQt6.QtCore import QTranslator
-from ui.controllers.main_controller import MainController
-from config.manager import ConfigManager
-from pathlib import Path
+import signal
 import sys
 import os
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtCore import QTranslator
+from pathlib import Path
+
+from ui.controllers.main_controller import MainController
+from config.manager import ConfigManager
 
 if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(sys.executable)
@@ -28,6 +30,8 @@ if __name__ == "__main__":
         sys.exit(0)
 
     app = QApplication(sys.argv)
+
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
     
     if sys.platform == "win32":
         app_data = os.getenv('LOCALAPPDATA') or os.getenv('APPDATA') or os.path.expanduser('~')

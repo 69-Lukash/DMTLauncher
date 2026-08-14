@@ -15,6 +15,7 @@ from game.runner import GameRunner
 from utils.logger import logger
 from utils.paths import get_data_dir
 from network.updater import UpdateCheckWorker
+from ui.controllers.local_controller import LocalController
 
 try:
     from version import __version__ as CURRENT_VERSION
@@ -30,6 +31,7 @@ class MainController:
         
         self.mod_controller = ModController(self.view)
         self.server_controller = ServerController(self.view, self.config_manager, self.queue_launch)
+        self.local_controller = LocalController(self.view, self.config_manager, self.mod_controller, self.queue_launch)
         
         self.thread_pool = QThreadPool.globalInstance()
         self.active_workers = []
@@ -56,6 +58,9 @@ class MainController:
         self.mod_update_timer.setSingleShot(True)
         self.mod_update_timer.timeout.connect(self.fetch_local_mods)
         self.check_existing_downloads()
+
+        self.auto_join_server = None
+        self.auto_join_action = None
 
         self._setup_connections()
         
@@ -175,7 +180,14 @@ class MainController:
                 self.mod_controller.downloading_mods[mod_id]["size"] = size_str
                 
         if finished_any:
-            self.fetch_local_mods()
+            if not self.mod_controller.downloading_mods and self.auto_join_server:
+                target = self.auto_join_server
+                action = self.auto_join_action
+                self.auto_join_server = None
+                self.auto_join_action = None
+                self.queue_launch(target, action)
+            else:
+                self.fetch_local_mods()
         else:
             self.mod_controller.update_download_progress()
 
@@ -279,6 +291,9 @@ class MainController:
                 self.mod_controller.steam_mgr.sync_mods_batch(mod_ids)
                 self.mod_controller.render_mods()
                 self.check_downloads()
+
+                self.auto_join_server = server_data
+                self.auto_join_action = action_type
                 
             QMessageBox.information(self.view, "Downloading", "Mods added to Steam downloads! Check the Mods tab for progress.")
 
