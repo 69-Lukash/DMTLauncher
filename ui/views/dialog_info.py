@@ -1,8 +1,12 @@
 import os
 import sys
-from PyQt6.QtWidgets import QDialog, QApplication
+import dmtl_core
+
+from PyQt6.QtWidgets import QDialog, QApplication, QMessageBox
 from PyQt6.QtCore import Qt
 from PyQt6 import uic
+        
+from utils.paths import get_data_dir
 
 class ServerInfoDialog(QDialog):
     def __init__(self, server_data, ping, parent=None):
@@ -82,10 +86,6 @@ class ServerInfoDialog(QDialog):
             if mod_id.isdigit():
                 mods.append(int(mod_id))
                 
-        import os
-        import dmtl_core
-        from utils.paths import get_data_dir
-        from PyQt6.QtWidgets import QMessageBox
         
         presets_dir = os.path.join(get_data_dir(), "presets")
         os.makedirs(presets_dir, exist_ok=True)

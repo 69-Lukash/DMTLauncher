@@ -42,7 +42,6 @@ class GameRunner:
                 logger.info(f"Connecting directly to {ip}:{port}")
 
         if hasattr(config_manager, 'launch_params') and config_manager.launch_params:
-            import shlex
             extra_args = shlex.split(config_manager.launch_params)
             
             protected_keys = {"-name", "-mod", "-connect", "-port"}

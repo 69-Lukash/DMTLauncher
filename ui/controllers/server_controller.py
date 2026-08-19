@@ -1,5 +1,5 @@
 import time
-from PyQt6.QtWidgets import QMenu, QMessageBox
+from PyQt6.QtWidgets import QMenu, QMessageBox, QInputDialog
 from PyQt6.QtCore import Qt, QThreadPool, QTimer, QCoreApplication
 from PyQt6.QtGui import QColor
 
@@ -273,7 +273,6 @@ class ServerController:
         return _show
 
     def prompt_direct_connect(self):
-        from PyQt6.QtWidgets import QInputDialog, QMessageBox
         
         text, ok = QInputDialog.getText(
             self.view, 

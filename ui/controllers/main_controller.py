@@ -1,21 +1,20 @@
 import os
+import urllib.request, urllib.parse
+import json
 from pathlib import Path
-from PyQt6.QtWidgets import QLabel
-from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QLabel, QMessageBox, QFileDialog
+from PyQt6.QtCore import Qt, QThreadPool, QFileSystemWatcher, QTimer
 
-from PyQt6.QtWidgets import QMessageBox
-from utils.paths import get_data_dir
-from PyQt6.QtCore import QThreadPool, QFileSystemWatcher, QTimer
-from ui.views.main_window import DMTLMainWindow
 from config.manager import ConfigManager
-from ui.controllers.mod_controller import ModController
-from ui.controllers.server_controller import ServerController
 from steam.parser import ModParserWorker
 from game.runner import GameRunner
 from utils.logger import logger
 from utils.paths import get_data_dir
 from network.updater import UpdateCheckWorker
+from ui.views.main_window import DMTLMainWindow
 from ui.controllers.local_controller import LocalController
+from ui.controllers.mod_controller import ModController
+from ui.controllers.server_controller import ServerController
 
 try:
     from version import __version__ as CURRENT_VERSION
@@ -111,7 +110,6 @@ class MainController:
         
 
     def browse_path(self):
-        from PyQt6.QtWidgets import QFileDialog
         folder = QFileDialog.getExistingDirectory(self.view, "Select DayZ Folder")
         if folder:
             self.view.settings_panel.input_path.setText(folder)
@@ -210,8 +208,6 @@ class MainController:
                     
         if not mod_ids:
             return
-
-        import urllib.request, urllib.parse, json
         
         post_data = {'itemcount': len(mod_ids)}
         for i, m_id in enumerate(mod_ids):
@@ -248,6 +244,10 @@ class MainController:
             self.active_workers.remove(worker)
 
         self.mod_controller.set_mods_data(mods_data)
+        
+        if self.local_controller._list_loaded:
+            self.local_controller.load_mods_into_table()
+
         if self.pending_launch:
             target_server, action_type = self.pending_launch
             self.pending_launch = None
@@ -298,7 +298,6 @@ class MainController:
             QMessageBox.information(self.view, "Downloading", "Mods added to Steam downloads! Check the Mods tab for progress.")
 
     def show_about_dialog(self):
-        from PyQt6.QtWidgets import QMessageBox
         QMessageBox.about(
             self.view,
             self.view.tr("About DMTL"),
@@ -313,7 +312,6 @@ class MainController:
         )
 
     def prompt_mod_cleanup(self):
-        from PyQt6.QtWidgets import QMessageBox
         
         msg = QMessageBox(self.view)
         msg.setIcon(QMessageBox.Icon.Warning)

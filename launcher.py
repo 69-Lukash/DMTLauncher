@@ -7,6 +7,7 @@ from pathlib import Path
 
 from ui.controllers.main_controller import MainController
 from config.manager import ConfigManager
+from steam.cmd_worker import main
 
 if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS if hasattr(sys, '_MEIPASS') else os.path.dirname(sys.executable)
@@ -25,7 +26,6 @@ else:
 
 if __name__ == "__main__":
     if len(sys.argv) >= 2 and sys.argv[1] in ("sync", "delete"):
-        from steam.cmd_worker import main
         main()
         sys.exit(0)
 

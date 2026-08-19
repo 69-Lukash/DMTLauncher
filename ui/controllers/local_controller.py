@@ -1,8 +1,8 @@
 import os
 import shutil
+import dmtl_core
 from PyQt6.QtWidgets import QInputDialog, QMessageBox, QFileDialog, QTableWidgetItem
 from PyQt6.QtCore import Qt, QThreadPool
-import dmtl_core
 from utils.logger import logger
 from utils.paths import get_data_dir
 from network.api import DependencyWorker

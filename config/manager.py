@@ -26,7 +26,7 @@ class ConfigManager:
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-                self.last_played = {}
+                self.last_played = config.get("last_played", {})
                 self.nickname = config.get("nickname") or "Survivor"
                 self.game_path = config.get("game_path", "")
                 self.favorites = config.get("favorites", [])

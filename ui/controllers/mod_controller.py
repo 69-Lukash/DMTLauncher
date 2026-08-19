@@ -2,6 +2,7 @@ import copy
 import sys
 import os
 import subprocess
+
 from steam.manager import SteamManager
 from PyQt6.QtCore import Qt, QCoreApplication
 from utils.logger import logger
