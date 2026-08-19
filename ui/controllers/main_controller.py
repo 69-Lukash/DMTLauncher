@@ -2,8 +2,8 @@ import os
 import urllib.request, urllib.parse
 import json
 from pathlib import Path
-from PyQt6.QtWidgets import QLabel, QMessageBox, QFileDialog
-from PyQt6.QtCore import Qt, QThreadPool, QFileSystemWatcher, QTimer
+from PyQt6.QtWidgets import QApplication, QLabel, QMessageBox, QFileDialog
+from PyQt6.QtCore import Qt, QThreadPool, QFileSystemWatcher, QTimer, QCoreApplication
 
 from config.manager import ConfigManager
 from steam.parser import ModParserWorker
@@ -82,6 +82,28 @@ class MainController:
         self.view.settings_panel.input_nick.editingFinished.connect(self.save_config)
         self.view.settings_panel.input_path.editingFinished.connect(self.save_config)
         self.view.settings_panel.btn_browse.clicked.connect(self.browse_path)
+
+        self.view.settings_panel.label_title.setText(QCoreApplication.translate("MainController", "Settings"))
+        self.view.settings_panel.label_nick.setText(QCoreApplication.translate("MainController", "Nickname:"))
+        self.view.settings_panel.label_path.setText(QCoreApplication.translate("MainController", "Game Path:"))
+        self.view.settings_panel.btn_browse.setText(QCoreApplication.translate("MainController", "Browse"))
+        self.view.settings_panel.label_sort.setText(QCoreApplication.translate("MainController", "Sort by:"))
+        self.view.settings_panel.combo_sort.setItemText(0, QCoreApplication.translate("MainController", "By Players"))
+        self.view.settings_panel.combo_sort.setItemText(1, QCoreApplication.translate("MainController", "By Name (A-Z)"))
+        self.view.settings_panel.label_lang.setText(QCoreApplication.translate("MainController", "Language (requires restart):"))
+        self.view.settings_panel.label_params.setText(QCoreApplication.translate("MainController", "Launch Parameters:"))
+        
+        if hasattr(self.view.settings_panel, 'btn_cleanup'):
+            current_text = self.view.settings_panel.btn_cleanup.text()
+            if "Cleaning" not in current_text and "Очищення" not in current_text:
+                self.view.settings_panel.btn_cleanup.setText(QCoreApplication.translate("MainController", "🗑️ Clean Unsubscribed Mods"))
+                
+        if hasattr(self.view.settings_panel, 'btn_about'):
+            self.view.settings_panel.btn_about.setText(QCoreApplication.translate("MainController", "About DMTL"))
+            
+        if hasattr(self.view.settings_panel, 'linux_warning'):
+            self.view.settings_panel.linux_warning.setText(QCoreApplication.translate("MainController", "Make sure to force a Steam Play compatibility tool in DayZ properties."))
+
         if hasattr(self.view.settings_panel, 'input_params'):
             self.view.settings_panel.input_params.setText(self.config_manager.launch_params)
             self.view.settings_panel.input_params.editingFinished.connect(self.save_config)
@@ -258,6 +280,8 @@ class MainController:
         self.fetch_local_mods()
 
     def check_and_launch(self, server_data, action_type):
+        while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+        
         server_mods = server_data.get("mods", [])
         local_mod_ids = {str(m.get("published_id")) for m in self.mod_controller.mods_data if m.get("published_id")}
         
@@ -295,7 +319,9 @@ class MainController:
                 self.auto_join_server = server_data
                 self.auto_join_action = action_type
                 
-            QMessageBox.information(self.view, "Downloading", "Mods added to Steam downloads! Check the Mods tab for progress.")
+            title = QCoreApplication.translate("MainController", "Downloading")
+            dl_msg = QCoreApplication.translate("MainController", "Mods added to Steam downloads! Check the Mods tab for progress.")
+            QMessageBox.information(self.view, title, dl_msg)
 
     def show_about_dialog(self):
         QMessageBox.about(

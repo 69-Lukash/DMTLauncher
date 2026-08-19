@@ -1,5 +1,5 @@
 import time
-from PyQt6.QtCore import QObject, QTimer
+from PyQt6.QtCore import QCoreApplication, QObject, QTimer
 
 class TableLoader(QObject):
     def __init__(self, main_window):
@@ -24,12 +24,12 @@ class TableLoader(QObject):
         self.timer.start(5)
 
     def format_time(self, ts):
-        if not ts: return "Never"
+        if not ts: return QCoreApplication.translate("TableLoader", "Never")
         diff = time.time() - ts
-        if diff < 60: return "Just now"
-        if diff < 3600: return f"{int(diff/60)}m ago"
-        if diff < 86400: return f"{int(diff/3600)}h ago"
-        return f"{int(diff/86400)}d ago"
+        if diff < 60: return QCoreApplication.translate("TableLoader", "Just now")
+        if diff < 3600: return QCoreApplication.translate("TableLoader", "{0}m ago").format(int(diff/60))
+        if diff < 86400: return QCoreApplication.translate("TableLoader", "{0}h ago").format(int(diff/3600))
+        return QCoreApplication.translate("TableLoader", "{0}d ago").format(int(diff/86400))
 
     def _insert_batch(self):
         if not self.servers_queue:

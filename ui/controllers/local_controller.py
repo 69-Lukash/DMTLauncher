@@ -1,8 +1,11 @@
 import os
 import shutil
+import time
 import dmtl_core
-from PyQt6.QtWidgets import QInputDialog, QMessageBox, QFileDialog, QTableWidgetItem
-from PyQt6.QtCore import Qt, QThreadPool
+
+from PyQt6.QtWidgets import QApplication, QInputDialog, QMessageBox, QFileDialog, QTableWidgetItem, QPushButton
+from PyQt6.QtCore import QCoreApplication, Qt, QThreadPool
+
 from utils.logger import logger
 from utils.paths import get_data_dir
 from network.api import DependencyWorker
@@ -22,7 +25,6 @@ class LocalController:
         self.mod_controller = mod_controller
         self.launch_callback = launch_callback
         
-        # Setup presets directory
         self.presets_dir = os.path.join(get_data_dir(), "presets")
         os.makedirs(self.presets_dir, exist_ok=True)
         
@@ -36,11 +38,28 @@ class LocalController:
         self._refresh_preset_combo()
 
     def _setup_ui(self):
+        headers = [
+            QCoreApplication.translate("LocalController", "Name"),
+            QCoreApplication.translate("LocalController", "Size"),
+            QCoreApplication.translate("LocalController", "Sync")
+        ]
+        self.table_local.setHorizontalHeaderLabels(headers)
+
+        self.tab_local.btn_delete.setText(QCoreApplication.translate("LocalController", "🗑️ Delete"))
+        self.tab_local.btn_export.setText(QCoreApplication.translate("LocalController", "📤 Export"))
+        self.tab_local.btn_import.setText(QCoreApplication.translate("LocalController", "📥 Import"))
+        self.tab_local.btn_play.setText(QCoreApplication.translate("LocalController", "▶ Play"))
+        self.tab_local.search_local_mod.setPlaceholderText(QCoreApplication.translate("LocalController", "🔍 Search mod by name..."))
+
         self.table_local.horizontalHeader().setStretchLastSection(False)
         self.table_local.horizontalHeader().setSectionResizeMode(0, self.table_local.horizontalHeader().ResizeMode.Stretch)
         self.table_local.setColumnWidth(1, 100)
-        self.table_local.setColumnWidth(2, 80)
+        fm = self.table_local.fontMetrics()
+        sync_width = max(100, fm.horizontalAdvance(headers[2]) + 80) 
+        self.table_local.setColumnWidth(2, sync_width)
+        
         self.table_local.verticalHeader().setVisible(False)
+        self.table_local.verticalHeader().setDefaultSectionSize(39)
 
     def _setup_connections(self):
         self.view.tabs.currentChanged.connect(self.on_tab_changed)
@@ -68,8 +87,8 @@ class LocalController:
         self._updating_ui = True
         self.tab_local.combo_presets.clear()
         
-        self.tab_local.combo_presets.addItem("📁 Select Preset...")
-        self.tab_local.combo_presets.addItem("➕ Create New Preset...")
+        self.tab_local.combo_presets.addItem(QCoreApplication.translate("LocalController", "📁 Select Preset..."))
+        self.tab_local.combo_presets.addItem(QCoreApplication.translate("LocalController", "➕ Create New Preset..."))
         
         preset_files = [f for f in os.listdir(self.presets_dir) if f.endswith(".dmtlp")]
         preset_names = sorted([os.path.splitext(f)[0] for f in preset_files])
@@ -103,7 +122,9 @@ class LocalController:
         if self._updating_ui or index == -1 or index == 0: return
         
         if index == 1:
-            text, ok = QInputDialog.getText(self.view, "New Preset", "Preset Name:")
+            title = QCoreApplication.translate("LocalController", "New Preset")
+            prompt = QCoreApplication.translate("LocalController", "Preset Name:")
+            text, ok = QInputDialog.getText(self.view, title, prompt)
             if ok and text.strip():
                 name = text.strip()
                 self.current_preset = name
@@ -153,15 +174,33 @@ class LocalController:
             size_item = QTableWidgetItem(mod.get("size", "0 B"))
             size_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             
-            sync_item = QTableWidgetItem("🔄 Sync")
-            sync_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            sync_text = QCoreApplication.translate("LocalController", "Sync")
+            btn_sync = QPushButton(f"🔄 {sync_text}")
+            btn_sync.setCursor(Qt.CursorShape.PointingHandCursor)
+            mod_id = mod.get("published_id")
+            btn_sync.clicked.connect(lambda checked, m_id=mod_id: self.sync_local_mod(m_id))
             
             self.table_local.setItem(row, 0, name_item)
             self.table_local.setItem(row, 1, size_item)
-            self.table_local.setItem(row, 2, sync_item)
+            self.table_local.setCellWidget(row, 2, btn_sync)
             
         self._updating_ui = False
         self.apply_preset_to_table()
+
+    def sync_local_mod(self, mod_id):
+        if not mod_id: 
+            return
+        
+        try:
+            m_id = int(mod_id)
+            self.mod_controller.steam_mgr.sync_mod(m_id)
+            
+            title = QCoreApplication.translate("LocalController", "Sync")
+            msg = QCoreApplication.translate("LocalController", "Mod added to Steam downloads!")
+            QMessageBox.information(self.view, title, msg)
+            
+        except ValueError:
+            logger.error(f"Invalid mod ID for sync: {mod_id}")
 
     def apply_preset_to_table(self):
         if not self.current_preset: return
@@ -226,10 +265,13 @@ class LocalController:
         
         mods_list_str = "\n".join(f"• {name}" for name in missing_names)
         
+        title = QCoreApplication.translate("LocalController", "Missing Dependencies")
+        msg = QCoreApplication.translate("LocalController", "This mod requires {0} additional mod(s):\n\n{1}\n\nEnable them automatically?").format(len(missing_ids), mods_list_str)
+        
         reply = QMessageBox.question(
             self.view, 
-            "Missing Dependencies", 
-            f"This mod requires {len(missing_ids)} additional mod(s):\n\n{mods_list_str}\n\nEnable them automatically?",
+            title, 
+            msg,
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         
@@ -245,10 +287,12 @@ class LocalController:
             to_download = [d for d in missing_ids if d not in local_ids]
             
             if to_download:
+                dl_title = QCoreApplication.translate("LocalController", "Download Required")
+                dl_msg = QCoreApplication.translate("LocalController", "You are missing {0} mod(s) from this list locally.\nStart download via Steam?").format(len(to_download))
                 dl_reply = QMessageBox.question(
                     self.view,
-                    "Download Required",
-                    f"You are missing {len(to_download)} mod(s) from this list locally.\nStart download via Steam?",
+                    dl_title,
+                    dl_msg,
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
                 if dl_reply == QMessageBox.StandardButton.Yes:
@@ -260,7 +304,10 @@ class LocalController:
     def delete_preset(self):
         if not self.current_preset: return
         
-        reply = QMessageBox.question(self.view, 'Delete Preset', f"Delete preset '{self.current_preset}'?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        title = QCoreApplication.translate("LocalController", "Delete Preset")
+        msg = QCoreApplication.translate("LocalController", "Delete preset '{0}'?").format(self.current_preset)
+        
+        reply = QMessageBox.question(self.view, title, msg, QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if reply == QMessageBox.StandardButton.Yes:
             path = self._get_preset_path(self.current_preset)
             if os.path.exists(path):
@@ -270,20 +317,30 @@ class LocalController:
 
     def export_preset(self):
         if not self.current_preset: return
-        dest_path, _ = QFileDialog.getSaveFileName(self.view, "Export Preset", f"{self.current_preset}.dmtlp", "DMTL Preset (*.dmtlp)")
+        
+        title = QCoreApplication.translate("LocalController", "Export Preset")
+        filter_str = QCoreApplication.translate("LocalController", "DMTL Preset (*.dmtlp)")
+        dest_path, _ = QFileDialog.getSaveFileName(self.view, title, f"{self.current_preset}.dmtlp", filter_str)
         
         if dest_path:
             src_path = self._get_preset_path(self.current_preset)
             if os.path.exists(src_path):
                 try:
                     shutil.copy2(src_path, dest_path)
-                    QMessageBox.information(self.view, "Success", "Preset exported successfully.")
+                    succ_title = QCoreApplication.translate("LocalController", "Success")
+                    succ_msg = QCoreApplication.translate("LocalController", "Preset exported successfully.")
+                    QMessageBox.information(self.view, succ_title, succ_msg)
                 except Exception as e:
                     logger.error(f"Export failed: {e}")
-                    QMessageBox.critical(self.view, "Error", f"Failed to export: {e}")
+                    err_title = QCoreApplication.translate("LocalController", "Error")
+                    err_msg = QCoreApplication.translate("LocalController", "Failed to export: {0}").format(str(e))
+                    QMessageBox.critical(self.view, err_title, err_msg)
 
     def import_preset(self):
-        path, _ = QFileDialog.getOpenFileName(self.view, "Import Preset", "", "DMTL Preset (*.dmtlp)")
+        title = QCoreApplication.translate("LocalController", "Import Preset")
+        filter_str = QCoreApplication.translate("LocalController", "DMTL Preset (*.dmtlp)")
+        path, _ = QFileDialog.getOpenFileName(self.view, title, "", filter_str)
+        
         if path:
             try:
                 name, mod_ids = dmtl_core.import_preset(path)
@@ -309,10 +366,12 @@ class LocalController:
                 missing = [m for m in mod_ids if m not in local_ids]
                 
                 if missing:
+                    miss_title = QCoreApplication.translate("LocalController", "Missing Mods")
+                    miss_msg = QCoreApplication.translate("LocalController", "Missing {0} mods from this preset. Download them?").format(len(missing))
                     reply = QMessageBox.question(
                         self.view, 
-                        "Missing Mods", 
-                        f"Missing {len(missing)} mods from this preset. Download them?", 
+                        miss_title, 
+                        miss_msg, 
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
                     if reply == QMessageBox.StandardButton.Yes:
@@ -320,10 +379,19 @@ class LocalController:
                         
             except Exception as e:
                 logger.error(f"Import failed: {e}")
-                QMessageBox.critical(self.view, "Error", f"Failed to import: {e}")
+                err_title = QCoreApplication.translate("LocalController", "Error")
+                err_msg = QCoreApplication.translate("LocalController", "Failed to import: {0}").format(str(e))
+                QMessageBox.critical(self.view, err_title, err_msg)
                 
     def launch_local(self):
         if not self.current_preset: return
+        
+        self.tab_local.btn_play.setEnabled(False)
+        self.tab_local.btn_play.setText(QCoreApplication.translate("LocalController", "⏳ Launching..."))
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        QApplication.processEvents()
+        
+        time.sleep(1.0)
         
         mock_server_data = {
             "name": self.current_preset,
@@ -332,4 +400,10 @@ class LocalController:
             "mods": [{"steamWorkshopId": str(m)} for m in self.current_preset_mods]
         }
         
-        self.launch_callback(mock_server_data, "play")
+        try:
+            self.launch_callback(mock_server_data, "play")
+        finally:
+            self.tab_local.btn_play.setEnabled(True)
+            self.tab_local.btn_play.setText(QCoreApplication.translate("LocalController", "▶ Play"))
+            while QApplication.overrideCursor() is not None: 
+                QApplication.restoreOverrideCursor()

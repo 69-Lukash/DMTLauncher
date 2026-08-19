@@ -1,5 +1,5 @@
 import time
-from PyQt6.QtWidgets import QMenu, QMessageBox, QInputDialog
+from PyQt6.QtWidgets import QMenu, QMessageBox, QInputDialog, QApplication
 from PyQt6.QtCore import Qt, QThreadPool, QTimer, QCoreApplication
 from PyQt6.QtGui import QColor
 
@@ -35,6 +35,11 @@ class ServerController:
         self.scroll_timer.timeout.connect(self.ping_visible_servers)
 
         self._setup_connections()
+
+        self.tab_servers.search_bar.setPlaceholderText(QCoreApplication.translate("ServerController", "Search server by name..."))
+        self.tab_servers.search_map.setPlaceholderText(QCoreApplication.translate("ServerController", "Map..."))
+        self.tab_servers.check_last_played.setText(QCoreApplication.translate("ServerController", "Last Played"))
+        self.tab_servers.btn_refresh.setText(QCoreApplication.translate("ServerController", "🔄 Refresh"))
 
     def _setup_connections(self):
         self.table_servers.verticalScrollBar().valueChanged.connect(lambda: self.scroll_timer.start(400))
@@ -177,9 +182,9 @@ class ServerController:
         elif col == 8:
             menu = QMenu(self.table_servers)
             menu.setCursor(Qt.CursorShape.PointingHandCursor)
-            menu.addAction("▶ Play").triggered.connect(lambda: self.handle_server_action(row, "play"))
-            menu.addAction("📂 Load").triggered.connect(lambda: self.handle_server_action(row, "load"))
-            menu.addAction("ℹ️ Info").triggered.connect(lambda: self.handle_server_action(row, "info"))
+            menu.addAction(QCoreApplication.translate("ServerController", "▶ Play")).triggered.connect(lambda: self.handle_server_action(row, "play"))
+            menu.addAction(QCoreApplication.translate("ServerController", "📂 Load")).triggered.connect(lambda: self.handle_server_action(row, "load"))
+            menu.addAction(QCoreApplication.translate("ServerController", "ℹ️ Info")).triggered.connect(lambda: self.handle_server_action(row, "info"))
             menu.exec(self.table_servers.cursor().pos())
 
     def handle_server_action(self, row, action):
@@ -201,11 +206,16 @@ class ServerController:
             return
 
         if action in ("play", "load"):
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+            
             self.config_manager.last_played[ip_item] = time.time()
             self.config_manager.save()
 
-            self._fetch_mods_then(ip_item, server_data,
-                lambda sd, act=action: self.launch_callback(sd, act))
+            def on_done(sd, act=action):
+                while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+                self.launch_callback(sd, act)
+
+            self._fetch_mods_then(ip_item, server_data, on_done)
 
         elif action == "info":
             try:
@@ -273,14 +283,15 @@ class ServerController:
         return _show
 
     def prompt_direct_connect(self):
+        title = QCoreApplication.translate("ServerController", "Direct Connect")
+        prompt = QCoreApplication.translate("ServerController", "Enter server IP:Port\n(e.g., 192.168.1.100:2302):")
         
-        text, ok = QInputDialog.getText(
-            self.view, 
-            "Direct Connect", 
-            "Enter server IP:Port\n(e.g., 192.168.1.100:2302):"
-        )
+        text, ok = QInputDialog.getText(self.view, title, prompt)
         
         if ok and text.strip():
+            # ВМИКАЄМО ФІДБЕК: Юзер натиснув ОК, починаємо шукати сервер
+            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+            
             try:
                 ip, port_str = text.strip().split(":")
                 ip = ip.strip()
@@ -304,35 +315,46 @@ class ServerController:
                 
                 pinger = PingWorker(ip, query_port)
                 pinger.setAutoDelete(False)
+                # ТУТ ЗМІНА: передаємо pl (players) у _process_direct_connect
                 pinger.signals.finished.connect(
                     lambda addr, p, pl, dt, i=ip, gp=game_port, qp=query_port, fb=fallback, w=pinger: 
-                    self._process_direct_connect(p, i, gp, qp, fb, w)
+                    self._process_direct_connect(p, pl, i, gp, qp, fb, w)
                 )
                 self.active_workers.append(pinger)
                 self.thread_pool.start(pinger)
                 
             except ValueError:
+                while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
                 logger.warning(f"Invalid IP:Port format encountered: {text.strip()}")
-                QMessageBox.warning(self.view, "Error", "Invalid format! Please use IP:Port")
+                err_title = QCoreApplication.translate("ServerController", "Error")
+                err_msg = QCoreApplication.translate("ServerController", "Invalid format! Please use IP:Port")
+                QMessageBox.warning(self.view, err_title, err_msg)
 
-    def _process_direct_connect(self, ping_str, ip, game_port, query_port, fallback, worker=None):
+    def _process_direct_connect(self, ping_str, players_str, ip, game_port, query_port, fallback, worker=None):
         if worker and worker in self.active_workers:
             self.active_workers.remove(worker)
 
-        if ping_str == "999":
+        # ТУТ ЗМІНА: Якщо гравців немає (порожній рядок) — сервер мертвий
+        if not players_str or ping_str == "999":
             if fallback:
                 new_query = game_port + 1
                 pinger = PingWorker(ip, new_query)
                 pinger.setAutoDelete(False)
+                # ТУТ ЗМІНА: також передаємо pl
                 pinger.signals.finished.connect(
                     lambda addr, p, pl, dt, i=ip, gp=game_port, qp=new_query, fb=False, w=pinger: 
-                    self._process_direct_connect(p, i, gp, qp, fb, w)
+                    self._process_direct_connect(p, pl, i, gp, qp, fb, w)
                 )
                 self.active_workers.append(pinger)
                 self.thread_pool.start(pinger)
                 return
             else:
-                QMessageBox.warning(self.view, "Connection Failed", f"Server {ip}:{game_port} is not responding or offline!")
+                # ВИМИКАЄМО ФІДБЕК: ПІНГ НЕ ПРОЙШОВ!
+                while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+                
+                err_title = QCoreApplication.translate("ServerController", "Connection Failed")
+                err_msg = QCoreApplication.translate("ServerController", "Server {0}:{1} is not responding or offline!").format(ip, game_port)
+                QMessageBox.warning(self.view, err_title, err_msg)
                 return
 
         mods_worker = ModsQueryWorker(ip, query_port)
@@ -348,10 +370,11 @@ class ServerController:
             self.active_workers.remove(worker)
 
         mock_server = {
-            "name": "Direct Connection",
+            "name": QCoreApplication.translate("ServerController", "Direct Connection"),
             "ip": ip,
             "gamePort": game_port,
             "mods": mods
         }
 
+        while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
         self.launch_callback(mock_server, "play")

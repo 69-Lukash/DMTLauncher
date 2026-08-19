@@ -20,6 +20,9 @@ class ModController:
         
         self._setup_connections()
 
+        self.tab_mods.search_mod.setPlaceholderText(QCoreApplication.translate("ModController", "Search mod by name..."))
+        self.tab_mods.btn_sync_all.setText(QCoreApplication.translate("ModController", "⬇️ Sync All"))
+
     def _setup_connections(self):
             self.tab_mods.search_mod.textChanged.connect(self.filter_mods)
             self.tab_mods.btn_sync_all.clicked.connect(self.sync_all_mods)

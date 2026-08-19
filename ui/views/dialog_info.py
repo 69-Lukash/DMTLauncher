@@ -3,7 +3,7 @@ import sys
 import dmtl_core
 
 from PyQt6.QtWidgets import QDialog, QApplication, QMessageBox
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import QCoreApplication, Qt
 from PyQt6 import uic
         
 from utils.paths import get_data_dir
@@ -46,16 +46,28 @@ class ServerInfoDialog(QDialog):
         country = str(self.server_data.get("country", "Unknown"))
         mods = self.server_data.get("mods", [])
 
+        t_name = QCoreApplication.translate("ServerInfoDialog", "Name:")
+        t_ip = QCoreApplication.translate("ServerInfoDialog", "IP:Port:")
+        t_ping = QCoreApplication.translate("ServerInfoDialog", "Ping:")
+        t_players = QCoreApplication.translate("ServerInfoDialog", "Players:")
+        t_password = QCoreApplication.translate("ServerInfoDialog", "Password:")
+        t_time = QCoreApplication.translate("ServerInfoDialog", "In-Game Time:")
+        t_country = QCoreApplication.translate("ServerInfoDialog", "Country:")
+        t_mods_count = QCoreApplication.translate("ServerInfoDialog", "Mods Count:")
+        
+        val_yes = QCoreApplication.translate("ServerInfoDialog", "Yes 🔒")
+        val_no = QCoreApplication.translate("ServerInfoDialog", "No 🔓")
+
         html_content = f"""
         <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #d4c8e3;">
-            <p style="font-size: 16px; margin-bottom: 8px;"><b>Name:</b> {name}</p>
-            <p style="margin: 4px 0;"><b>IP:Port:</b> {self.address}</p>
-            <p style="margin: 4px 0;"><b>Ping:</b> {self.ping}</p>
-            <p style="margin: 4px 0;"><b>Players:</b> {players}</p>
-            <p style="margin: 4px 0;"><b>Password:</b> {"Yes 🔒" if is_password else "No 🔓"}</p>
-            <p style="margin: 4px 0;"><b>In-Game Time:</b> {time}</p>
-            <p style="margin: 4px 0;"><b>Country:</b> {country}</p>
-            <p style="margin: 4px 0;"><b>Mods Count:</b> {len(mods)}</p>
+            <p style="font-size: 16px; margin-bottom: 8px;"><b>{t_name}</b> {name}</p>
+            <p style="margin: 4px 0;"><b>{t_ip}</b> {self.address}</p>
+            <p style="margin: 4px 0;"><b>{t_ping}</b> {self.ping}</p>
+            <p style="margin: 4px 0;"><b>{t_players}</b> {players}</p>
+            <p style="margin: 4px 0;"><b>{t_password}</b> {val_yes if is_password else val_no}</p>
+            <p style="margin: 4px 0;"><b>{t_time}</b> {time}</p>
+            <p style="margin: 4px 0;"><b>{t_country}</b> {country}</p>
+            <p style="margin: 4px 0;"><b>{t_mods_count}</b> {len(mods)}</p>
         </div>
         """
         self.info_browser.setHtml(html_content)
@@ -98,7 +110,11 @@ class ServerInfoDialog(QDialog):
             
         try:
             dmtl_core.export_preset(os.path.join(presets_dir, f"{final_name}.dmtlp"), final_name, mods)
-            QMessageBox.information(self, "Success", f"Preset '{final_name}' saved!\nSwitch to the Local Game tab to see it.")
+            title = QCoreApplication.translate("ServerInfoDialog", "Success")
+            msg = QCoreApplication.translate("ServerInfoDialog", "Preset '{0}' saved!\nSwitch to the Local Game tab to see it.").format(final_name)
+            QMessageBox.information(self, title, msg)
         except Exception as e:
             print(f"Error saving preset: {e}")
-            QMessageBox.critical(self, "Error", f"Failed to save preset: {e}")
+            err_title = QCoreApplication.translate("ServerInfoDialog", "Error")
+            err_msg = QCoreApplication.translate("ServerInfoDialog", "Failed to save preset: {0}").format(str(e))
+            QMessageBox.critical(self, err_title, err_msg)
