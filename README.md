@@ -99,7 +99,7 @@ source venv/bin/activate
 Make sure you have the [Rust toolchain](https://rustup.rs/) installed on your system before running this.
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt maturin
 maturin develop --release -m rust_src/Cargo.toml
 ```
 
