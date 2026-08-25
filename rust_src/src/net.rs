@@ -242,20 +242,33 @@ pub fn query_server_full(py: Python<'_>, ip: String, port: u16) -> PyResult<(Str
         socket.set_read_timeout(Some(Duration::from_millis(2000)))?;
         socket.set_write_timeout(Some(Duration::from_millis(2000)))?;
 
-        let start = Instant::now();
+        let mut ping_ms = String::from("999");
         let mut mods = vec![];
         let mut day_time = String::new();
         let mut players_str = String::new();
 
-        // 1. Send A2S_INFO query
-        socket.send_to(b"\xFF\xFF\xFF\xFFTSource Engine Query\x00", &address)?;
-        if let Ok(info_data) = receive_packet(&socket) {
-            let (p, d) = parse_a2s_info(&info_data);
-            players_str = p;
-            day_time = d;
+        // 1. Send A2S_INFO query (with challenge handling)
+        let mut info_req = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00".to_vec();
+        for _ in 0..3 {
+            let attempt_start = Instant::now();
+            socket.send_to(&info_req, &address)?;
+            
+            if let Ok(info_data) = receive_packet(&socket) {
+                let rtt = attempt_start.elapsed().as_millis().to_string();
+                
+                if info_data.len() >= 9 && info_data.get(4).copied() == Some(b'A') {
+                    info_req = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00".to_vec();
+                    info_req.extend_from_slice(&info_data[5..9]);
+                    continue;
+                } else if info_data.get(4).copied() == Some(b'I') {
+                    let (p, d) = parse_a2s_info(&info_data);
+                    players_str = p;
+                    day_time = d;
+                    ping_ms = rtt;
+                    break;
+                }
+            }
         }
-        
-        let ping_ms = start.elapsed().as_millis().to_string();
 
         // 2. Send A2S_RULES query (Challenge phase)
         socket.send_to(b"\xFF\xFF\xFF\xFFV\xFF\xFF\xFF\xFF", &address)?;
@@ -299,15 +312,20 @@ pub fn ping_server(py: Python<'_>, ip: String, port: u16) -> PyResult<(String, S
         socket.set_read_timeout(Some(Duration::from_millis(1000)))?;
         socket.set_write_timeout(Some(Duration::from_millis(1000)))?;
 
-        let start = Instant::now();
+        let mut ping_ms = String::from("999");
         let mut day_time = String::new();
         let mut players_str = String::new();
 
         // 1. Send A2S_INFO request (with challenge handling)
         let mut info_req = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00".to_vec();
+        
         for _ in 0..3 {
+            let attempt_start = Instant::now();
             socket.send_to(&info_req, &address)?;
+            
             if let Ok(info_data) = receive_packet(&socket) {
+                let rtt = attempt_start.elapsed().as_millis().to_string();
+                
                 // If server asks for a challenge (starts with 'A')
                 if info_data.len() >= 9 && info_data.get(4).copied() == Some(b'A') {
                     info_req = b"\xFF\xFF\xFF\xFFTSource Engine Query\x00".to_vec();
@@ -317,15 +335,40 @@ pub fn ping_server(py: Python<'_>, ip: String, port: u16) -> PyResult<(String, S
                     let (p, d) = parse_a2s_info(&info_data);
                     players_str = p;
                     day_time = d;
+                    ping_ms = rtt;
                     break;
                 }
             }
         }
-        
-        let ping_ms = start.elapsed().as_millis().to_string();
 
         Ok((ping_ms, players_str, day_time))
     })?;
 
     Ok(res)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_a2s_info_players() {
+        let mut data = vec![0xFF, 0xFF, 0xFF, 0xFF, b'I', 0x11]; // Header
+        data.extend_from_slice(b"MefTeam Test Server\0"); // Name
+        data.extend_from_slice(b"Namalsk\0"); // Map
+        data.extend_from_slice(b"dayz\0"); // Folder
+        data.extend_from_slice(b"DayZ\0"); // Game
+        data.extend_from_slice(&[0x00, 0x00]); // ID
+        data.extend_from_slice(&[42, 60]); // 42/60 players
+        
+        let (players, _) = parse_a2s_info(&data);
+        assert_eq!(players, "42/60");
+    }
+
+    #[test]
+    fn test_parse_dayz_rules_empty() {
+        let data = vec![0xFF, 0xFF, 0xFF, 0xFF, b'E', 0x00, 0x00];
+        let mods = parse_dayz_rules(&data);
+        assert!(mods.is_empty(), "Mods list should be empty for 0 rules");
+    }
 }

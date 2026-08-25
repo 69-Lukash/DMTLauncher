@@ -18,7 +18,7 @@ class TableLoader(QObject):
         self.mw.pinged_servers.clear()
         
         if not self.servers_queue:
-            self.mw.table_builder.insert_server_row(False, "No servers found.", "", "", "", "")
+            self.mw.table_builder.insert_server_row(False, QCoreApplication.translate("TableLoader", "No servers found."), "", "", "", "", "")
             return
             
         self.timer.start(5)

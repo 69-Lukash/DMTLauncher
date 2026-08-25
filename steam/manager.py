@@ -7,10 +7,17 @@ class SteamManager:
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.cmd_script = os.path.join(self.base_dir, "steam", "cmd_worker.py")
+        self.workers = []
 
     def disconnect(self):
-        pass
-
+        for p in self.workers:
+            try:
+                p.terminate()
+            except Exception:
+                pass
+        self.workers.clear()
+        logger.info("Terminated background Steam workers.")
+    
     def _run_steam_cmd(self, action: str, mod_ids: list):
         cmd_args = [str(m) for m in mod_ids]
         is_frozen = getattr(sys, 'frozen', False)
@@ -22,47 +29,29 @@ class SteamManager:
             exec_args = [sys.executable, self.cmd_script, action] + cmd_args
             work_dir = self.base_dir
 
-        if sys.platform.startswith("linux"):
-            try:
-                pid = os.fork()
-                if pid > 0:
-                    os.waitpid(pid, 0)
-                else:
-                    os.setsid()
-                    pid2 = os.fork()
-                    if pid2 > 0:
-                        os._exit(0)
-                    else:
-                        os.chdir(work_dir)
-                        
-                        from utils.paths import get_data_dir
-                        log_dir = get_data_dir()
-                        
-                        log_path = os.path.join(log_dir, "steam_worker.log")
-                        log_fd = os.open(log_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o644)
-                        
-                        os.dup2(log_fd, sys.stdin.fileno())
-                        os.dup2(log_fd, sys.stdout.fileno())
-                        os.dup2(log_fd, sys.stderr.fileno())
-                        
-                        try:
-                            os.execv(sys.executable, exec_args)
-                        except Exception as e:
-                            with open(log_path, "a") as f:
-                                f.write(f"FATAL: execv failed: {e}\n")
-                        finally:
-                            os._exit(1)
-            except Exception as e:
-                logger.error(f"Fork failed in SteamManager: {e}", exc_info=True)
-        else:
-            try:
-                subprocess.Popen(
+        try:
+            if sys.platform == "win32":
+                p = subprocess.Popen(
                     exec_args,
                     cwd=work_dir,
                     creationflags=0x00000008 | subprocess.CREATE_NO_WINDOW
                 )
-            except Exception as e:
-                logger.error(f"Popen failed in SteamManager: {e}", exc_info=True)
+            else:
+                from utils.paths import get_data_dir
+                log_dir = os.path.join(get_data_dir(), "logs")
+                os.makedirs(log_dir, exist_ok=True)
+                log_path = os.path.join(log_dir, "steam_worker.log")
+                with open(log_path, "a") as log_file:
+                    p = subprocess.Popen(
+                        exec_args,
+                        cwd=work_dir,
+                        stdout=log_file,
+                        stderr=log_file,
+                        start_new_session=True
+                    )
+            self.workers.append(p)
+        except Exception as e:
+            logger.error(f"Failed to start Steam worker: {e}", exc_info=True)
 
     def sync_mod(self, mod_id: int):
         logger.info(f"Forcing sync/download for mod {mod_id}...")

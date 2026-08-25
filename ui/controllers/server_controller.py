@@ -22,6 +22,7 @@ class ServerController:
         self.pinged_servers = set()
         self.active_workers = []
         self.thread_pool = QThreadPool.globalInstance()
+        self.thread_pool.setMaxThreadCount(64)
         
         self.tab_servers = self.view.tab_servers
         self.table_servers = self.view.tab_servers.table_servers
@@ -38,7 +39,6 @@ class ServerController:
 
         self.tab_servers.search_bar.setPlaceholderText(QCoreApplication.translate("ServerController", "Search server by name..."))
         self.tab_servers.search_map.setPlaceholderText(QCoreApplication.translate("ServerController", "Map..."))
-        self.tab_servers.check_last_played.setText(QCoreApplication.translate("ServerController", "Last Played"))
         self.tab_servers.btn_refresh.setText(QCoreApplication.translate("ServerController", "🔄 Refresh"))
 
     def _setup_connections(self):
@@ -48,7 +48,6 @@ class ServerController:
         self.view.tab_servers.search_map.textChanged.connect(self.trigger_apply_local_filters)
         self.view.btn_direct_connect.clicked.connect(self.prompt_direct_connect)
         self.view.tab_servers.btn_refresh.clicked.connect(self.fetch_global_database)
-        self.view.tab_servers.check_last_played.stateChanged.connect(self.trigger_apply_local_filters)
 
     def fetch_global_database(self):
         self.table_servers.setRowCount(0)
@@ -72,7 +71,7 @@ class ServerController:
         if not self.all_servers: return
         search_text = self.view.tab_servers.search_bar.text()
         map_text = self.view.tab_servers.search_map.text()
-        sort_lp = self.view.tab_servers.check_last_played.isChecked()
+        sort_lp = self.view.settings_panel.check_last_played.isChecked()
         
         worker = FilterWorker(
             self.all_servers, 
@@ -205,31 +204,21 @@ class ServerController:
         if not server_data: 
             return
 
-        if action in ("play", "load"):
-            QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
-            
-            self.config_manager.last_played[ip_item] = time.time()
-            self.config_manager.save()
-
-            def on_done(sd, act=action):
-                while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
-                self.launch_callback(sd, act)
-
-            self._fetch_mods_then(ip_item, server_data, on_done)
-
-        elif action == "info":
-            try:
-                ip, port = ip_item.split(":")
-                pinger = PingWorker(ip, int(port))
-                pinger.setAutoDelete(False)
-                pinger.signals.finished.connect(
-                    lambda addr, p, pl, dt, sd=server_data, r_idx=row, w=pinger: 
-                    self.show_fresh_info(addr, p, pl, dt, sd, r_idx, w)
-                )
-                self.active_workers.append(pinger)
-                self.thread_pool.start(pinger)
-            except ValueError:
-                logger.warning(f"Invalid IP:Port format encountered: {ip_item}")
+        QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
+        
+        try:
+            ip, port = ip_item.split(":")
+            pinger = PingWorker(ip, int(port))
+            pinger.setAutoDelete(False)
+            pinger.signals.finished.connect(
+                lambda addr, p, pl, dt, sd=server_data, r_idx=row, act=action, w=pinger: 
+                self.show_fresh_info(addr, p, pl, dt, sd, r_idx, act, w)
+            )
+            self.active_workers.append(pinger)
+            self.thread_pool.start(pinger)
+        except ValueError:
+            while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+            logger.warning(f"Invalid IP:Port format encountered: {ip_item}")
 
     def _fetch_mods_then(self, address, server_data, on_done):
         try:
@@ -257,10 +246,19 @@ class ServerController:
         merged["mods"] = mods
         on_done(merged)
 
-    def show_fresh_info(self, address, ping, players_str, day_time, server_data, row, worker=None):
+    def show_fresh_info(self, address, ping, players_str, day_time, server_data, row, action, worker=None):
         if worker and worker in self.active_workers:
             self.active_workers.remove(worker)
-            
+
+        if not players_str or ping == "999":
+            while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+            err_title = QCoreApplication.translate("ServerController", "Connection Failed")
+            ip = str(server_data.get("ip", ""))
+            port = str(server_data.get("gamePort", server_data.get("port", 0)))
+            err_msg = QCoreApplication.translate("ServerController", "Server {0}:{1} is not responding or offline!").format(ip, port)
+            QMessageBox.warning(self.view, err_title, err_msg)
+            return
+
         self.table_servers.setItem(row, 4, self.table_builder.create_item(ping, center=True))
         if players_str:
             self.table_servers.setItem(row, 5, self.table_builder.create_item(players_str, center=True))
@@ -274,10 +272,22 @@ class ServerController:
         if day_time:
             server_data['dayTime'] = day_time
 
-        self._fetch_mods_then(address, server_data, self._show_info_dialog_with_ping(ping))
+        if action in ("play", "load"):
+            self.config_manager.last_played[address] = time.time()
+            self.config_manager.save()
+            
+            def on_done(sd, act=action):
+                while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+                self.launch_callback(sd, act)
+
+            self._fetch_mods_then(address, server_data, on_done)
+
+        elif action == "info":
+            self._fetch_mods_then(address, server_data, self._show_info_dialog_with_ping(ping))
 
     def _show_info_dialog_with_ping(self, ping):
         def _show(server_data):
+            while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
             dialog = ServerInfoDialog(server_data, ping, self.view)
             dialog.exec()
         return _show
@@ -289,7 +299,6 @@ class ServerController:
         text, ok = QInputDialog.getText(self.view, title, prompt)
         
         if ok and text.strip():
-            # ВМИКАЄМО ФІДБЕК: Юзер натиснув ОК, починаємо шукати сервер
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
             
             try:
@@ -315,7 +324,6 @@ class ServerController:
                 
                 pinger = PingWorker(ip, query_port)
                 pinger.setAutoDelete(False)
-                # ТУТ ЗМІНА: передаємо pl (players) у _process_direct_connect
                 pinger.signals.finished.connect(
                     lambda addr, p, pl, dt, i=ip, gp=game_port, qp=query_port, fb=fallback, w=pinger: 
                     self._process_direct_connect(p, pl, i, gp, qp, fb, w)
@@ -334,13 +342,11 @@ class ServerController:
         if worker and worker in self.active_workers:
             self.active_workers.remove(worker)
 
-        # ТУТ ЗМІНА: Якщо гравців немає (порожній рядок) — сервер мертвий
         if not players_str or ping_str == "999":
             if fallback:
                 new_query = game_port + 1
                 pinger = PingWorker(ip, new_query)
                 pinger.setAutoDelete(False)
-                # ТУТ ЗМІНА: також передаємо pl
                 pinger.signals.finished.connect(
                     lambda addr, p, pl, dt, i=ip, gp=game_port, qp=new_query, fb=False, w=pinger: 
                     self._process_direct_connect(p, pl, i, gp, qp, fb, w)
@@ -349,7 +355,6 @@ class ServerController:
                 self.thread_pool.start(pinger)
                 return
             else:
-                # ВИМИКАЄМО ФІДБЕК: ПІНГ НЕ ПРОЙШОВ!
                 while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
                 
                 err_title = QCoreApplication.translate("ServerController", "Connection Failed")

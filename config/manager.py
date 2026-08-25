@@ -4,6 +4,7 @@ from utils.logger import logger
 
 class ConfigManager:
     def __init__(self, config_path):
+        self.sort_last_played = False
         self.config_path = config_path
         self.last_played = {}
         self.nickname = "Survivor"
@@ -33,6 +34,7 @@ class ConfigManager:
                 self.default_sort = config.get("default_sort", 0)
                 self.language = config.get("language", "en_US")
                 self.launch_params = config.get("launch_params", "")
+                self.sort_last_played = config.get("sort_last_played", False)
                 self.last_local_preset = config.get("last_local_preset", "")
             logger.info(f"Successfully loaded config from {self.config_path}")
         except (json.JSONDecodeError, IOError) as e:
@@ -48,7 +50,7 @@ class ConfigManager:
             "language": self.language,
             "launch_params": self.launch_params,
             "last_local_preset": self.last_local_preset,
-            "last_played": self.last_played
+            "sort_last_played": self.sort_last_played
         }
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:

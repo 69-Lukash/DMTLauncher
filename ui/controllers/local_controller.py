@@ -4,7 +4,7 @@ import time
 import dmtl_core
 
 from PyQt6.QtWidgets import QApplication, QInputDialog, QMessageBox, QFileDialog, QTableWidgetItem, QPushButton
-from PyQt6.QtCore import QCoreApplication, Qt, QThreadPool
+from PyQt6.QtCore import QCoreApplication, Qt, QThreadPool, QObject
 
 from utils.logger import logger
 from utils.paths import get_data_dir
@@ -16,8 +16,10 @@ class CheckableModItem(QTableWidgetItem):
             return self.checkState() == Qt.CheckState.Checked
         return self.text().lower() < other.text().lower()
 
-class LocalController:
+class LocalController(QObject):
     def __init__(self, view, config_manager, mod_controller, launch_callback):
+        super().__init__()
+        self.active_workers = []
         self.view = view
         self.tab_local = view.tab_local
         self.table_local = view.tab_local.table_local
@@ -247,10 +249,17 @@ class LocalController:
 
     def check_dependencies(self, mod_id):
         worker = DependencyWorker(mod_id)
-        worker.signals.finished.connect(self.on_dependencies_fetched)
+        worker.setAutoDelete(False)
+        worker.signals.finished.connect(
+            lambda b_id, d_names, d_ids, w=worker: self.on_dependencies_fetched(b_id, d_names, d_ids, w)
+        )
+        self.active_workers.append(worker)
         QThreadPool.globalInstance().start(worker)
 
-    def on_dependencies_fetched(self, base_mod_id, dep_names, dep_ids):
+    def on_dependencies_fetched(self, base_mod_id, dep_names, dep_ids, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+            
         if not dep_ids or not self.current_preset: return
         
         missing_ids = []
@@ -390,8 +399,6 @@ class LocalController:
         self.tab_local.btn_play.setText(QCoreApplication.translate("LocalController", "⏳ Launching..."))
         QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
         QApplication.processEvents()
-        
-        time.sleep(1.0)
         
         mock_server_data = {
             "name": self.current_preset,

@@ -2,7 +2,7 @@ import sys
 import os
 from PyQt6 import uic
 from PyQt6.QtWidgets import QMainWindow, QPushButton, QWidget, QHBoxLayout 
-from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve
+from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, QParallelAnimationGroup, QSize
 from PyQt6.QtGui import QIcon
 
 from ui.components.icon_factory import create_gear_icon
@@ -64,12 +64,26 @@ class DMTLMainWindow(QMainWindow):
     def toggle_settings(self):
         width = self.settings_panel.width()
         target_width = 300 if width == 0 else 0
-        self.animation = QPropertyAnimation(self.settings_panel, b"maximumWidth")
-        self.animation.setDuration(300)
-        self.animation.setStartValue(width)
-        self.animation.setEndValue(target_width)
-        self.animation.setEasingCurve(QEasingCurve.Type.InOutQuart)
-        self.animation.start()
+
+        self.anim_group = QParallelAnimationGroup()
+
+        panel_anim = QPropertyAnimation(self.settings_panel, b"maximumWidth")
+        panel_anim.setDuration(300)
+        panel_anim.setStartValue(width)
+        panel_anim.setEndValue(target_width)
+        panel_anim.setEasingCurve(QEasingCurve.Type.InOutQuart)
+        self.anim_group.addAnimation(panel_anim)
+
+        if not self.isMaximized():
+            window_anim = QPropertyAnimation(self, b"size")
+            window_anim.setDuration(300)
+            window_anim.setStartValue(self.size())
+            target_size = QSize(self.width() + 300, self.height()) if target_width == 300 else QSize(self.width() - 300, self.height())
+            window_anim.setEndValue(target_size)
+            window_anim.setEasingCurve(QEasingCurve.Type.InOutQuart)
+            self.anim_group.addAnimation(window_anim)
+
+        self.anim_group.start()
 
     def sort_servers_table(self, col):
         self.table_builder.sort_servers_table(col)

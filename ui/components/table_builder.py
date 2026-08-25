@@ -67,10 +67,12 @@ class TableBuilder:
         
         fm = self.table_mods.fontMetrics()
         
-        size_content_width = fm.horizontalAdvance("999.9 MB") + 35
-        size_header_width = fm.horizontalAdvance(headers[2]) + 30
+        fm = self.table_mods.fontMetrics()
         
-        self.table_mods.setColumnWidth(2, max(size_header_width, size_content_width))
+        size_header_width = fm.horizontalAdvance(headers[2]) + 30
+        self.table_mods.setColumnWidth(2, max(size_header_width, 90))
+        
+        self.table_mods.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
         
         self.table_mods.setColumnWidth(3, max(80, fm.horizontalAdvance(headers[3]) + 60))
         self.table_mods.setColumnWidth(4, max(80, fm.horizontalAdvance(headers[4]) + 55))
@@ -145,7 +147,9 @@ class TableBuilder:
             name_item = self.table_servers.item(row, 1)
             if not name_item: continue
             name = name_item.text()
-            if "Downloading" in name or "found" in name.lower(): return
+            dl_text = QCoreApplication.translate("ServerController", "Downloading servers...")
+            not_found_text = QCoreApplication.translate("TableLoader", "No servers found.")
+            if name in (dl_text, not_found_text): return
                 
             fav_item = self.table_servers.item(row, 0)
             is_fav = (fav_item.text() == "★") if fav_item else False
@@ -161,9 +165,13 @@ class TableBuilder:
             
             sort_key = name.lower() if col == 1 else (ping_val if col == 4 else players_val)
             
+            last_played_item = self.table_servers.item(row, 6)
+            last_played = last_played_item.text() if last_played_item else ""
+
             rows_data.append({
                 "is_fav": is_fav, "name": name, "map": map_val, 
                 "ip": ip_val, "ping": ping_str, "players": players_str, 
+                "last_played": last_played,
                 "sort_key": sort_key
             })
             
@@ -172,4 +180,4 @@ class TableBuilder:
         
         self.table_servers.setRowCount(0)
         for r in rows_data:
-            self.insert_server_row(r["is_fav"], r["name"], r["map"], r["ip"], r["ping"], r["players"])
+            self.insert_server_row(r["is_fav"], r["name"], r["map"], r["ip"], r["ping"], r["players"], r["last_played"])

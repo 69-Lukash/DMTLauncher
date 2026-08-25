@@ -117,8 +117,6 @@ py launcher.py
 python3 launcher.py
 ```
 
-*(Note: Custom-modified Steamworks libraries (`libsteam_api.so`, `SteamworksPy.so`, `steam_api64.dll`, `SteamworksPy64.dll`) and `steam_appid.txt` are already included in the repository root. Just clone, install requirements, and run!)*
-
 ## 📦 Building the Executable
 
 Make sure your virtual environment is activated before building.

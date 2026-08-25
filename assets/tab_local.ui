@@ -14,7 +14,7 @@
      <item><widget class="QPushButton" name="btn_delete"><property name="text"><string>🗑️ Delete</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
      <item><widget class="QPushButton" name="btn_export"><property name="text"><string>📤 Export</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
      <item><widget class="QPushButton" name="btn_import"><property name="text"><string>📥 Import</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
-     <item><widget class="QPushButton" name="btn_play"><property name="text"><string>▶ Play</string></property><property name="styleSheet"><string>background-color: #2E7D32; color: white; font-weight: bold;</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
+     <item><widget class="QPushButton" name="btn_play"><property name="text"><string>▶ Play</string></property><property name="cursor"><cursorShape>PointingHandCursor</cursorShape></property></widget></item>
     </layout>
    </item>
    <item>

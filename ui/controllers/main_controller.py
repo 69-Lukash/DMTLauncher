@@ -22,11 +22,18 @@ except ImportError:
     CURRENT_VERSION = "dev"
 
 class MainController:
-    def __init__(self):
+    def __init__(self, config_manager=None):
         self.view = DMTLMainWindow()
         
         self.config_path = self._get_config_path()
-        self.config_manager = ConfigManager(self.config_path)
+        self.config_manager = config_manager or ConfigManager(self.config_path)
+        
+        old_log = os.path.join(get_data_dir(), "steam_worker.log")
+        if os.path.exists(old_log):
+            try:
+                os.remove(old_log)
+            except OSError:
+                pass
         
         self.mod_controller = ModController(self.view)
         self.server_controller = ServerController(self.view, self.config_manager, self.queue_launch)
@@ -44,7 +51,7 @@ class MainController:
 
         self.version_label = QLabel(f"v{CURRENT_VERSION}")
         self.version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.version_label.setStyleSheet("color: #8c76a8; margin-top: 10px; margin-bottom: 5px;")
+        self.version_label.setObjectName("version_label")
         
         self.version_label.setOpenExternalLinks(True)
         
@@ -92,11 +99,15 @@ class MainController:
         self.view.settings_panel.combo_sort.setItemText(1, QCoreApplication.translate("MainController", "By Name (A-Z)"))
         self.view.settings_panel.label_lang.setText(QCoreApplication.translate("MainController", "Language (requires restart):"))
         self.view.settings_panel.label_params.setText(QCoreApplication.translate("MainController", "Launch Parameters:"))
-        
+
+        if hasattr(self.view.settings_panel, 'check_last_played'):
+            self.view.settings_panel.check_last_played.setText(QCoreApplication.translate("MainController", "Sort by Last Played"))
+            self.view.settings_panel.check_last_played.setChecked(self.config_manager.sort_last_played)
+            self.view.settings_panel.check_last_played.stateChanged.connect(self.save_config)
+            self.view.settings_panel.check_last_played.stateChanged.connect(self.server_controller.trigger_apply_local_filters)
+
         if hasattr(self.view.settings_panel, 'btn_cleanup'):
-            current_text = self.view.settings_panel.btn_cleanup.text()
-            if "Cleaning" not in current_text and "Очищення" not in current_text:
-                self.view.settings_panel.btn_cleanup.setText(QCoreApplication.translate("MainController", "🗑️ Clean Unsubscribed Mods"))
+            self.view.settings_panel.btn_cleanup.setText(QCoreApplication.translate("MainController", "🗑️ Clean Unsubscribed Mods"))
                 
         if hasattr(self.view.settings_panel, 'btn_about'):
             self.view.settings_panel.btn_about.setText(QCoreApplication.translate("MainController", "About DMTL"))
@@ -129,6 +140,9 @@ class MainController:
 
         self.config_manager.save()
         self.server_controller.trigger_apply_local_filters()
+
+        if hasattr(self.view.settings_panel, 'check_last_played'):
+            self.config_manager.sort_last_played = self.view.settings_panel.check_last_played.isChecked()
         
 
     def browse_path(self):
@@ -168,36 +182,57 @@ class MainController:
             return
             
         game_path = Path(self.config_manager.game_path)
-        downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
         content_dir = game_path.parents[1] / "workshop" / "content" / "221100"
+        downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
         
+        status = {}
+        log_path = os.path.join(get_data_dir(), "logs", "steam_worker.log")
+        if os.path.exists(log_path):
+            try:
+                with open(log_path, "r", encoding="utf-8") as f:
+                    lines = f.readlines()
+                    if lines:
+                        for line in reversed(lines):
+                            try:
+                                status = json.loads(line.strip())
+                                break
+                            except json.JSONDecodeError:
+                                continue
+            except Exception as e:
+                logger.debug(f"Error reading steam_worker.log: {e}")
+
         finished_any = False
         
         for mod_id in list(self.mod_controller.downloading_mods.keys()):
-            dl_path = downloads_dir / str(mod_id)
             content_path = content_dir / str(mod_id)
             
             if content_path.exists() and (content_path / "meta.cpp").exists():
                 del self.mod_controller.downloading_mods[mod_id]
                 finished_any = True
-            elif dl_path.exists():
-                total_size = 0
-                try:
-                    for item in dl_path.rglob('*'):
-                        if item.is_file() and not item.is_symlink():
-                            total_size += item.stat().st_size
-                except OSError:
-                    pass
-                
-                if total_size < 1024:
-                    size_str = f"{total_size} B"
-                elif total_size < 1024 * 1024:
-                    size_str = f"{total_size / 1024:.1f} KB"
-                else:
-                    mb = total_size / (1024 * 1024)
-                    size_str = f"{mb:.1f} MB" if mb < 1024 else f"{mb / 1024:.1f} GB"
+            else:
+                mod_status = status.get(str(mod_id))
+                if mod_status:
+                    downloaded = mod_status.get("downloaded", 0)
+                    total = mod_status.get("total", 0)
                     
-                self.mod_controller.downloading_mods[mod_id]["size"] = size_str
+                    if total > 0:
+                        percent = int((downloaded / total) * 100)
+                        mb_down = downloaded / (1024 * 1024)
+                        mb_total = total / (1024 * 1024)
+                        size_str = f"{mb_down:.1f}/{mb_total:.1f} MB ({percent}%)"
+                    else:
+                        target_dir = downloads_dir / str(mod_id)
+                        if target_dir.exists():
+                            curr_size = sum(f.stat().st_size for f in target_dir.rglob('*') if f.is_file())
+                            if curr_size > 0:
+                                mb_down = curr_size / (1024 * 1024)
+                                size_str = f"⬇️ {mb_down:.1f} MB"
+                            else:
+                                size_str = "Starting..."
+                        else:
+                            size_str = "Starting..."
+                            
+                    self.mod_controller.downloading_mods[mod_id]["size"] = size_str
                 
         if finished_any:
             if not self.mod_controller.downloading_mods and self.auto_join_server:
@@ -208,8 +243,11 @@ class MainController:
                 self.queue_launch(target, action)
             else:
                 self.fetch_local_mods()
+                if self.mod_controller.downloading_mods:
+                    self.dl_update_timer.start(1000)
         else:
             self.mod_controller.update_download_progress()
+            self.dl_update_timer.start(1000)
 
     def check_existing_downloads(self):
         if not self.config_manager.game_path:
@@ -327,14 +365,16 @@ class MainController:
         QMessageBox.about(
             self.view,
             self.view.tr("About DMTL"),
-            "<h3>DMTL - DayZ MefTeam Launcher</h3>"
-            "<p>Custom launcher for DayZ.</p>"
-            "<p><a href='https://github.com/69-Lukash/DMTLauncher'>https://github.com/69-Lukash/DMTLauncher</a></p>"
-            "<p><b>Credits:</b></p>"
-            "<ul>"
-            "<li>Thanks to everyone who helped with testing.</li>"
-            "<li>Thanks to Kolyakvas for help with the icon.</li>"
-            "</ul>"
+            self.view.tr(
+                "<h3>DMTL - DayZ MefTeam Launcher</h3>"
+                "<p>Custom launcher for DayZ.</p>"
+                "<p><a href='https://github.com/69-Lukash/DMTLauncher'>https://github.com/69-Lukash/DMTLauncher</a></p>"
+                "<p><b>Credits:</b></p>"
+                "<ul>"
+                "<li>Thanks to everyone who helped with testing.</li>"
+                "<li>Thanks to Kolyakvas for help with the icon.</li>"
+                "</ul>"
+            )
         )
 
     def prompt_mod_cleanup(self):
@@ -392,7 +432,7 @@ class MainController:
         if worker and worker in self.active_workers:
             self.active_workers.remove(worker)
             
-        html = f'<span style="color: #f44336; text-decoration: line-through;">v{CURRENT_VERSION}</span> &gt;&gt; <a href="{release_url}" style="color: #4CAF50; text-decoration: none; font-weight: bold;">v{latest_version}</a>'
+        html = f'<span class="old-version">v{CURRENT_VERSION}</span> &gt;&gt; <a href="{release_url}" class="new-version">v{latest_version}</a>'
         self.version_label.setText(html)
     
     def show(self):

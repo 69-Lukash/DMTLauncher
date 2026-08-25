@@ -46,8 +46,8 @@ if __name__ == "__main__":
     if os.path.exists(locale_path):
         translator.load(locale_path)
         app.installTranslator(translator)
-    
-    controller = MainController()
+
+    controller = MainController(config)
     controller.show()
 
     sys.exit(app.exec())

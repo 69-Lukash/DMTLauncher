@@ -59,15 +59,15 @@ class ServerInfoDialog(QDialog):
         val_no = QCoreApplication.translate("ServerInfoDialog", "No 🔓")
 
         html_content = f"""
-        <div style="font-family: 'Segoe UI', Arial, sans-serif; font-size: 14px; line-height: 1.4; color: #d4c8e3;">
-            <p style="font-size: 16px; margin-bottom: 8px;"><b>{t_name}</b> {name}</p>
-            <p style="margin: 4px 0;"><b>{t_ip}</b> {self.address}</p>
-            <p style="margin: 4px 0;"><b>{t_ping}</b> {self.ping}</p>
-            <p style="margin: 4px 0;"><b>{t_players}</b> {players}</p>
-            <p style="margin: 4px 0;"><b>{t_password}</b> {val_yes if is_password else val_no}</p>
-            <p style="margin: 4px 0;"><b>{t_time}</b> {time}</p>
-            <p style="margin: 4px 0;"><b>{t_country}</b> {country}</p>
-            <p style="margin: 4px 0;"><b>{t_mods_count}</b> {len(mods)}</p>
+        <div class="server-info-container">
+            <p class="server-name"><b>{t_name}</b> {name}</p>
+            <p><b>{t_ip}</b> {self.address}</p>
+            <p><b>{t_ping}</b> {self.ping}</p>
+            <p><b>{t_players}</b> {players}</p>
+            <p><b>{t_password}</b> {val_yes if is_password else val_no}</p>
+            <p><b>{t_time}</b> {time}</p>
+            <p><b>{t_country}</b> {country}</p>
+            <p><b>{t_mods_count}</b> {len(mods)}</p>
         </div>
         """
         self.info_browser.setHtml(html_content)

@@ -13,7 +13,7 @@ class UpdateCheckWorker(QRunnable):
         self.signals = UpdaterSignals()
 
     def run(self):
-        if self.current_version == "dev":
+        if self.current_version.lower() == "dev":
             return
             
         url = "https://api.github.com/repos/69-Lukash/DMTLauncher/releases/latest"

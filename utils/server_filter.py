@@ -16,25 +16,22 @@ def apply_local_filters(all_servers, search_text, map_text, favorites, last_play
         
         filtered.append(s)
 
-    if sort_mode == 0:
-        filtered.sort(key=lambda x: int(x.get("players", 0)), reverse=True)
-    elif sort_mode == 1:
-        filtered.sort(key=lambda x: str(x.get("name", "")).lower())
-    
-    if sort_lp:
-        def get_lp(s):
-            ip = str(s.get("ip", ""))
-            port = str(s.get("port", 0))
-            return last_played_dict.get(f"{ip}:{port}", 0)
+    def sort_key(s):
+        ip = str(s.get("ip", ""))
+        port = str(s.get("port", 0))
+        addr = f"{ip}:{port}"
         
-        filtered.sort(key=get_lp, reverse=True)
-
-    def is_favorite(server_dict):
-        ip = str(server_dict.get("ip", ""))
-        port = str(server_dict.get("port", 0))
-        return f"{ip}:{port}" in favorites
+        fav = -1 if addr in favorites else 0
+        lp = -last_played_dict.get(addr, 0) if sort_lp else 0
         
-    filtered.sort(key=is_favorite, reverse=True)
+        if sort_mode == 0:
+            try: p = -int(s.get("players", 0))
+            except (ValueError, TypeError): p = 0
+            return (fav, lp, p)
+        else:
+            name = str(s.get("name", "")).lower()
+            return (fav, lp, name)
+    filtered.sort(key=sort_key)
     
     return filtered
 

@@ -121,3 +121,37 @@ QListWidget::item:selected {
 QListWidget::item:hover:!selected {
     background-color: #160b21;
 }
+QLabel#version_label {
+    color: #8c76a8;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+.old-version {
+    color: #f44336;
+    text-decoration: line-through;
+}
+.new-version {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+QTextBrowser .server-info-container {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #d4c8e3;
+}
+QTextBrowser .server-name {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+QTextBrowser p {
+    margin: 4px 0;
+}
+QPushButton#btn_play {
+    background-color: #2E7D32;
+}
+QPushButton#btn_play:hover {
+    background-color: #388E3C;
+    border: 1px solid #4CAF50;
+}

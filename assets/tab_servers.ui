@@ -34,16 +34,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="check_last_played">
-       <property name="text">
-        <string>Last Played</string>
-       </property>
-       <property name="cursor">
-        <cursorShape>PointingHandCursor</cursorShape>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btn_refresh">
        <property name="cursor">
         <cursorShape>PointingHandCursor</cursorShape>
