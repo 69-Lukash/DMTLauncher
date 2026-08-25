@@ -3,7 +3,7 @@
 A lightweight and fast DayZ server launcher built with **Python (PyQt6)**, featuring a native **Rust** integration for lightning-fast server querying.
 It features direct integration with the Steamworks API for seamless background mod downloading and management without freezing the UI.
 
-![DMTL Screenshot](images/image.png)
+![DMTL Screenshot](images/image.png?v=2)
 
 ## ✨ Features
 
