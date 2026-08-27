@@ -50,7 +50,8 @@ class ConfigManager:
             "language": self.language,
             "launch_params": self.launch_params,
             "last_local_preset": self.last_local_preset,
-            "sort_last_played": self.sort_last_played
+            "sort_last_played": self.sort_last_played,
+            "last_played": self.last_played
         }
         try:
             with open(self.config_path, "w", encoding="utf-8") as f:
