@@ -1,22 +1,17 @@
 import os
 import sys
 import subprocess
+import threading
 from utils.logger import logger
 
 class SteamManager:
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.cmd_script = os.path.join(self.base_dir, "steam", "cmd_worker.py")
-        self.workers = []
 
     def disconnect(self):
-        for p in self.workers:
-            try:
-                p.terminate()
-            except Exception:
-                pass
-        self.workers.clear()
-        logger.info("Terminated background Steam workers.")
+        # Більше не треба нічого вбивати, потоки самі себе чистять
+        pass
     
     def _run_steam_cmd(self, action: str, mod_ids: list):
         cmd_args = [str(m) for m in mod_ids]
@@ -41,15 +36,20 @@ class SteamManager:
                 log_dir = os.path.join(get_data_dir(), "logs")
                 os.makedirs(log_dir, exist_ok=True)
                 log_path = os.path.join(log_dir, "steam_worker.log")
-                with open(log_path, "a") as log_file:
-                    p = subprocess.Popen(
-                        exec_args,
-                        cwd=work_dir,
-                        stdout=log_file,
-                        stderr=log_file,
-                        start_new_session=True
-                    )
-            self.workers.append(p)
+                
+                log_file = open(log_path, "a")
+                p = subprocess.Popen(
+                    exec_args,
+                    cwd=work_dir,
+                    stdout=log_file,
+                    stderr=log_file,
+                    start_new_session=True
+                )
+            
+            # Створюємо фоновий потік, який чекає завершення процесу
+            # і миттєво підчищає "зомбі" з системи, звільняючи Стім
+            threading.Thread(target=p.wait, daemon=True).start()
+
         except Exception as e:
             logger.error(f"Failed to start Steam worker: {e}", exc_info=True)
 

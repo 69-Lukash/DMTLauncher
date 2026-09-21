@@ -63,11 +63,11 @@ class MainController:
         self.mod_update_timer = QTimer()
         self.mod_update_timer.setSingleShot(True)
         self.mod_update_timer.timeout.connect(self.fetch_local_mods)
-        self.check_existing_downloads()
 
         self.auto_join_server = None
         self.auto_join_action = None
-
+    
+        self.check_existing_downloads()
         self._setup_connections()
         
         self.server_controller.fetch_global_database()
