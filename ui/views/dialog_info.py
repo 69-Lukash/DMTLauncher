@@ -1,14 +1,18 @@
 import os
 import sys
+import html
 import dmtl_core
 
 from PyQt6.QtWidgets import QDialog, QApplication, QMessageBox
-from PyQt6.QtCore import QCoreApplication, Qt
+from PyQt6.QtCore import QCoreApplication, Qt, pyqtSignal
 from PyQt6 import uic
         
-from utils.paths import get_data_dir
+from utils.paths import get_data_dir, sanitize_filename
+from utils.logger import logger
 
 class ServerInfoDialog(QDialog):
+    preset_saved = pyqtSignal()
+
     def __init__(self, server_data, ping, parent=None):
         super().__init__(parent)
         
@@ -34,7 +38,7 @@ class ServerInfoDialog(QDialog):
         self.btn_save_preset.clicked.connect(self.save_as_preset)
 
     def populate_data(self):
-        name = str(self.server_data.get("name", "Unknown Server"))
+        name = html.escape(str(self.server_data.get("name", "Unknown Server")))
         ip = str(self.server_data.get("ip", ""))
         port = str(self.server_data.get("gamePort", ""))
         self.address = f"{ip}:{port}"
@@ -42,8 +46,8 @@ class ServerInfoDialog(QDialog):
         players = f"{self.server_data.get('players', 0)}/{self.server_data.get('maxplayers', 0)}"
         is_password = self.server_data.get("password", False)
         
-        time = str(self.server_data.get("dayTime", "Unknown"))
-        country = str(self.server_data.get("country", "Unknown"))
+        time = html.escape(str(self.server_data.get("dayTime", "Unknown")))
+        country = html.escape(str(self.server_data.get("country", "Unknown")))
         mods = self.server_data.get("mods", [])
 
         t_name = QCoreApplication.translate("ServerInfoDialog", "Name:")
@@ -61,8 +65,8 @@ class ServerInfoDialog(QDialog):
         html_content = f"""
         <div class="server-info-container">
             <p class="server-name"><b>{t_name}</b> {name}</p>
-            <p><b>{t_ip}</b> {self.address}</p>
-            <p><b>{t_ping}</b> {self.ping}</p>
+            <p><b>{t_ip}</b> {html.escape(self.address)}</p>
+            <p><b>{t_ping}</b> {html.escape(str(self.ping))}</p>
             <p><b>{t_players}</b> {players}</p>
             <p><b>{t_password}</b> {val_yes if is_password else val_no}</p>
             <p><b>{t_time}</b> {time}</p>
@@ -88,9 +92,10 @@ class ServerInfoDialog(QDialog):
             QApplication.clipboard().setText("No mods")
 
     def save_as_preset(self):
-        preset_name = self.server_data.get("name", "Server Preset").strip()
+        preset_name = str(self.server_data.get("name", "Server Preset")).strip()
         if len(preset_name) > 30:
             preset_name = preset_name[:27] + "..."
+        preset_name = sanitize_filename(preset_name, fallback="Server Preset")
             
         mods = []
         for mod in self.server_data.get("mods", []):
@@ -110,11 +115,12 @@ class ServerInfoDialog(QDialog):
             
         try:
             dmtl_core.export_preset(os.path.join(presets_dir, f"{final_name}.dmtlp"), final_name, mods)
+            self.preset_saved.emit()
             title = QCoreApplication.translate("ServerInfoDialog", "Success")
             msg = QCoreApplication.translate("ServerInfoDialog", "Preset '{0}' saved!\nSwitch to the Local Game tab to see it.").format(final_name)
             QMessageBox.information(self, title, msg)
         except Exception as e:
-            print(f"Error saving preset: {e}")
+            logger.error(f"Error saving preset: {e}")
             err_title = QCoreApplication.translate("ServerInfoDialog", "Error")
             err_msg = QCoreApplication.translate("ServerInfoDialog", "Failed to save preset: {0}").format(str(e))
             QMessageBox.critical(self, err_title, err_msg)

@@ -1,13 +1,12 @@
 import os
 import shutil
-import time
 import dmtl_core
 
 from PyQt6.QtWidgets import QApplication, QInputDialog, QMessageBox, QFileDialog, QTableWidgetItem, QPushButton
 from PyQt6.QtCore import QCoreApplication, Qt, QThreadPool, QObject
 
 from utils.logger import logger
-from utils.paths import get_data_dir
+from utils.paths import get_data_dir, sanitize_filename
 from network.api import DependencyWorker
 
 class CheckableModItem(QTableWidgetItem):
@@ -82,6 +81,12 @@ class LocalController(QObject):
             if self.current_preset:
                 self.sort_table()
 
+    def on_preset_added(self):
+        previous = self.current_preset
+        self._refresh_preset_combo()
+        if self.current_preset != previous and self._list_loaded:
+            self.apply_preset_to_table()
+
     def _get_preset_path(self, name):
         return os.path.join(self.presets_dir, f"{name}.dmtlp")
 
@@ -128,14 +133,17 @@ class LocalController(QObject):
             prompt = QCoreApplication.translate("LocalController", "Preset Name:")
             text, ok = QInputDialog.getText(self.view, title, prompt)
             if ok and text.strip():
-                name = text.strip()
+                name = sanitize_filename(text)
                 self.current_preset = name
                 self.current_preset_mods = []
-                self._save_current_preset()
+                if not os.path.exists(self._get_preset_path(name)):
+                    self._save_current_preset()
                 self.config_manager.last_local_preset = name
                 self.config_manager.save()
                 self._refresh_preset_combo()
                 self.tab_local.combo_presets.setCurrentText(name)
+                if self._list_loaded:
+                    self.apply_preset_to_table()
             else:
                 fallback_text = self.current_preset if self.current_preset else "📁 Select Preset..."
                 self.tab_local.combo_presets.setCurrentText(fallback_text)
@@ -353,6 +361,7 @@ class LocalController(QObject):
         if path:
             try:
                 name, mod_ids = dmtl_core.import_preset(path)
+                name = sanitize_filename(name)
                 
                 final_name = name
                 counter = 1

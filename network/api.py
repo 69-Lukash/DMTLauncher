@@ -11,6 +11,19 @@ from utils.logger import logger
 class ApiSignals(QObject):
     finished = pyqtSignal(list)
 
+def _strip_mods(data):
+    # Mod lists are fetched live via A2S; the DZSA copy is unused and bulky.
+    if isinstance(data, list):
+        servers = data
+    elif isinstance(data, dict):
+        servers = data.get("result", data.get("servers", data.get("data", [])))
+    else:
+        return
+    if isinstance(servers, list):
+        for s in servers:
+            if isinstance(s, dict):
+                s.pop("mods", None)
+
 class DZSAWorker(QRunnable):
     def __init__(self):
         super().__init__()
@@ -30,6 +43,8 @@ class DZSAWorker(QRunnable):
 
             with urllib.request.urlopen(req, timeout=15, context=context) as response:
                 data = json.loads(response.read().decode('utf-8'))
+
+            _strip_mods(data)
                 
             with open(cache_file, "w", encoding="utf-8") as f:
                 json.dump(data, f)
@@ -56,13 +71,13 @@ class DZSAWorker(QRunnable):
 
         server_list = []
         for s in raw_list:
-            endpoint = s.get("endpoint", {})
+            endpoint = s.get("endpoint") or {}
             server_list.append({
                 "name": s.get("name", "Unknown Server"),
                 "ip": s.get("ip", endpoint.get("ip", "")),
                 "port": s.get("port", endpoint.get("port", 0)),
                 "gamePort": s.get("gamePort", s.get("port", endpoint.get("port", 0))),
-                "queryPort": s.get("queryPort", s.get("port", 0)),
+                "queryPort": s.get("queryPort", endpoint.get("port", s.get("port", 0))),
                 "players": s.get("players", 0),
                 "maxplayers": s.get("maxplayers", s.get("maxPlayers", 0)),
                 "map": s.get("map", s.get("mission", "Chernarus")),
@@ -72,10 +87,6 @@ class DZSAWorker(QRunnable):
 
         logger.info(f"Successfully loaded {len(server_list)} servers")
         self.signals.finished.emit(server_list)
-
-class SingleServerSignals(QObject):
-    finished = pyqtSignal(dict)
-    error = pyqtSignal(str)
 
 class DependencySignals(QObject):
     # mod_id, list of names, list of ids
@@ -88,13 +99,13 @@ class DependencyWorker(QRunnable):
         self.signals = DependencySignals()
 
     def run(self):
-        import re
         try:
             logger.info(f"Checking dependencies for mod {self.mod_id} via HTML parsing...")
             url_html = f"https://steamcommunity.com/sharedfiles/filedetails/?id={self.mod_id}"
+            ssl_ctx = ssl.create_default_context(cafile=certifi.where())
             req_html = urllib.request.Request(url_html, headers={'User-Agent': 'Mozilla/5.0'})
             
-            with urllib.request.urlopen(req_html, timeout=5) as resp:
+            with urllib.request.urlopen(req_html, timeout=5, context=ssl_ctx) as resp:
                 html = resp.read().decode('utf-8')
                 
             dep_ids = []
@@ -119,7 +130,7 @@ class DependencyWorker(QRunnable):
             data_deps = urllib.parse.urlencode(post_deps).encode('utf-8')
             req_deps = urllib.request.Request(url_api, data=data_deps, headers={'User-Agent': 'DMTL-Launcher/1.0'})
             
-            with urllib.request.urlopen(req_deps, timeout=5) as resp_deps:
+            with urllib.request.urlopen(req_deps, timeout=5, context=ssl_ctx) as resp_deps:
                 deps_api_data = json.loads(resp_deps.read().decode('utf-8'))
                 
             dep_names = []

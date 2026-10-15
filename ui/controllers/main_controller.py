@@ -38,6 +38,7 @@ class MainController:
         self.mod_controller = ModController(self.view)
         self.server_controller = ServerController(self.view, self.config_manager, self.queue_launch)
         self.local_controller = LocalController(self.view, self.config_manager, self.mod_controller, self.queue_launch)
+        self.server_controller.on_preset_saved = self.local_controller.on_preset_added
         
         self.thread_pool = QThreadPool.globalInstance()
         self.active_workers = []
@@ -136,14 +137,11 @@ class MainController:
         lang_idx = self.view.settings_panel.combo_lang.currentIndex()
         self.config_manager.language = "uk_UA" if lang_idx == 1 else "en_US"
 
-        self.config_manager.default_sort = self.view.settings_panel.combo_sort.currentIndex()
+        if hasattr(self.view.settings_panel, 'check_last_played'):
+            self.config_manager.sort_last_played = self.view.settings_panel.check_last_played.isChecked()
 
         self.config_manager.save()
         self.server_controller.trigger_apply_local_filters()
-
-        if hasattr(self.view.settings_panel, 'check_last_played'):
-            self.config_manager.sort_last_played = self.view.settings_panel.check_last_played.isChecked()
-        
 
     def browse_path(self):
         folder = QFileDialog.getExistingDirectory(self.view, "Select DayZ Folder")
@@ -154,15 +152,23 @@ class MainController:
 
     def fetch_local_mods(self):
         self.view.tab_mods.table_mods.setRowCount(0)
-        if not self.config_manager.game_path: return 
+        if not self.config_manager.game_path:
+            return
         
         game_path = Path(self.config_manager.game_path)
         workshop_dir = game_path.parents[1] / "workshop" / "content" / "221100"
         downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
         
+        try:
+            downloads_dir.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
+
         dirs_to_watch = []
-        if workshop_dir.exists(): dirs_to_watch.append(str(workshop_dir))
-        if downloads_dir.exists(): dirs_to_watch.append(str(downloads_dir))
+        if workshop_dir.exists():
+            dirs_to_watch.append(str(workshop_dir))
+        if downloads_dir.exists():
+            dirs_to_watch.append(str(downloads_dir))
         
         watched_dirs = self.mod_watcher.directories()
         for d in dirs_to_watch:
@@ -178,76 +184,71 @@ class MainController:
         self.thread_pool.start(worker)
 
     def check_downloads(self):
-        if not self.mod_controller.downloading_mods:
-            return
-            
-        game_path = Path(self.config_manager.game_path)
-        content_dir = game_path.parents[1] / "workshop" / "content" / "221100"
-        downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
-        
-        status = {}
-        log_path = os.path.join(get_data_dir(), "logs", "steam_worker.log")
-        if os.path.exists(log_path):
-            try:
-                with open(log_path, "r", encoding="utf-8") as f:
-                    lines = f.readlines()
-                    if lines:
-                        for line in reversed(lines):
-                            try:
-                                status = json.loads(line.strip())
-                                break
-                            except json.JSONDecodeError:
-                                continue
-            except Exception as e:
-                logger.debug(f"Error reading steam_worker.log: {e}")
-
-        finished_any = False
-        
-        for mod_id in list(self.mod_controller.downloading_mods.keys()):
-            content_path = content_dir / str(mod_id)
-            
-            if content_path.exists() and (content_path / "meta.cpp").exists():
-                del self.mod_controller.downloading_mods[mod_id]
-                finished_any = True
-            else:
-                mod_status = status.get(str(mod_id))
-                if mod_status:
-                    downloaded = mod_status.get("downloaded", 0)
-                    total = mod_status.get("total", 0)
-                    
-                    if total > 0:
-                        percent = int((downloaded / total) * 100)
-                        mb_down = downloaded / (1024 * 1024)
-                        mb_total = total / (1024 * 1024)
-                        size_str = f"{mb_down:.1f}/{mb_total:.1f} MB ({percent}%)"
-                    else:
-                        target_dir = downloads_dir / str(mod_id)
-                        if target_dir.exists():
-                            curr_size = sum(f.stat().st_size for f in target_dir.rglob('*') if f.is_file())
-                            if curr_size > 0:
-                                mb_down = curr_size / (1024 * 1024)
-                                size_str = f"⬇️ {mb_down:.1f} MB"
-                            else:
-                                size_str = "Starting..."
-                        else:
-                            size_str = "Starting..."
-                            
-                    self.mod_controller.downloading_mods[mod_id]["size"] = size_str
+        try:
+            if not self.mod_controller.downloading_mods:
+                return
                 
-        if finished_any:
-            if not self.mod_controller.downloading_mods and self.auto_join_server:
-                target = self.auto_join_server
-                action = self.auto_join_action
-                self.auto_join_server = None
-                self.auto_join_action = None
-                self.queue_launch(target, action)
+            game_path = Path(self.config_manager.game_path)
+            downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
+            content_dir = game_path.parents[1] / "workshop" / "content" / "221100"
+            
+            finished_any = False
+            
+            for mod_id in list(self.mod_controller.downloading_mods.keys()):
+                dl_path = downloads_dir / str(mod_id)
+                content_path = content_dir / str(mod_id)
+                
+                dl_exists = False
+                try:
+                    dl_exists = dl_path.exists()
+                except OSError:
+                    dl_exists = False
+
+                if dl_exists:
+                    total_size = 0
+                    try:
+                        for item in dl_path.rglob('*'):
+                            if item.is_file() and not item.is_symlink():
+                                total_size += item.stat().st_size
+                    except OSError:
+                        pass
+                    
+                    if total_size < 1024:
+                        size_str = f"{total_size} B"
+                    elif total_size < 1024 * 1024:
+                        size_str = f"{total_size / 1024:.1f} KB"
+                    else:
+                        mb = total_size / (1024 * 1024)
+                        size_str = f"{mb:.1f} MB" if mb < 1024 else f"{mb / 1024:.1f} GB"
+                        
+                    self.mod_controller.downloading_mods[mod_id]["size"] = size_str
+                else:
+                    has_content = False
+                    try:
+                        has_content = content_path.exists() and (content_path / "meta.cpp").exists()
+                    except OSError:
+                        has_content = False
+
+                    if has_content:
+                        del self.mod_controller.downloading_mods[mod_id]
+                        finished_any = True
+                    
+            if finished_any:
+                if not self.mod_controller.downloading_mods and self.auto_join_server:
+                    target = self.auto_join_server
+                    action = self.auto_join_action
+                    self.auto_join_server = None
+                    self.auto_join_action = None
+                    self.queue_launch(target, action)
+                else:
+                    self.fetch_local_mods()
             else:
-                self.fetch_local_mods()
-                if self.mod_controller.downloading_mods:
-                    self.dl_update_timer.start(1000)
-        else:
-            self.mod_controller.update_download_progress()
-            self.dl_update_timer.start(1000)
+                self.mod_controller.update_download_progress()
+
+            if self.mod_controller.downloading_mods and not self.dl_update_timer.isActive():
+                self.dl_update_timer.start(1000)
+        except Exception as e:
+            logger.error(f"Error checking downloads: {e}", exc_info=True)
 
     def check_existing_downloads(self):
         if not self.config_manager.game_path:
@@ -256,64 +257,100 @@ class MainController:
         game_path = Path(self.config_manager.game_path)
         downloads_dir = game_path.parents[1] / "workshop" / "downloads" / "221100"
         
-        if not downloads_dir.exists():
+        try:
+            if not downloads_dir.exists():
+                return
+        except OSError:
             return
             
+        local_names = {
+            int(m["published_id"]): m.get("display_name")
+            for m in self.mod_controller.mods_data
+            if str(m.get("published_id", "")).isdigit()
+        }
+
         mod_ids = []
-        for item in downloads_dir.iterdir():
-            if item.is_dir() and item.name.isdigit():
-                mod_id = int(item.name)
-                if mod_id not in self.mod_controller.downloading_mods:
-                    mod_ids.append(mod_id)
+        unknown_ids = []
+        try:
+            for item in downloads_dir.iterdir():
+                if item.is_dir() and item.name.isdigit():
+                    mod_id = int(item.name)
+                    if mod_id not in self.mod_controller.downloading_mods:
+                        mod_ids.append(mod_id)
+                        if mod_id not in local_names:
+                            unknown_ids.append(mod_id)
+        except OSError:
+            return
                     
         if not mod_ids:
             return
         
-        post_data = {'itemcount': len(mod_ids)}
-        for i, m_id in enumerate(mod_ids):
-            post_data[f'publishedfileids[{i}]'] = m_id
-            
         titles = {}
-        try:
-            url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
-            data = urllib.parse.urlencode(post_data).encode('utf-8')
-            req = urllib.request.Request(url, data=data)
-            with urllib.request.urlopen(req, timeout=3) as response:
-                api_data = json.loads(response.read().decode('utf-8'))
-                for detail in api_data.get("response", {}).get("publishedfiledetails", []):
-                    if "publishedfileid" in detail and "title" in detail:
-                        titles[int(detail["publishedfileid"])] = detail["title"]
-        except Exception as e:
-            logger.error(f"Error getting mod names from Steam API: {e}", exc_info=True)
+        if unknown_ids:
+            post_data = {'itemcount': len(unknown_ids)}
+            for i, m_id in enumerate(unknown_ids):
+                post_data[f'publishedfileids[{i}]'] = m_id
+                
+            try:
+                import ssl, certifi
+                ctx = ssl.create_default_context(cafile=certifi.where())
+                url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+                data = urllib.parse.urlencode(post_data).encode('utf-8')
+                req = urllib.request.Request(url, data=data)
+                with urllib.request.urlopen(req, timeout=3, context=ctx) as response:
+                    api_data = json.loads(response.read().decode('utf-8'))
+                    for detail in api_data.get("response", {}).get("publishedfiledetails", []):
+                        if "publishedfileid" in detail and "title" in detail:
+                            titles[int(detail["publishedfileid"])] = detail["title"]
+            except Exception as e:
+                logger.error(f"Error getting mod names from Steam API: {e}", exc_info=True)
 
         for mod_id in mod_ids:
-            mod_name = titles.get(mod_id, f"Mod {mod_id}")
+            mod_name = local_names.get(mod_id) or titles.get(mod_id, f"Mod {mod_id}")
             self.mod_controller.downloading_mods[mod_id] = {"name": mod_name, "size": "0 B"}
             
-        self.check_downloads()
         self.mod_controller.render_mods()
+        self.check_downloads()
 
     def on_workshop_changed(self, path):
-        if "downloads" in path:
-            self.dl_update_timer.start(1000)
-        else:
-            self.mod_update_timer.start(2000)
+        try:
+            if "downloads" in path:
+                self.check_existing_downloads()
+                self.dl_update_timer.start(1000)
+            else:
+                self.mod_update_timer.start(2000)
+        except Exception as e:
+            logger.error(f"Error handling workshop directory change: {e}", exc_info=True)
+
 
     def on_mods_loaded(self, mods_data, worker=None):
         if worker and worker in self.active_workers:
             self.active_workers.remove(worker)
 
-        self.mod_controller.set_mods_data(mods_data)
-        
-        if self.local_controller._list_loaded:
-            self.local_controller.load_mods_into_table()
+        try:
+            self.mod_controller.set_mods_data(mods_data)
+            
+            if self.local_controller._list_loaded:
+                self.local_controller.load_mods_into_table()
 
-        if self.pending_launch:
-            target_server, action_type = self.pending_launch
-            self.pending_launch = None
-            self.check_and_launch(target_server, action_type)
+            if self.pending_launch:
+                target_server, action_type = self.pending_launch
+                self.pending_launch = None
+                self.check_and_launch(target_server, action_type)
+        except Exception as e:
+            logger.error(f"Error handling loaded mods: {e}", exc_info=True)
 
     def queue_launch(self, server_data, action_type):
+        game_path = self.config_manager.game_path
+        if not game_path or not os.path.isdir(game_path):
+            while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+            QMessageBox.warning(
+                self.view,
+                QCoreApplication.translate("MainController", "Game Path Error"),
+                QCoreApplication.translate("MainController", "Game path is not set or does not exist.\nPlease set it in Settings.")
+            )
+            return
+
         self.pending_launch = (server_data, action_type)
         self.fetch_local_mods()
 

@@ -118,9 +118,9 @@ fn parse_a2s_info(data: &[u8]) -> (String, String) {
 }
 
 /// Parses the modified DayZ A2S_RULES response
-fn parse_dayz_rules(data: &[u8]) -> Vec<(String, String)> {
+fn parse_dayz_rules(data: &[u8]) -> Option<Vec<(String, String)>> {
     if data.len() < 7 || data.get(4).copied() != Some(b'E') { 
-        return vec![]; 
+        return None; 
     }
     let mut c = 5;
     let b0 = data.get(c).copied().unwrap_or(0);
@@ -228,7 +228,7 @@ fn parse_dayz_rules(data: &[u8]) -> Vec<(String, String)> {
         uc += name_len;
     }
 
-    mods
+    Some(mods)
 }
 
 #[pyfunction]
@@ -243,7 +243,6 @@ pub fn query_server_full(py: Python<'_>, ip: String, port: u16) -> PyResult<(Str
         socket.set_write_timeout(Some(Duration::from_millis(2000)))?;
 
         let mut ping_ms = String::from("999");
-        let mut mods = vec![];
         let mut day_time = String::new();
         let mut players_str = String::new();
 
@@ -288,13 +287,15 @@ pub fn query_server_full(py: Python<'_>, ip: String, port: u16) -> PyResult<(Str
             }
         }
 
-        // 3. Send actual rules request with token
-        if let Some(req) = rules_req {
-            socket.send_to(&req, &address)?;
-            if let Ok(rules_data) = receive_packet(&socket) {
-                mods = parse_dayz_rules(&rules_data);
-            }
-        }
+        // 3. Send actual rules request with token.
+        // A missing/invalid RULES reply is an error: an empty mod list must only
+        // mean "the server really has no mods", never "we failed to get them".
+        let req = rules_req.ok_or_else(|| std::io::Error::new(
+            std::io::ErrorKind::TimedOut, "No A2S_RULES challenge received"))?;
+        socket.send_to(&req, &address)?;
+        let rules_data = receive_packet(&socket)?;
+        let mods = parse_dayz_rules(&rules_data).ok_or_else(|| std::io::Error::new(
+            std::io::ErrorKind::InvalidData, "Invalid A2S_RULES response"))?;
 
         Ok((ping_ms, players_str, day_time, mods))
     })?;
@@ -368,7 +369,13 @@ mod tests {
     #[test]
     fn test_parse_dayz_rules_empty() {
         let data = vec![0xFF, 0xFF, 0xFF, 0xFF, b'E', 0x00, 0x00];
-        let mods = parse_dayz_rules(&data);
+        let mods = parse_dayz_rules(&data).expect("valid empty rules response");
         assert!(mods.is_empty(), "Mods list should be empty for 0 rules");
+    }
+
+    #[test]
+    fn test_parse_dayz_rules_invalid_header() {
+        let data = vec![0xFF, 0xFF, 0xFF, 0xFF, b'X', 0x00, 0x00];
+        assert!(parse_dayz_rules(&data).is_none());
     }
 }

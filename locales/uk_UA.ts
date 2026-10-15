@@ -26,80 +26,80 @@
 </context><context>
     <name>LocalController</name>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="44" />
+        <location filename="../ui/controllers/local_controller.py" line="43" />
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="45" />
+        <location filename="../ui/controllers/local_controller.py" line="44" />
         <source>Size</source>
         <translation>Розмір</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="200" />
-        <location filename="../ui/controllers/local_controller.py" line="179" />
-        <location filename="../ui/controllers/local_controller.py" line="46" />
+        <location filename="../ui/controllers/local_controller.py" line="208" />
+        <location filename="../ui/controllers/local_controller.py" line="187" />
+        <location filename="../ui/controllers/local_controller.py" line="45" />
         <source>Sync</source>
         <translation>Синхронізація</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="50" />
+        <location filename="../ui/controllers/local_controller.py" line="49" />
         <source>🗑️ Delete</source>
         <translation>🗑️ Видалити</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="51" />
+        <location filename="../ui/controllers/local_controller.py" line="50" />
         <source>📤 Export</source>
         <translation>📤 Експорт</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="52" />
+        <location filename="../ui/controllers/local_controller.py" line="51" />
         <source>📥 Import</source>
         <translation>📥 Імпорт</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="414" />
-        <location filename="../ui/controllers/local_controller.py" line="53" />
+        <location filename="../ui/controllers/local_controller.py" line="423" />
+        <location filename="../ui/controllers/local_controller.py" line="52" />
         <source>▶ Play</source>
         <translation>▶ Грати</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="54" />
+        <location filename="../ui/controllers/local_controller.py" line="53" />
         <source>🔍 Search mod by name...</source>
         <translation>🔍 Пошук моду за назвою...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="92" />
+        <location filename="../ui/controllers/local_controller.py" line="97" />
         <source>📁 Select Preset...</source>
         <translation>📁 Вибрати пресет...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="93" />
+        <location filename="../ui/controllers/local_controller.py" line="98" />
         <source>➕ Create New Preset...</source>
         <translation>➕ Створити новий пресет...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="127" />
+        <location filename="../ui/controllers/local_controller.py" line="132" />
         <source>New Preset</source>
         <translation>Новий пресет</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="128" />
+        <location filename="../ui/controllers/local_controller.py" line="133" />
         <source>Preset Name:</source>
         <translation>Назва пресету:</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="201" />
+        <location filename="../ui/controllers/local_controller.py" line="209" />
         <source>Mod added to Steam downloads!</source>
         <translation>Мод додано до завантажень Steam!</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="277" />
+        <location filename="../ui/controllers/local_controller.py" line="285" />
         <source>Missing Dependencies</source>
         <translation>Відсутні залежності</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="278" />
+        <location filename="../ui/controllers/local_controller.py" line="286" />
         <source>This mod requires {0} additional mod(s):
 
 {1}
@@ -112,222 +112,234 @@ Enable them automatically?</source>
 Увімкнути їх автоматично?</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="299" />
+        <location filename="../ui/controllers/local_controller.py" line="307" />
         <source>Download Required</source>
         <translation>Потрібне завантаження</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="300" />
+        <location filename="../ui/controllers/local_controller.py" line="308" />
         <source>You are missing {0} mod(s) from this list locally.
 Start download via Steam?</source>
         <translation>У вас відсутні {0} мод(ів) з цього списку локально.
 Розпочати завантаження через Steam?</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="316" />
+        <location filename="../ui/controllers/local_controller.py" line="324" />
         <source>Delete Preset</source>
         <translation>Видалити пресет</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="317" />
+        <location filename="../ui/controllers/local_controller.py" line="325" />
         <source>Delete preset '{0}'?</source>
         <translation>Видалити пресет '{0}'?</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="330" />
+        <location filename="../ui/controllers/local_controller.py" line="338" />
         <source>Export Preset</source>
         <translation>Експорт пресету</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="350" />
-        <location filename="../ui/controllers/local_controller.py" line="331" />
+        <location filename="../ui/controllers/local_controller.py" line="358" />
+        <location filename="../ui/controllers/local_controller.py" line="339" />
         <source>DMTL Preset (*.dmtlp)</source>
         <translation>Пресет DMTL (*.dmtlp)</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="339" />
+        <location filename="../ui/controllers/local_controller.py" line="347" />
         <source>Success</source>
         <translation>Успіх</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="340" />
+        <location filename="../ui/controllers/local_controller.py" line="348" />
         <source>Preset exported successfully.</source>
         <translation>Пресет успішно експортовано.</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="391" />
-        <location filename="../ui/controllers/local_controller.py" line="344" />
+        <location filename="../ui/controllers/local_controller.py" line="400" />
+        <location filename="../ui/controllers/local_controller.py" line="352" />
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="345" />
+        <location filename="../ui/controllers/local_controller.py" line="353" />
         <source>Failed to export: {0}</source>
         <translation>Не вдалося експортувати: {0}</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="349" />
+        <location filename="../ui/controllers/local_controller.py" line="357" />
         <source>Import Preset</source>
         <translation>Імпорт пресету</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="378" />
+        <location filename="../ui/controllers/local_controller.py" line="387" />
         <source>Missing Mods</source>
         <translation>Відсутні моди</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="379" />
+        <location filename="../ui/controllers/local_controller.py" line="388" />
         <source>Missing {0} mods from this preset. Download them?</source>
         <translation>Відсутні {0} мод(ів) з цього пресету. Завантажити їх?</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="392" />
+        <location filename="../ui/controllers/local_controller.py" line="401" />
         <source>Failed to import: {0}</source>
         <translation>Не вдалося імпортувати: {0}</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/local_controller.py" line="399" />
+        <location filename="../ui/controllers/local_controller.py" line="408" />
         <source>⏳ Launching...</source>
         <translation>⏳ Запуск...</translation>
     </message>
 </context><context>
     <name>MainController</name>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="86" />
+        <location filename="../ui/controllers/main_controller.py" line="94" />
         <source>Settings</source>
         <translation>Налаштування</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="87" />
+        <location filename="../ui/controllers/main_controller.py" line="95" />
         <source>Nickname:</source>
         <translation>Нікнейм:</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="88" />
+        <location filename="../ui/controllers/main_controller.py" line="96" />
         <source>Game Path:</source>
         <translation>Шлях до гри:</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="89" />
+        <location filename="../ui/controllers/main_controller.py" line="97" />
         <source>Browse</source>
         <translation>Огляд</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="90" />
+        <location filename="../ui/controllers/main_controller.py" line="98" />
         <source>Sort by:</source>
         <translation>Сортувати за:</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="91" />
+        <location filename="../ui/controllers/main_controller.py" line="99" />
         <source>By Players</source>
         <translation>За гравцями</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="92" />
+        <location filename="../ui/controllers/main_controller.py" line="100" />
         <source>By Name (A-Z)</source>
         <translation>За назвою (А-Я)</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="93" />
+        <location filename="../ui/controllers/main_controller.py" line="101" />
         <source>Language (requires restart):</source>
         <translation>Мова (потребує перезапуску):</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="94" />
+        <location filename="../ui/controllers/main_controller.py" line="102" />
         <source>Launch Parameters:</source>
         <translation>Параметри запуску:</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="97" />
+        <location filename="../ui/controllers/main_controller.py" line="105" />
         <source>Sort by Last Played</source>
         <translation>За останнім запуском</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="405" />
-        <location filename="../ui/controllers/main_controller.py" line="103" />
+        <location filename="../ui/controllers/main_controller.py" line="449" />
+        <location filename="../ui/controllers/main_controller.py" line="111" />
         <source>🗑️ Clean Unsubscribed Mods</source>
         <translation>🗑️ Очистити відписані моди</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="360" />
-        <location filename="../ui/controllers/main_controller.py" line="106" />
+        <location filename="../ui/controllers/main_controller.py" line="404" />
+        <location filename="../ui/controllers/main_controller.py" line="114" />
         <source>About DMTL</source>
         <translation>Про DMTL</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="109" />
+        <location filename="../ui/controllers/main_controller.py" line="117" />
         <source>Make sure to force a Steam Play compatibility tool in DayZ properties.</source>
         <translation>Переконайтеся, що у властивостях DayZ примусово ввімкнено засіб сумісності Steam Play.</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="353" />
+        <location filename="../ui/controllers/main_controller.py" line="349" />
+        <source>Game Path Error</source>
+        <translation>Помилка шляху до гри</translation>
+    </message>
+    <message>
+        <location filename="../ui/controllers/main_controller.py" line="350" />
+        <source>Game path is not set or does not exist.
+Please set it in Settings.</source>
+        <translation>Шлях до гри не вказано або він не існує.
+Будь ласка, вкажіть його в налаштуваннях.</translation>
+    </message>
+    <message>
+        <location filename="../ui/controllers/main_controller.py" line="397" />
         <source>Downloading</source>
         <translation>Завантаження</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="354" />
+        <location filename="../ui/controllers/main_controller.py" line="398" />
         <source>Mods added to Steam downloads! Check the Mods tab for progress.</source>
         <translation>Моди додано до завантажень Steam! Перевірте вкладку "Моди" для відстеження.</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="327" />
+        <location filename="../ui/controllers/main_controller.py" line="371" />
         <source>Unknown Mod</source>
         <translation>Невідомий мод</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="330" />
+        <location filename="../ui/controllers/main_controller.py" line="374" />
         <source>Missing Mods</source>
         <translation>Відсутні моди</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="331" />
+        <location filename="../ui/controllers/main_controller.py" line="375" />
         <source>Missing {0} mods for this server. Download them via Steam?</source>
         <translation>Відсутні {0} мод(ів) для цього сервера. Завантажити їх через Steam?</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="361" />
+        <location filename="../ui/controllers/main_controller.py" line="405" />
         <source>&lt;h3&gt;DMTL - DayZ MefTeam Launcher&lt;/h3&gt;&lt;p&gt;Custom launcher for DayZ.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/69-Lukash/DMTLauncher'&gt;https://github.com/69-Lukash/DMTLauncher&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Credits:&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Thanks to everyone who helped with testing.&lt;/li&gt;&lt;li&gt;Thanks to Kolyakvas for help with the icon.&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;h3&gt;DMTL - DayZ MefTeam Launcher&lt;/h3&gt;&lt;p&gt;Кастомний лаунчер для DayZ.&lt;/p&gt;&lt;p&gt;&lt;a href='https://github.com/69-Lukash/DMTLauncher'&gt;https://github.com/69-Lukash/DMTLauncher&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;b&gt;Подяки:&lt;/b&gt;&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Дякуємо всім, хто допомагав з тестуванням.&lt;/li&gt;&lt;li&gt;Дякуємо Kolyakvas за допомогу з іконкою.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="377" />
+        <location filename="../ui/controllers/main_controller.py" line="421" />
         <source>Mod Cleanup</source>
         <translation>Очищення модів</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="378" />
+        <location filename="../ui/controllers/main_controller.py" line="422" />
         <source>Delete all local mods you are not subscribed to on Steam?</source>
         <translation>Видалити всі локальні моди, на які ви не підписані в Steam?</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="379" />
+        <location filename="../ui/controllers/main_controller.py" line="423" />
         <source>This will free up disk space, but you will have to download them again if you join a server that uses them.</source>
         <translation>Це звільнить місце на диску, але вам доведеться завантажити їх знову, якщо ви зайдете на сервер, який їх використовує.</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="392" />
+        <location filename="../ui/controllers/main_controller.py" line="436" />
         <source>🗑️ Cleaning...</source>
         <translation>🗑️ Очищення...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="409" />
+        <location filename="../ui/controllers/main_controller.py" line="453" />
         <source>Done</source>
         <translation>Готово</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/main_controller.py" line="410" />
+        <location filename="../ui/controllers/main_controller.py" line="454" />
         <source>Successfully deleted {0} orphaned mods.</source>
         <translation>Успішно видалено {0} залишкових мод(ів).</translation>
     </message>
 </context><context>
     <name>ModController</name>
     <message>
-        <location filename="../ui/controllers/mod_controller.py" line="23" />
+        <location filename="../ui/controllers/mod_controller.py" line="24" />
         <source>Search mod by name...</source>
         <translation>Пошук моду за назвою...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/mod_controller.py" line="24" />
+        <location filename="../ui/controllers/mod_controller.py" line="25" />
         <source>⬇️ Sync All</source>
         <translation>⬇️ Синхронізувати всі</translation>
     </message>
@@ -336,154 +348,166 @@ Start download via Steam?</source>
         <source>[Downloading...]</source>
         <translation>[Завантаження...]</translation>
     </message>
+    <message>
+        <location filename="../ui/controllers/mod_controller.py" line="136" />
+        <source>Delete Mod</source>
+        <translation>Видалення моду</translation>
+    </message>
+    <message>
+        <location filename="../ui/controllers/mod_controller.py" line="137" />
+        <source>Unsubscribe from '{0}' and delete it?</source>
+        <translation>Відписатися від '{0}' та видалити його?</translation>
+    </message>
 </context><context>
     <name>ServerController</name>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="54" />
-        <location filename="../ui/components/table_builder.py" line="148" />
+        <location filename="../ui/controllers/server_controller.py" line="55" />
+        <location filename="../ui/components/table_builder.py" line="150" />
         <source>Downloading servers...</source>
         <translation>Завантаження серверів...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="40" />
+        <location filename="../ui/controllers/server_controller.py" line="41" />
         <source>Search server by name...</source>
         <translation>Пошук сервера за назвою...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="41" />
+        <location filename="../ui/controllers/server_controller.py" line="42" />
         <source>Map...</source>
         <translation>Карта...</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="42" />
+        <location filename="../ui/controllers/server_controller.py" line="43" />
         <source>🔄 Refresh</source>
         <translation>🔄 Оновити</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="184" />
+        <location filename="../ui/controllers/server_controller.py" line="185" />
         <source>▶ Play</source>
         <translation>▶ Грати</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="185" />
+        <location filename="../ui/controllers/server_controller.py" line="186" />
         <source>📂 Load</source>
         <translation>📂 Завантажити</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="186" />
+        <location filename="../ui/controllers/server_controller.py" line="187" />
         <source>ℹ️ Info</source>
         <translation>ℹ️ Інформація</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="360" />
-        <location filename="../ui/controllers/server_controller.py" line="255" />
+        <location filename="../ui/controllers/server_controller.py" line="376" />
+        <location filename="../ui/controllers/server_controller.py" line="269" />
+        <location filename="../ui/controllers/server_controller.py" line="259" />
         <source>Connection Failed</source>
         <translation>Помилка підключення</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="361" />
-        <location filename="../ui/controllers/server_controller.py" line="258" />
+        <location filename="../ui/controllers/server_controller.py" line="377" />
+        <location filename="../ui/controllers/server_controller.py" line="272" />
+        <location filename="../ui/controllers/server_controller.py" line="260" />
         <source>Server {0}:{1} is not responding or offline!</source>
         <translation>Сервер {0}:{1} не відповідає або вимкнений!</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="296" />
+        <location filename="../ui/controllers/server_controller.py" line="312" />
         <source>Direct Connect</source>
         <translation>Пряме підключення</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="297" />
+        <location filename="../ui/controllers/server_controller.py" line="313" />
         <source>Enter server IP:Port
 (e.g., 192.168.1.100:2302):</source>
         <translation>Введіть IP:Порт сервера
 (наприклад, 192.168.1.100:2302):</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="337" />
+        <location filename="../ui/controllers/server_controller.py" line="353" />
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="338" />
+        <location filename="../ui/controllers/server_controller.py" line="354" />
         <source>Invalid format! Please use IP:Port</source>
         <translation>Неправильний формат! Будь ласка, використовуйте IP:Порт</translation>
     </message>
     <message>
-        <location filename="../ui/controllers/server_controller.py" line="378" />
+        <location filename="../ui/controllers/server_controller.py" line="397" />
         <source>Direct Connection</source>
         <translation>Пряме підключення</translation>
     </message>
 </context><context>
     <name>ServerInfoDialog</name>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="49" />
+        <location filename="../ui/views/dialog_info.py" line="53" />
         <source>Name:</source>
         <translation>Назва:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="50" />
+        <location filename="../ui/views/dialog_info.py" line="54" />
         <source>IP:Port:</source>
         <translation>IP:Порт:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="51" />
+        <location filename="../ui/views/dialog_info.py" line="55" />
         <source>Ping:</source>
         <translation>Пінг:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="52" />
+        <location filename="../ui/views/dialog_info.py" line="56" />
         <source>Players:</source>
         <translation>Гравці:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="53" />
+        <location filename="../ui/views/dialog_info.py" line="57" />
         <source>Password:</source>
         <translation>Пароль:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="54" />
+        <location filename="../ui/views/dialog_info.py" line="58" />
         <source>In-Game Time:</source>
         <translation>Ігровий час:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="55" />
+        <location filename="../ui/views/dialog_info.py" line="59" />
         <source>Country:</source>
         <translation>Країна:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="56" />
+        <location filename="../ui/views/dialog_info.py" line="60" />
         <source>Mods Count:</source>
         <translation>Кількість модів:</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="58" />
+        <location filename="../ui/views/dialog_info.py" line="62" />
         <source>Yes 🔒</source>
         <translation>Так 🔒</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="59" />
+        <location filename="../ui/views/dialog_info.py" line="63" />
         <source>No 🔓</source>
         <translation>Ні 🔓</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="113" />
+        <location filename="../ui/views/dialog_info.py" line="119" />
         <source>Success</source>
         <translation>Успіх</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="114" />
+        <location filename="../ui/views/dialog_info.py" line="120" />
         <source>Preset '{0}' saved!
 Switch to the Local Game tab to see it.</source>
         <translation>Пресет '{0}' збережено!
 Перейдіть на вкладку "Локальна гра", щоб побачити його.</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="118" />
+        <location filename="../ui/views/dialog_info.py" line="124" />
         <source>Error</source>
         <translation>Помилка</translation>
     </message>
     <message>
-        <location filename="../ui/views/dialog_info.py" line="119" />
+        <location filename="../ui/views/dialog_info.py" line="125" />
         <source>Failed to save preset: {0}</source>
         <translation>Не вдалося зберегти пресет: {0}</translation>
     </message>
@@ -525,7 +549,7 @@ Switch to the Local Game tab to see it.</source>
         <translation>Остання гра</translation>
     </message>
     <message>
-        <location filename="../ui/components/table_builder.py" line="115" />
+        <location filename="../ui/components/table_builder.py" line="117" />
         <location filename="../ui/components/table_builder.py" line="60" />
         <location filename="../ui/components/table_builder.py" line="30" />
         <source>Sync</source>
@@ -552,13 +576,13 @@ Switch to the Local Game tab to see it.</source>
         <translation>Розмір</translation>
     </message>
     <message>
-        <location filename="../ui/components/table_builder.py" line="121" />
+        <location filename="../ui/components/table_builder.py" line="123" />
         <location filename="../ui/components/table_builder.py" line="61" />
         <source>Delete</source>
         <translation>Видалити</translation>
     </message>
     <message>
-        <location filename="../ui/components/table_builder.py" line="105" />
+        <location filename="../ui/components/table_builder.py" line="107" />
         <source>⚙ Menu</source>
         <translation>⚙ Меню</translation>
     </message>
@@ -566,7 +590,7 @@ Switch to the Local Game tab to see it.</source>
     <name>TableLoader</name>
     <message>
         <location filename="../ui/components/table_loader.py" line="21" />
-        <location filename="../ui/components/table_builder.py" line="149" />
+        <location filename="../ui/components/table_builder.py" line="151" />
         <source>No servers found.</source>
         <translation>Сервери не знайдено.</translation>
     </message>

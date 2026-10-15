@@ -27,19 +27,30 @@ class ConfigManager:
         try:
             with open(self.config_path, "r", encoding="utf-8") as f:
                 config = json.load(f)
-                self.last_played = config.get("last_played", {})
-                self.nickname = config.get("nickname") or "Survivor"
-                self.game_path = config.get("game_path", "")
-                self.favorites = config.get("favorites", [])
-                self.default_sort = config.get("default_sort", 0)
-                self.language = config.get("language", "en_US")
-                self.launch_params = config.get("launch_params", "")
-                self.sort_last_played = config.get("sort_last_played", False)
-                self.last_local_preset = config.get("last_local_preset", "")
+            if not isinstance(config, dict):
+                raise ValueError("Config root is not a JSON object")
+
+            self.last_played = config.get("last_played", {})
+            self.nickname = config.get("nickname") or "Survivor"
+            self.game_path = config.get("game_path", "")
+            self.favorites = config.get("favorites", [])
+            self.default_sort = config.get("default_sort", 0)
+            self.language = config.get("language", "en_US")
+            self.launch_params = config.get("launch_params", "")
+            self.sort_last_played = config.get("sort_last_played", False)
+            self.last_local_preset = config.get("last_local_preset", "")
             logger.info(f"Successfully loaded config from {self.config_path}")
-        except (json.JSONDecodeError, IOError) as e:
-            logger.error(f"Error reading {self.config_path}. Using defaults. Details: {e}")
+        except ValueError as e:
+            # Includes JSONDecodeError / UnicodeDecodeError: keep the broken file for manual recovery.
+            backup_path = self.config_path + ".bak"
+            logger.error(f"Config {self.config_path} is corrupted ({e}). Backing up to {backup_path} and using defaults.")
+            try:
+                os.replace(self.config_path, backup_path)
+            except OSError as be:
+                logger.error(f"Could not back up corrupted config: {be}")
             self.save()
+        except IOError as e:
+            logger.error(f"Error reading {self.config_path}. Using defaults without overwriting the file. Details: {e}")
 
     def save(self):
         config = {

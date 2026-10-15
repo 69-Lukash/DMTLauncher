@@ -6,7 +6,7 @@ from PyQt6.QtGui import QColor
 from network.mods_query import ModsQueryWorker
 from network.api import DZSAWorker
 from network.pinger import PingWorker
-from utils.server_filter import apply_local_filters, FilterWorker
+from utils.server_filter import FilterWorker
 from ui.views.dialog_info import ServerInfoDialog
 from ui.components.table_loader import TableLoader
 from utils.logger import logger
@@ -17,6 +17,7 @@ class ServerController:
         self.view = view
         self.config_manager = config_manager
         self.launch_callback = launch_callback
+        self.on_preset_saved = None
         
         self.all_servers = []
         self.pinged_servers = set()
@@ -235,6 +236,10 @@ class ServerController:
             lambda addr, mods, sd=server_data, cb=on_done, w=mods_worker:
             self._on_live_mods(mods, sd, cb, w)
         )
+        mods_worker.signals.failed.connect(
+            lambda addr, sd=server_data, w=mods_worker:
+            self._on_mods_failed(str(sd.get("ip", "")), sd.get("gamePort", sd.get("port", 0)), w)
+        )
         self.active_workers.append(mods_worker)
         self.thread_pool.start(mods_worker)
 
@@ -245,6 +250,15 @@ class ServerController:
         merged = dict(server_data)
         merged["mods"] = mods
         on_done(merged)
+
+    def _on_mods_failed(self, ip, port, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+
+        while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
+        err_title = QCoreApplication.translate("ServerController", "Connection Failed")
+        err_msg = QCoreApplication.translate("ServerController", "Server {0}:{1} is not responding or offline!").format(ip, port)
+        QMessageBox.warning(self.view, err_title, err_msg)
 
     def show_fresh_info(self, address, ping, players_str, day_time, server_data, row, action, worker=None):
         if worker and worker in self.active_workers:
@@ -289,6 +303,8 @@ class ServerController:
         def _show(server_data):
             while QApplication.overrideCursor() is not None: QApplication.restoreOverrideCursor()
             dialog = ServerInfoDialog(server_data, ping, self.view)
+            if self.on_preset_saved:
+                dialog.preset_saved.connect(self.on_preset_saved)
             dialog.exec()
         return _show
 
@@ -366,6 +382,9 @@ class ServerController:
         mods_worker.setAutoDelete(False)
         mods_worker.signals.finished.connect(
             lambda addr, mods, i=ip, gp=game_port, w=mods_worker: self._finalize_direct_connect(mods, i, gp, w)
+        )
+        mods_worker.signals.failed.connect(
+            lambda addr, i=ip, gp=game_port, w=mods_worker: self._on_mods_failed(i, gp, w)
         )
         self.active_workers.append(mods_worker)
         self.thread_pool.start(mods_worker)

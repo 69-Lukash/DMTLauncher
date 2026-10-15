@@ -5,6 +5,7 @@ import subprocess
 
 from steam.manager import SteamManager
 from PyQt6.QtCore import Qt, QCoreApplication
+from PyQt6.QtWidgets import QMessageBox
 from utils.logger import logger
 
 class ModController:
@@ -36,7 +37,6 @@ class ModController:
         self.render_mods(text.strip().lower())
 
     def render_mods(self, search_query=""):
-        
         self.table_mods.setRowCount(0)
         
         downloading_text = QCoreApplication.translate("ModController", "[Downloading...]")
@@ -55,6 +55,10 @@ class ModController:
             self.table_mods.item(row, 0).setData(Qt.ItemDataRole.UserRole, mod_id)
 
         for mod in self.mods_data:
+            mod_id = mod.get("published_id")
+            if mod_id and str(mod_id).isdigit() and int(mod_id) in self.downloading_mods:
+                continue
+
             display_name = mod.get("display_name", "")
             
             if search_query and search_query not in display_name.lower():
@@ -67,9 +71,9 @@ class ModController:
                 self.handle_mod_action 
             )
             row = self.table_mods.rowCount() - 1
-            mod_id = mod.get("published_id")
             if mod_id:
                 self.table_mods.item(row, 0).setData(Qt.ItemDataRole.UserRole, str(mod_id))
+
 
     def update_download_progress(self):
         for row in range(self.table_mods.rowCount()):
@@ -126,6 +130,17 @@ class ModController:
             self.steam_mgr.sync_mods_batch(mod_ids)
             
     def delete_mod(self, mod_id: int, mod: dict, row: int):
+        mod_name = mod.get("display_name") or str(mod_id)
+        reply = QMessageBox.question(
+            self.view,
+            QCoreApplication.translate("ModController", "Delete Mod"),
+            QCoreApplication.translate("ModController", "Unsubscribe from '{0}' and delete it?").format(mod_name),
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        if reply != QMessageBox.StandardButton.Yes:
+            return
+
         self.steam_mgr.unsubscribe_mod(mod_id)
         self.table_mods.removeRow(row)
         if mod in self.mods_data:
