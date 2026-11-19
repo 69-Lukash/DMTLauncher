@@ -37,14 +37,14 @@ class SteamManager:
                 os.makedirs(log_dir, exist_ok=True)
                 log_path = os.path.join(log_dir, "steam_worker.log")
                 
-                log_file = open(log_path, "a")
-                p = subprocess.Popen(
-                    exec_args,
-                    cwd=work_dir,
-                    stdout=log_file,
-                    stderr=log_file,
-                    start_new_session=True
-                )
+                with open(log_path, "a") as log_file:
+                    p = subprocess.Popen(
+                        exec_args,
+                        cwd=work_dir,
+                        stdout=log_file,
+                        stderr=log_file,
+                        start_new_session=True
+                    )
             
             # Створюємо фоновий потік, який чекає завершення процесу
             # і миттєво підчищає "зомбі" з системи, звільняючи Стім

@@ -58,17 +58,20 @@ fn receive_packet(socket: &UdpSocket) -> Result<Vec<u8>, std::io::Error> {
 
 /// Safely extracts a null-terminated string from the buffer
 fn read_str<'a>(data: &'a [u8], cursor: &mut usize) -> &'a [u8] {
+    if *cursor >= data.len() {
+        return &[];
+    }
     let start = *cursor;
     while *cursor < data.len() {
-        if let Some(&b) = data.get(*cursor) {
-            if b == 0 {
-                break;
-            }
+        if data[*cursor] == 0 {
+            break;
         }
         *cursor += 1;
     }
-    let res = &data[start..(*cursor).min(data.len())];
-    *cursor += 1;
+    let res = &data[start..*cursor];
+    if *cursor < data.len() {
+        *cursor += 1;
+    }
     res
 }
 

@@ -4,6 +4,7 @@ import ssl
 import certifi
 import urllib.parse
 import re
+from html.parser import HTMLParser
 
 from PyQt6.QtCore import QRunnable, QObject, pyqtSignal
 from utils.logger import logger
@@ -88,6 +89,82 @@ class DZSAWorker(QRunnable):
         logger.info(f"Successfully loaded {len(server_list)} servers")
         self.signals.finished.emit(server_list)
 
+class _RequiredItemsParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_required = False
+        self.div_depth = 0
+        self.ids = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs_dict = dict(attrs)
+        if not self.in_required:
+            if tag == "div" and attrs_dict.get("id") == "RequiredItems":
+                self.in_required = True
+                self.div_depth = 1
+            return
+
+        if tag == "div":
+            self.div_depth += 1
+        elif tag == "a":
+            href = attrs_dict.get("href", "")
+            match = re.search(r'(?:workshop|sharedfiles)/filedetails/\?id=(\d+)', href)
+            if match:
+                mod_id = int(match.group(1))
+                if mod_id not in self.ids:
+                    self.ids.append(mod_id)
+
+    def handle_endtag(self, tag):
+        if self.in_required and tag == "div":
+            self.div_depth -= 1
+            if self.div_depth <= 0:
+                self.in_required = False
+
+
+def parse_required_item_ids(html: str) -> list:
+    if 'id="RequiredItems"' not in html:
+        return []
+    parser = _RequiredItemsParser()
+    parser.feed(html)
+    return parser.ids
+
+
+class ModTitlesSignals(QObject):
+    finished = pyqtSignal(dict)
+
+
+class ModTitlesWorker(QRunnable):
+    def __init__(self, mod_ids):
+        super().__init__()
+        self.mod_ids = list(mod_ids)
+        self.signals = ModTitlesSignals()
+
+    def run(self):
+        titles = {}
+        if not self.mod_ids:
+            self.signals.finished.emit(titles)
+            return
+
+        post_data = {'itemcount': len(self.mod_ids)}
+        for i, m_id in enumerate(self.mod_ids):
+            post_data[f'publishedfileids[{i}]'] = m_id
+
+        try:
+            ctx = ssl.create_default_context(cafile=certifi.where())
+            url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
+            data = urllib.parse.urlencode(post_data).encode('utf-8')
+            req = urllib.request.Request(url, data=data, headers={'User-Agent': 'DMTL-Launcher/1.0'})
+            with urllib.request.urlopen(req, timeout=5, context=ctx) as response:
+                api_data = json.loads(response.read().decode('utf-8'))
+                for detail in api_data.get("response", {}).get("publishedfiledetails", []):
+                    if "publishedfileid" in detail and "title" in detail:
+                        titles[int(detail["publishedfileid"])] = detail["title"]
+        except Exception as e:
+            logger.error(f"Error getting mod names from Steam API: {e}", exc_info=True)
+
+        self.signals.finished.emit(titles)
+
+
 class DependencySignals(QObject):
     # mod_id, list of names, list of ids
     finished = pyqtSignal(int, list, list)
@@ -106,17 +183,13 @@ class DependencyWorker(QRunnable):
             req_html = urllib.request.Request(url_html, headers={'User-Agent': 'Mozilla/5.0'})
             
             with urllib.request.urlopen(req_html, timeout=5, context=ssl_ctx) as resp:
-                html = resp.read().decode('utf-8')
+                html = resp.read().decode('utf-8', errors='replace')
                 
-            dep_ids = []
-            if 'id="RequiredItems"' in html:
-                matches = re.findall(r'href="https://steamcommunity\.com/workshop/filedetails/\?id=(\d+)"', html)
-                dep_ids = [int(m) for m in matches]
+            dep_ids = parse_required_item_ids(html)
+            if dep_ids:
                 logger.debug(f"Found required items in HTML for {self.mod_id}: {dep_ids}")
             else:
                 logger.debug(f"No 'RequiredItems' block found in HTML for {self.mod_id}.")
-                    
-            dep_ids = list(dict.fromkeys(dep_ids))
             
             if not dep_ids:
                 self.signals.finished.emit(self.mod_id, [], [])

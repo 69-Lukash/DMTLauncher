@@ -1,6 +1,4 @@
 import os
-import urllib.request, urllib.parse
-import json
 from pathlib import Path
 from PyQt6.QtWidgets import QApplication, QLabel, QMessageBox, QFileDialog
 from PyQt6.QtCore import Qt, QThreadPool, QFileSystemWatcher, QTimer, QCoreApplication
@@ -10,6 +8,7 @@ from steam.parser import ModParserWorker
 from game.runner import GameRunner
 from utils.logger import logger
 from utils.paths import get_data_dir
+from network.api import ModTitlesWorker
 from network.updater import UpdateCheckWorker
 from ui.views.main_window import DMTLMainWindow
 from ui.controllers.local_controller import LocalController
@@ -285,32 +284,37 @@ class MainController:
         if not mod_ids:
             return
         
-        titles = {}
-        if unknown_ids:
-            post_data = {'itemcount': len(unknown_ids)}
-            for i, m_id in enumerate(unknown_ids):
-                post_data[f'publishedfileids[{i}]'] = m_id
-                
-            try:
-                import ssl, certifi
-                ctx = ssl.create_default_context(cafile=certifi.where())
-                url = "https://api.steampowered.com/ISteamRemoteStorage/GetPublishedFileDetails/v1/"
-                data = urllib.parse.urlencode(post_data).encode('utf-8')
-                req = urllib.request.Request(url, data=data)
-                with urllib.request.urlopen(req, timeout=3, context=ctx) as response:
-                    api_data = json.loads(response.read().decode('utf-8'))
-                    for detail in api_data.get("response", {}).get("publishedfiledetails", []):
-                        if "publishedfileid" in detail and "title" in detail:
-                            titles[int(detail["publishedfileid"])] = detail["title"]
-            except Exception as e:
-                logger.error(f"Error getting mod names from Steam API: {e}", exc_info=True)
-
         for mod_id in mod_ids:
-            mod_name = local_names.get(mod_id) or titles.get(mod_id, f"Mod {mod_id}")
+            mod_name = local_names.get(mod_id) or f"Mod {mod_id}"
             self.mod_controller.downloading_mods[mod_id] = {"name": mod_name, "size": "0 B"}
             
         self.mod_controller.render_mods()
         self.check_downloads()
+
+        if unknown_ids:
+            worker = ModTitlesWorker(unknown_ids)
+            worker.setAutoDelete(False)
+            worker.signals.finished.connect(
+                lambda titles, w=worker: self.on_download_titles_loaded(titles, w)
+            )
+            self.active_workers.append(worker)
+            self.thread_pool.start(worker)
+
+    def on_download_titles_loaded(self, titles, worker=None):
+        if worker and worker in self.active_workers:
+            self.active_workers.remove(worker)
+
+        if not titles:
+            return
+
+        updated = False
+        for mod_id, title in titles.items():
+            if mod_id in self.mod_controller.downloading_mods:
+                self.mod_controller.downloading_mods[mod_id]["name"] = title
+                updated = True
+
+        if updated:
+            self.mod_controller.render_mods()
 
     def on_workshop_changed(self, path):
         try:
